@@ -1,6 +1,5 @@
 ﻿using Destructurama;
 using Serilog;
-
 namespace UCABPagaloTodoMS;
 
 public static class Program
