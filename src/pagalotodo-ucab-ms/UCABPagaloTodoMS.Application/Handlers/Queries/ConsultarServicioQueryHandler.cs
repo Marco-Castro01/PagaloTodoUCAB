@@ -1,0 +1,66 @@
+﻿using UCABPagaloTodoMS.Core.Database;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using UCABPagaloTodoMS.Application.Queries;
+using UCABPagaloTodoMS.Application.Responses;
+using Microsoft.EntityFrameworkCore;
+
+namespace UCABPagaloTodoMS.Application.Handlers.Queries
+{
+    public class ConsultarServicioQueryHandler : IRequestHandler<ConsultarServicioPruebaQuery, List<ServicioResponse>>
+    {
+        private readonly IUCABPagaloTodoDbContext _dbContext;
+        private readonly ILogger<ConsultarServicioQueryHandler> _logger;
+
+        public ConsultarServicioQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarServicioQueryHandler> logger)
+        {
+            _dbContext = dbContext;
+            _logger = logger;
+        }
+
+        public Task<List<ServicioResponse>> Handle(ConsultarServicioPruebaQuery request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (request is null)
+                {
+                    _logger.LogWarning("ConsultarServicioQueryHandler.Handle: Request nulo.");
+                    throw new ArgumentNullException(nameof(request));
+                }
+                else
+                {
+                    return HandleAsync();
+                }
+            }
+            catch (Exception)
+            {
+                _logger.LogWarning("ConsultarServicioQueryHandler.Handle: ArgumentNullException");
+                throw;
+            }
+        }
+
+        private async Task<List<ServicioResponse>> HandleAsync()
+        {
+            try
+            {
+                _logger.LogInformation("ConsultarServicioQueryHandler.HandleAsync");
+
+                var result = _dbContext.Servicio.Select(c => new ServicioResponse()
+                {
+                    Id = c.Id,
+                    name = c.name,
+                    accountNumber = c.accountNumber,
+                    PrestadorServicioId = c.PrestadorServicio
+                    
+                });
+
+                return await result.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error ConsultarServicioQueryHandler.HandleAsync. {Mensaje}", ex.Message);
+                throw;
+            }
+        }
+    }
+}

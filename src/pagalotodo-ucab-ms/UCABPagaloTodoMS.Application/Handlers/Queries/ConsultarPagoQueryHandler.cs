@@ -7,24 +7,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
-    public class ConsultarValoresQueryHandler : IRequestHandler<ConsultarValoresPruebaQuery, List<ValoresResponse>>
+    public class ConsultarPagoQueryHandler : IRequestHandler<ConsultarPagoPruebaQuery, List<PagoResponse>>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<ConsultarValoresQueryHandler> _logger;
+        private readonly ILogger<ConsultarPagoQueryHandler> _logger;
 
-        public ConsultarValoresQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarValoresQueryHandler> logger)
+        public ConsultarPagoQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarPagoQueryHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public Task<List<ValoresResponse>> Handle(ConsultarValoresPruebaQuery request, CancellationToken cancellationToken)
+        public Task<List<PagoResponse>> Handle(ConsultarPagoPruebaQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 if (request is null)
                 {
-                    _logger.LogWarning("ConsultarValoresQueryHandler.Handle: Request nulo.");
+                    _logger.LogWarning("ConsultarPagoQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
                 else
@@ -34,29 +34,29 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
             catch (Exception)
             {
-                _logger.LogWarning("ConsultarValoresQueryHandler.Handle: ArgumentNullException");
+                _logger.LogWarning("ConsultarPagoQueryHandler.Handle: ArgumentNullException");
                 throw;
             }
         }
 
-        private async Task<List<ValoresResponse>> HandleAsync()
+        private async Task<List<PagoResponse>> HandleAsync()
         {
             try
             {
-                _logger.LogInformation("ConsultarValoresQueryHandler.HandleAsync");
+                _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
 
-                var result = _dbContext.Valores.Select(c => new ValoresResponse()
+                var result = _dbContext.Pago.Select(c => new PagoResponse()
                 {
                     Id = c.Id,
-                    Nombre = c.Nombre + " " + c.Apellido,
-                    Identificacion = c.Identificacion,
+                    valor = c.valor,
+                    
                 });
 
                 return await result.ToListAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
+                _logger.LogError(ex, "Error ConsultarPagoQueryHandler.HandleAsync. {Mensaje}", ex.Message);
                 throw;
             }
         }
