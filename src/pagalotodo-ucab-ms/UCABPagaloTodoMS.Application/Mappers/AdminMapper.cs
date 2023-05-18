@@ -15,7 +15,6 @@ namespace UCABPagaloTodoMS.Application.Mappers
                 nickName = entity.nickName,
                 status = entity.status,
                 email = entity.email,
-                password = entity.password
             };
             return response;    
         }
@@ -28,7 +27,6 @@ namespace UCABPagaloTodoMS.Application.Mappers
                 nickName = request.nickName,
                 status = request.status,
                 email = request.email,
-                password = request.password
             };
             return entity;
         }

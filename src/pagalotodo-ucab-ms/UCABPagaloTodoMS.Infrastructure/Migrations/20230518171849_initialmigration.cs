@@ -5,70 +5,54 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UCABPagaloTodoMS.Infrastructure.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class initialmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Admin",
+                name: "CamposConciliacion",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Longitud = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    nickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<bool>(type: "bit", nullable: false)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Admin", x => x.Id);
+                    table.PrimaryKey("PK_CamposConciliacion", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Consumidor",
+                name: "Usuarios",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    passwordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    passwordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     nickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Consumidor", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PrestadorServicio",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    status = table.Column<bool>(type: "bit", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     rif = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    nickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<bool>(type: "bit", nullable: false)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrestadorServicio", x => x.Id);
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,7 +80,7 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     accountNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PrestadorServicioEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PrestadorServicioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -106,10 +90,35 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Servicio", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Servicio_PrestadorServicio_PrestadorServicioEntityId",
-                        column: x => x.PrestadorServicioEntityId,
-                        principalTable: "PrestadorServicio",
-                        principalColumn: "Id");
+                        name: "FK_Servicio_Usuarios_PrestadorServicioId",
+                        column: x => x.PrestadorServicioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CamposConciliacionEntityServicioEntity",
+                columns: table => new
+                {
+                    CamposConciliacionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServicioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CamposConciliacionEntityServicioEntity", x => new { x.CamposConciliacionId, x.ServicioId });
+                    table.ForeignKey(
+                        name: "FK_CamposConciliacionEntityServicioEntity_CamposConciliacion_CamposConciliacionId",
+                        column: x => x.CamposConciliacionId,
+                        principalTable: "CamposConciliacion",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CamposConciliacionEntityServicioEntity_Servicio_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicio",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,16 +138,21 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Pago", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pago_Consumidor_consumidorId",
-                        column: x => x.consumidorId,
-                        principalTable: "Consumidor",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Pago_Servicio_servicioId",
                         column: x => x.servicioId,
                         principalTable: "Servicio",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Pago_Usuarios_consumidorId",
+                        column: x => x.consumidorId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CamposConciliacionEntityServicioEntity_ServicioId",
+                table: "CamposConciliacionEntityServicioEntity",
+                column: "ServicioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pago_consumidorId",
@@ -151,15 +165,15 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                 column: "servicioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Servicio_PrestadorServicioEntityId",
+                name: "IX_Servicio_PrestadorServicioId",
                 table: "Servicio",
-                column: "PrestadorServicioEntityId");
+                column: "PrestadorServicioId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Admin");
+                name: "CamposConciliacionEntityServicioEntity");
 
             migrationBuilder.DropTable(
                 name: "Pago");
@@ -168,13 +182,13 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                 name: "Valores");
 
             migrationBuilder.DropTable(
-                name: "Consumidor");
+                name: "CamposConciliacion");
 
             migrationBuilder.DropTable(
                 name: "Servicio");
 
             migrationBuilder.DropTable(
-                name: "PrestadorServicio");
+                name: "Usuarios");
         }
     }
 }

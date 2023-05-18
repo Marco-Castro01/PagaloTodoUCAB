@@ -4,6 +4,6 @@ public class PagoEntity : BaseEntity
 {
     public double? valor { get; set; }
 
-    public ServicioEntity servicio { get; set; }
-    public ServicioEntity consumidor { get; set; }
+    public virtual ServicioEntity? servicio { get; set; }
+    public virtual ConsumidorEntity? consumidor { get; set; }
 }

@@ -52,7 +52,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     nickName = c.nickName,
                     status = c.status,
                     email = c.email,
-                    password = c.password
                 });
 
                 return await result.ToListAsync();

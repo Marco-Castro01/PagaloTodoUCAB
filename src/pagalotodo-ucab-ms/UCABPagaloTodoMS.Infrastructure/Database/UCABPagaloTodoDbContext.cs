@@ -14,6 +14,8 @@ public class UCABPagaloTodoDbContext : DbContext, IUCABPagaloTodoDbContext
     {
     }
 
+    public virtual DbSet<UsuarioEntity> Usuarios { get; set; } = null!;
+
     public virtual DbSet<ValoresEntity> Valores { get; set; } = null!;
     public virtual DbSet<AdminEntity> Admin { get; set; } = null!;
     public virtual DbSet<ConsumidorEntity> Consumidor { get; set; } = null!;
