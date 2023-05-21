@@ -49,7 +49,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 {
                     Id = c.Id,
                     valor = c.valor,
+                    consumidorId = c.consumidor.Id,
+                    servicioId = c.servicio.Id,
+                    PrestadorServicioNombre = c.servicio.PrestadorServicio.name,
+                    NombreServicio = c.servicio.name,
+                    NombreConsumidor = c.consumidor.name
                     
+
                 });
 
                 return await result.ToListAsync();
