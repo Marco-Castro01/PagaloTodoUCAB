@@ -4,6 +4,7 @@ using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
 using UCABPagaloTodoMS.Core.Database;
+using UCABPagaloTodoMS.Infrastructure.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
@@ -44,7 +45,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             try
             {
                 _logger.LogInformation("AgregarPagoPruebaCommandHandler.HandleAsync {Request}" , request);
-                var entity = PagoMapper.MapRequestEntity(request._request);
+                var entity = PagoMapper.MapRequestEntity(request._request,_dbContext);
                 _dbContext.Pago.Add(entity);
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
