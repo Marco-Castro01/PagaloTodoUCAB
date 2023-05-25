@@ -1,10 +1,15 @@
 ﻿using MediatR;
 using Microsoft.Azure.Amqp.Framing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,18 +19,20 @@ using UCABPagaloTodoMS.Core.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
-    public class LoginQueryHandler : IRequestHandler<LoginQuery, UsuariosResponse>
+    public class LoginQueryHandler : IRequestHandler<LoginQuery, String>
     {
+        private readonly IConfiguration _configuration;
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<ConsultarValoresQueryHandler> _logger;
 
-        public LoginQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarValoresQueryHandler> logger)
+        public LoginQueryHandler(IConfiguration configuration,  IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarValoresQueryHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
+            _configuration = configuration;
         }
 
-        public Task<UsuariosResponse> Handle(LoginQuery request, CancellationToken cancellationToken)
+        public Task<String> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -46,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
         }
 
-        private async Task<UsuariosResponse> HandleAsync(LoginQuery usuario)
+        private async Task<String> HandleAsync(LoginQuery usuario)
         {
             try
             {
@@ -65,13 +72,20 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 }
             
                 var result = _dbContext.Usuarios.Where(u => u.email == usuario._request.email)
-                .Select(a => new UsuariosResponse
+                .Select(a => new UsuariosAllResponse
                 {
                     Id = a.Id,
-                    Discriminator = a.Discriminator
+                    Discriminator = a.Discriminator,
+                    cedula = a.cedula,
+                    email = a.email,
+                    name = a.name, 
+                    nickName = a.nickName,
+                    status = a.status
+
                 }
-                    );
-                return result.FirstOrDefault();
+                    ).First();
+
+                return Generate(result);
             }
             catch (Exception ex)
             {
@@ -87,6 +101,34 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     return ComputedHash.SequenceEqual(passwordHash);
                 }
   
+        }
+
+        private string Generate(UsuariosAllResponse user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            // Crear los claims
+            var claims = new[]
+            {
+                new Claim("Id", user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.nickName),
+                new Claim(ClaimTypes.GivenName, user.name),
+                new Claim(ClaimTypes.Email, user.email),
+                new Claim(ClaimTypes.Role, user.Discriminator),
+            };
+
+
+            // Crear el token
+
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.Now.AddMinutes(60),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
 

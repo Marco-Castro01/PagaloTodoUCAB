@@ -9,7 +9,7 @@ using UCABPagaloTodoMS.Application.Responses;
 
 namespace UCABPagaloTodoMS.Application.Queries
 {
-    public class LoginQuery : IRequest<UsuariosResponse>
+    public class LoginQuery : IRequest<String>
     {
         public LoginRequest _request { get; set; }
 

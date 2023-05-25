@@ -14,14 +14,6 @@ namespace UCABPagaloTodoMS.Application.Mappers
 {
     public class UsuariosMapper
     {
-        public static UsuariosResponse MapEntityAResponse(UsuarioEntity entity)
-        {
-            var response = new UsuariosResponse()
-            {
-                Id = entity.Id,
-            };
-            return response;
-        }
 
         // SE CREA EL HASH DE CLAVE DEL USUSARIO
         public static UsuarioEntity MapRequestEntity(UsuarioRequest request)

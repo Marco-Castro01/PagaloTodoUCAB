@@ -1,5 +1,8 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
@@ -21,6 +24,7 @@ namespace UCABPagaloTodoMS.Controllers
         }
 
         [HttpGet()]
+        [Authorize(Roles = ("AdminEntity"))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<UsuariosAllResponse>>> ConsultaUsuarios()
@@ -80,7 +84,7 @@ namespace UCABPagaloTodoMS.Controllers
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UsuariosResponse>> login(LoginRequest usuario)
+        public async Task<ActionResult<String>> login(LoginRequest usuario)
         {
             _logger.LogInformation("Entrando al método que logea los usuarios");
             try
