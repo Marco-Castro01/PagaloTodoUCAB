@@ -51,7 +51,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogInformation("AgregarUsuarioCommand.HandleAsync {Request}", request);
                 var entity = UsuariosMapper.MapRequestEntity(request._request);
-                entity.VerificationToken = CreateRamdonToken();
                 _dbContext.Usuarios.Add(entity);
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
