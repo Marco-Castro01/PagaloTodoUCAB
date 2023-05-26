@@ -52,6 +52,79 @@ namespace UCABPagaloTodoMS.Controllers
             }
         }
 
+        //-------------------------------------------------------
+        /// <summary>
+        ///     Endpoint para la consulta de Pago
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Get admins
+        ///     ## Url
+        ///     GET /Pagos/PagosPorConsumidor
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de Pagos.</returns>
+        [HttpGet("pagosPorConsumidor/{IdConsumidor}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdConsumidor(Guid IdConsumidor)
+        {
+            _logger.LogInformation("Entrando al método que Lista los pagos realizados por El consumidor");
+            try
+            {
+                var query = new ConsultarPagoPorConsumidorQuery(IdConsumidor);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la consulta de los Pagos. Exception: " + ex);
+                throw;
+            }
+        }
+
+        //-----------------------------------------------------------------------
+        /// <summary>
+        ///     Endpoint para la consulta de Pago
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Get admins
+        ///     ## Url
+        ///     GET /Pagos/PagosPorServicio
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de Pagos.</returns>
+        [HttpGet("pagosPorServicio/{IdServicio}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdPrestador(Guid IdServicio)
+        {
+            _logger.LogInformation("Entrando al método que Lista los pagos realizados por El consumidor");
+            try
+            {
+                var query = new ConsultarPagoPorServicioQuery(IdServicio);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la consulta de los Pagos. Exception: " + ex);
+                throw;
+            }
+        }
+
+        //-----------------------------------------------------------------------
+
+       
+       
+        
         /// <summary>
         ///     Endpoint que registra un Pago.
         /// </summary>

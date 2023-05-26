@@ -62,6 +62,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("deleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("CamposConciliacion");
@@ -87,6 +90,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
                     b.Property<Guid?>("consumidorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("deleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("servicioId")
                         .HasColumnType("uniqueidentifier");
@@ -126,6 +132,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
                     b.Property<string>("accountNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("deleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
@@ -167,6 +176,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
                     b.Property<string>("cedula")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("deleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(max)");
@@ -223,6 +235,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("deleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

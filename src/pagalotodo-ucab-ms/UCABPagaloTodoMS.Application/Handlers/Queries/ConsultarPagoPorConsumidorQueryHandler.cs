@@ -7,18 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
-    public class ConsultarPagoQueryHandler : IRequestHandler<ConsultarPagoPruebaQuery, List<PagoResponse>>
+    public class ConsultarPagoPorConsumidorQueryHandler : IRequestHandler<ConsultarPagoPorConsumidorQuery, List<PagoResponse>>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<ConsultarPagoQueryHandler> _logger;
+        private readonly ILogger<ConsultarPagoPorConsumidorQueryHandler> _logger;
 
-        public ConsultarPagoQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarPagoQueryHandler> logger)
+        public ConsultarPagoPorConsumidorQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarPagoPorConsumidorQueryHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public Task<List<PagoResponse>> Handle(ConsultarPagoPruebaQuery request, CancellationToken cancellationToken)
+        public Task<List<PagoResponse>> Handle(ConsultarPagoPorConsumidorQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 }
                 else
                 {
-                    return HandleAsync();
+                    return HandleAsync(request);
                 }
             }
             catch (Exception)
@@ -39,13 +39,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
         }
 
-        private async Task<List<PagoResponse>> HandleAsync()
+        private async Task<List<PagoResponse>> HandleAsync(ConsultarPagoPorConsumidorQuery  request)
         {
             try
             {
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
-
-                var result = _dbContext.Pago.Select(c => new PagoResponse()
+                
+                var result = _dbContext.Pago.Where(c => c.consumidor.Id == request.IdConsumidor).Select(c => new PagoResponse()
                 {
                     Id = c.Id,
                     valor = c.valor,
@@ -58,7 +58,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
 
                 });
 
-                return await result.ToListAsync();
+                return await result.ToListAsync() ;
             }
             catch (Exception ex)
             {

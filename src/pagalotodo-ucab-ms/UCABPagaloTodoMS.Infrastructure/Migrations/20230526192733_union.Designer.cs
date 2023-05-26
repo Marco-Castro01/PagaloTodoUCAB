@@ -12,8 +12,8 @@ using UCABPagaloTodoMS.Infrastructure.Database;
 namespace UCABPagaloTodoMS.Infrastructure.Migrations
 {
     [DbContext(typeof(UCABPagaloTodoDbContext))]
-    [Migration("20230518171849_initialmigration")]
-    partial class initialmigration
+    [Migration("20230526192733_union")]
+    partial class union
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -64,6 +64,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("CamposConciliacion");
@@ -95,6 +98,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
                     b.Property<double?>("valor")
                         .HasColumnType("float");
+
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -132,6 +138,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PrestadorServicioId");
@@ -167,12 +176,6 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VerificationToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("cedula")
                         .HasColumnType("nvarchar(max)");
 
@@ -195,6 +198,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("status")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("visible")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
@@ -231,6 +237,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
