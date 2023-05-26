@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace UCABPagaloTodoMS.Application.Responses
 {
-    public class UsuariosResponse
+    public class PasswordResetResponse
     {
-        public string token { get; set; }
+        public string? info { get; set; }
+        public string? email { get; set; }
     }
 }

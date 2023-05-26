@@ -7,18 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
-    public class ConsultarPagoPorPrestadorQueryHandler : IRequestHandler<ConsultarPagoPorPrestadorQuery, List<PagoResponse>>
+    public class ConsultarPagoPorServicioQueryHandler : IRequestHandler<ConsultarPagoPorServicioQuery, List<PagoResponse>>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<ConsultarPagoPorPrestadorQueryHandler> _logger;
+        private readonly ILogger<ConsultarPagoPorServicioQueryHandler> _logger;
 
-        public ConsultarPagoPorPrestadorQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarPagoPorPrestadorQueryHandler> logger)
+        public ConsultarPagoPorServicioQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarPagoPorServicioQueryHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public Task<List<PagoResponse>> Handle(ConsultarPagoPorPrestadorQuery request, CancellationToken cancellationToken)
+        public Task<List<PagoResponse>> Handle(ConsultarPagoPorServicioQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
         }
 
-        private async Task<List<PagoResponse>> HandleAsync(ConsultarPagoPorPrestadorQuery  request)
+        private async Task<List<PagoResponse>> HandleAsync(ConsultarPagoPorServicioQuery  request)
         {
             try
             {

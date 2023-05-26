@@ -9,11 +9,11 @@ using UCABPagaloTodoMS.Application.Responses;
 
 namespace UCABPagaloTodoMS.Application.Queries
 {
-    public class LoginQuery : IRequest<String>
+    public class PasswordResetQuery : IRequest<PasswordResetResponse>
     {
-        public LoginRequest _request { get; set; }
+        public ResetPasswordRequest _request { get; set; }
 
-        public LoginQuery(LoginRequest request)
+        public PasswordResetQuery(ResetPasswordRequest request)
         {
             _request = request;
         }

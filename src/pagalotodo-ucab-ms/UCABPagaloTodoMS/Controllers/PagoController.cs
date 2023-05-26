@@ -94,22 +94,22 @@ namespace UCABPagaloTodoMS.Controllers
         ///     ## Description
         ///     ### Get admins
         ///     ## Url
-        ///     GET /Pagos/PagosPorPrestador
+        ///     GET /Pagos/PagosPorServicio
         /// </remarks>
         /// <response code="200">
         ///     Accepted:
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de Pagos.</returns>
-        [HttpGet("pagosPorPrestador/{IdPrestador}")]
+        [HttpGet("pagosPorServicio/{IdServicio}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdPrestador(Guid IdPrestador)
+        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdPrestador(Guid IdServicio)
         {
             _logger.LogInformation("Entrando al método que Lista los pagos realizados por El consumidor");
             try
             {
-                var query = new ConsultarPagoPorPrestadorQuery(IdPrestador);
+                var query = new ConsultarPagoPorServicioQuery(IdServicio);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }

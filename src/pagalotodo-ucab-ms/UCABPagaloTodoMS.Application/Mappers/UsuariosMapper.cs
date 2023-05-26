@@ -14,14 +14,6 @@ namespace UCABPagaloTodoMS.Application.Mappers
 {
     public class UsuariosMapper
     {
-        public static UsuariosResponse MapEntityAResponse(UsuarioEntity entity)
-        {
-            var response = new UsuariosResponse()
-            {
-                Id = entity.Id,
-            };
-            return response;
-        }
 
         // SE CREA EL HASH DE CLAVE DEL USUSARIO
         public static UsuarioEntity MapRequestEntity(UsuarioRequest request)
@@ -29,9 +21,9 @@ namespace UCABPagaloTodoMS.Application.Mappers
                 if (request.tipou == 1)
                 {
                  var u = new PrestadorServicioEntity();
-                    using (var hash = new HMACSHA512())
+                    using (var hash = new HMACSHA512()) //esto es para el password
                     {
-                        u.email = request.email;
+                    u.email = request.email;
                     u.cedula = request.cedula;
                     u.nickName = request.nickName;
                     u.name = request.name;
@@ -42,9 +34,44 @@ namespace UCABPagaloTodoMS.Application.Mappers
                 }
 
                 }
+
+                if (request.tipou == 2)
+                {
+                    var u = new ConsumidorEntity();
+                    using (var hash = new HMACSHA512())
+                    {
+                        u.email = request.email;
+                        u.cedula = request.cedula;
+                        u.nickName = request.nickName;
+                        u.name = request.name;
+
+                        u.passwordSalt = hash.Key;
+                        u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.Password));
+                        return u;
+                    }
+
+                }
+
+                if (request.tipou == 0)
+                {
+                    var u = new AdminEntity();
+                    using (var hash = new HMACSHA512())
+                    {
+                        u.email = request.email;
+                        u.cedula = request.cedula;
+                        u.nickName = request.nickName;
+                        u.name = request.name;
+
+                        u.passwordSalt = hash.Key;
+                        u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.Password));
+                        return u;
+                    }
+
+                }
+
             return null;
 
 
         }
-         }
+        }
 }

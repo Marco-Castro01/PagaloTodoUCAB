@@ -50,9 +50,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     Id = c.Id,
                     Nombre = c.Nombre + " " + c.Apellido,
                     Identificacion = c.Identificacion,
-                });
+                }).ToList();
 
-                return await result.ToListAsync();
+                return result;
             }
             catch (Exception ex)
             {

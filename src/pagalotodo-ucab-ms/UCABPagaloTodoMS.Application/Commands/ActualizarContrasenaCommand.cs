@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCABPagaloTodoMS.Application.Requests;
-using UCABPagaloTodoMS.Application.Responses;
 
-namespace UCABPagaloTodoMS.Application.Queries
+namespace UCABPagaloTodoMS.Application.Commands
 {
-    public class LoginQuery : IRequest<String>
+    public class ActualizarContrasenaCommand : IRequest<Guid>
     {
-        public LoginRequest _request { get; set; }
+        public UpdatePasswordRequest _request { get; set; }
 
-        public LoginQuery(LoginRequest request)
+        public ActualizarContrasenaCommand(UpdatePasswordRequest request)
         {
             _request = request;
         }

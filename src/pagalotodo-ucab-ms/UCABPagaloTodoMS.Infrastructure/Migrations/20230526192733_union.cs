@@ -5,36 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UCABPagaloTodoMS.Infrastructure.Migrations
 {
-    public partial class AddTablasDeUsuariosSeparados : Migration
+    public partial class union : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Admin",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    passwordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    passwordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    nickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Admin", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "CamposConciliacion",
                 columns: table => new
@@ -45,6 +19,7 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    visible = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -53,57 +28,31 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Consumidor",
+                name: "Usuarios",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     passwordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     passwordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     nickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Consumidor", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PrestadorServicio",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    status = table.Column<bool>(type: "bit", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     rif = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    passwordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    passwordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    nickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<bool>(type: "bit", nullable: false)
+                    visible = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrestadorServicio", x => x.Id);
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -117,6 +66,7 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    visible = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -135,15 +85,16 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    visible = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Servicio", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Servicio_PrestadorServicio_PrestadorServicioId",
+                        name: "FK_Servicio_Usuarios_PrestadorServicioId",
                         column: x => x.PrestadorServicioId,
-                        principalTable: "PrestadorServicio",
+                        principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -183,20 +134,21 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    visible = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pago", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pago_Consumidor_consumidorId",
-                        column: x => x.consumidorId,
-                        principalTable: "Consumidor",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Pago_Servicio_servicioId",
                         column: x => x.servicioId,
                         principalTable: "Servicio",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Pago_Usuarios_consumidorId",
+                        column: x => x.consumidorId,
+                        principalTable: "Usuarios",
                         principalColumn: "Id");
                 });
 
@@ -224,9 +176,6 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Admin");
-
-            migrationBuilder.DropTable(
                 name: "CamposConciliacionEntityServicioEntity");
 
             migrationBuilder.DropTable(
@@ -239,13 +188,10 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                 name: "CamposConciliacion");
 
             migrationBuilder.DropTable(
-                name: "Consumidor");
-
-            migrationBuilder.DropTable(
                 name: "Servicio");
 
             migrationBuilder.DropTable(
-                name: "PrestadorServicio");
+                name: "Usuarios");
         }
     }
 }
