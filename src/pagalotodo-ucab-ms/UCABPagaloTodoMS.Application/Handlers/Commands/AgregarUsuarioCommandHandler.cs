@@ -72,24 +72,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("AgregarValorePruebaCommandHandler.HandleAsync {Response}", id);
                 return id;
             }
-            catch (ValidationException ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
-                throw new UserRegistException(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                transaccion.Rollback();
-                throw new UserRegistException(ex.Message);
-                
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                transaccion.Rollback();
-                throw new UserRegistException(ex.Message);    
+                throw new CustomException(ex.Message);    
                 
             }
         }

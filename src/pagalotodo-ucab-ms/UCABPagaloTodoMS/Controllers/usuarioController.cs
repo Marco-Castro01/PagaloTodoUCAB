@@ -77,7 +77,7 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
-            catch (UserRegistException ex)
+            catch (CustomException ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
 
