@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
@@ -74,10 +77,16 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (UserRegistException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
