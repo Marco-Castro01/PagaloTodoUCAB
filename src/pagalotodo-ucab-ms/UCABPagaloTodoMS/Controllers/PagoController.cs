@@ -154,7 +154,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un pago. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
     }

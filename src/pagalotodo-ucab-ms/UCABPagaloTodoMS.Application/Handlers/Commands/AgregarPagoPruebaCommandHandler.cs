@@ -1,10 +1,16 @@
-﻿using MediatR;
+﻿using System.ComponentModel.DataAnnotations;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
+using UCABPagaloTodoMS.Application.Validators;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Infrastructure.Database;
+using ValidationException = FluentValidation.ValidationException;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
@@ -46,6 +52,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogInformation("AgregarPagoPruebaCommandHandler.HandleAsync {Request}" , request);
                 var entity = PagoMapper.MapRequestEntity(request._request,_dbContext);
+                PagoValidator pagoValidator = new PagoValidator();
+                ValidationResult result = pagoValidator.Validate(entity);
+                if (!result.IsValid)
+                {
+                    throw new ValidationException(result.Errors);
+                }
                 _dbContext.Pago.Add(entity);
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
@@ -57,7 +69,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogError(ex, "Error AgregarPagoPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }
