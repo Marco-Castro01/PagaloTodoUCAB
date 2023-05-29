@@ -35,6 +35,7 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los usuarios");
             try
             {
+           
                 var query = new ConsultarUsuariosQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -47,6 +48,7 @@ namespace UCABPagaloTodoMS.Controllers
         }
 
         [HttpPut()]
+        [Authorize(Roles = ("AdminEntity"))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> EditarUsuario(EditarUsuarioRequest user)
@@ -65,15 +67,64 @@ namespace UCABPagaloTodoMS.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> Agregarusuario(UsuarioRequest usuario)
+        public async Task<ActionResult<Guid>> Agregaradmin(AdminRequest usuario)
         {
             _logger.LogInformation("Entrando al método que registra los usuarios");
             try
             {
-                var query = new AgregarUsuarioCommand(usuario);
+                var query = new AgregarAdminCommand(usuario);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("Consumidor")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Guid>> Agregarconsumidor(ConsumidorRequest usuario)
+        {
+            _logger.LogInformation("Entrando al método que registra los usuarios");
+            try
+            {
+                var query = new AgregarConsumidorCommand(usuario);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("Prestador")]
+        [Authorize(Roles = ("AdminEntity"))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Guid>> Agregarprestador(PrestadorRequest usuario)
+        {
+            _logger.LogInformation("Entrando al método que registra los usuarios");
+            try
+            {
+                var query = new AgregarPrestadorCommand(usuario);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
@@ -151,6 +202,7 @@ namespace UCABPagaloTodoMS.Controllers
         }
 
         [HttpPut("Password")]
+        [Authorize(Roles = "AdminEntity, ConsumidorEntity,PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> updatepassword(UpdatePasswordRequest usuario)

@@ -25,7 +25,6 @@ namespace UCABPagaloTodoMS.Application.Mappers
             {
                 cedula = request.cedula,
                 nickName = request.nickName,
-                status = request.status,
                 email = request.email,
             };
             return entity;

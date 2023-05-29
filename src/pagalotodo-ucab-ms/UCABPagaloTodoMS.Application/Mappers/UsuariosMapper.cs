@@ -16,62 +16,64 @@ namespace UCABPagaloTodoMS.Application.Mappers
     {
 
         // SE CREA EL HASH DE CLAVE DEL USUSARIO
-        public static UsuarioEntity MapRequestEntity(UsuarioRequest request)
+        public static AdminEntity MapRequestAdminEntity(AdminRequest request)
         {
-                if (request.tipou == 1)
-                {
-                 var u = new PrestadorServicioEntity();
-                    using (var hash = new HMACSHA512()) //esto es para el password
-                    {
-                    u.email = request.email;
-                    u.cedula = request.cedula;
-                    u.nickName = request.nickName;
-                    u.name = request.name;
-                   
-                        u.passwordSalt = hash.Key;
-                        u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.Password));
-                    return u;
-                }
-
-                }
-
-                if (request.tipou == 2)
-                {
-                    var u = new ConsumidorEntity();
-                    using (var hash = new HMACSHA512())
-                    {
-                        u.email = request.email;
-                        u.cedula = request.cedula;
-                        u.nickName = request.nickName;
-                        u.name = request.name;
-
-                        u.passwordSalt = hash.Key;
-                        u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.Password));
-                        return u;
-                    }
-
-                }
-
-                if (request.tipou == 0)
-                {
+                         
                     var u = new AdminEntity();
-                    using (var hash = new HMACSHA512())
-                    {
-                        u.email = request.email;
-                        u.cedula = request.cedula;
-                        u.nickName = request.nickName;
-                        u.name = request.name;
-
-                        u.passwordSalt = hash.Key;
-                        u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.Password));
-                        return u;
-                    }
-
-                }
-
-            return null;
-
-
+            using (var hash = new HMACSHA512())
+            {
+                u.email = request.email;
+                u.cedula = request.cedula;
+                u.nickName = request.nickName;
+                u.name = request.name;
+                u.deleted = false;
+                u.status = true;
+                u.passwordSalt = hash.Key;
+                u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.password));
+                return u;
+            }
         }
+
+        public static ConsumidorEntity MapRequestConsumidorEntity(ConsumidorRequest request)
+        {
+
+            var u = new ConsumidorEntity();
+            using (var hash = new HMACSHA512())
+            {
+                u.email = request.email;
+                u.cedula = request.cedula;
+                u.nickName = request.nickName;
+                u.name = request.name;
+                u.status = true;
+                u.lastName = request.lastName;
+                u.deleted = false;
+                
+
+                u.passwordSalt = hash.Key;
+                u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.password));
+                return u;
+            }
         }
+        public static PrestadorServicioEntity MapRequestPrestadorEntity(PrestadorRequest request)
+        {
+
+            var u = new PrestadorServicioEntity();
+            using (var hash = new HMACSHA512())
+            {
+                u.email = request.email;
+                u.nickName = request.nickName;
+                u.name = request.name;
+                u.status = true;
+                u.deleted = false;
+                u.rif = request.rif;
+
+
+
+        u.passwordSalt = hash.Key;
+                u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.password));
+                return u;
+            }
+        }
+
+    }
 }
