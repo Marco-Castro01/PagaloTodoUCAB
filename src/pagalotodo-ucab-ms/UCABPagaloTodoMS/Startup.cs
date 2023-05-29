@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using UCABPagaloTodoMS.Application.Mailing;
 
 namespace UCABPagaloTodoMS;
 
@@ -45,6 +46,7 @@ public class Startup
                     builder.AllowAnyHeader();
                 });
         });
+    
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
@@ -95,6 +97,12 @@ public class Startup
         _appSettings = appSettingsSection.Get<AppSettings>();
         services.Configure<AppSettings>(appSettingsSection);
         services.AddTransient<IUCABPagaloTodoDbContext, UCABPagaloTodoDbContext>();
+        var emailConfig = Configuration
+   .GetSection("EmailConfiguration")
+   .Get<EmailConfiguration>();
+        services.AddScoped<IEmailSender, EmailSender>();
+        services.AddSingleton(emailConfig);
+        services.AddEndpointsApiExplorer();
 
         services.AddProviders(Configuration, Folder, _appSettings, environment);
 

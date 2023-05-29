@@ -11,7 +11,7 @@ using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Base;
-
+using UCABPagaloTodoMS.Application.Mailing;
 
 namespace UCABPagaloTodoMS.Controllers
 {
@@ -20,10 +20,12 @@ namespace UCABPagaloTodoMS.Controllers
     public class usuarioController : BaseController<usuarioController>
     {
         private readonly IMediator _mediator;
+        private readonly IEmailSender _emailSender;
 
-        public usuarioController(ILogger<usuarioController> logger, IMediator mediator) : base(logger)
+        public usuarioController(ILogger<usuarioController> logger, IMediator mediator, IEmailSender emailSender) : base(logger)
         {
             _mediator = mediator;
+            _emailSender = emailSender;
         }
 
         [HttpGet()]
