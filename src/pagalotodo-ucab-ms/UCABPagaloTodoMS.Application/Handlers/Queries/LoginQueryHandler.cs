@@ -76,7 +76,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 {
                     Id = a.Id,
                     Discriminator = a.Discriminator,
-                    cedula = a.cedula,
                     email = a.email,
                     name = a.name, 
                     nickName = a.nickName,

@@ -52,7 +52,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 var result = _dbContext.Usuarios.Select(c => new UsuariosAllResponse()
                 {
                     Id = c.Id,
-                    cedula = c.cedula,
                     email = c.email,
                     name = c.name,
                     nickName = c.nickName,

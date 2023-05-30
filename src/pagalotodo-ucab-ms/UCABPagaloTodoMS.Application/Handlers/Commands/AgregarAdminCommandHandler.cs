@@ -18,18 +18,18 @@ using UCABPagaloTodoMS.Core.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
-    public class AgregarUsuarioCommandHandler : IRequestHandler<AgregarUsuarioCommand, Guid>
+    public class AgregarAdminCommandHandler : IRequestHandler<AgregarAdminCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<ConsultarValoresQueryHandler> _logger;
-        public AgregarUsuarioCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarValoresQueryHandler> logger)
+        private readonly ILogger<AgregarAdminCommandHandler> _logger;
+        public AgregarAdminCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<AgregarAdminCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
 
-        public async Task<Guid> Handle(AgregarUsuarioCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(AgregarAdminCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -49,42 +49,37 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
-        private async Task<Guid> HandleAsync(AgregarUsuarioCommand request)
+        private async Task<Guid> HandleAsync(AgregarAdminCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
             {
                 _logger.LogInformation("AgregarUsuarioCommand.HandleAsync {Request}", request);
-                var entity = UsuariosMapper.MapRequestEntity(request._request);
-                UsuarioValidator usuarioValidator = new UsuarioValidator();
-                entity.cedula = request._request.cedula;
+                var entity = UsuariosMapper.MapRequestAdminEntity(request._request);
+                AdminValidator usuarioValidator = new AdminValidator();
                 ValidationResult result = usuarioValidator.Validate(entity);
                 if (!result.IsValid)
                 {
                     throw new ValidationException(result.Errors);
 
                 }
-
                 _dbContext.Usuarios.Add(entity);
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
-                _logger.LogInformation("AgregarValorePruebaCommandHandler.HandleAsync {Response}", id);
+                _logger.LogInformation("AgregarAdminHandler.HandleAsync {Response}", id);
                 return id;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
+                _logger.LogError(ex, "Error AgregarAdminHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
                 throw new CustomException(ex.Message);    
                 
             }
         }
 
-        private string? CreateRamdonToken()
-        {
-            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
-        }
+ 
 
 
 

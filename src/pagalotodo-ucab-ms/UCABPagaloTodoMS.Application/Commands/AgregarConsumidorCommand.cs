@@ -8,14 +8,13 @@ using UCABPagaloTodoMS.Application.Requests;
 
 namespace UCABPagaloTodoMS.Application.Commands
 {
-    public class AgregarUsuarioCommand : IRequest<Guid>
+    public class AgregarConsumidorCommand : IRequest<Guid>
     {
-        public UsuarioRequest _request { get; set; }
+        public ConsumidorRequest _request { get; set; }
 
-        public AgregarUsuarioCommand(UsuarioRequest request)
+        public AgregarConsumidorCommand(ConsumidorRequest request)
         {
             _request = request;
         }
     }
-  
 }

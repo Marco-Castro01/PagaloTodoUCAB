@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using UCABPagaloTodoMS.Application.Mailing;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
@@ -16,11 +17,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<ResetQueryHandler> _logger;
+        private readonly IEmailSender _emailSender;
 
-        public ResetQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ResetQueryHandler> logger)
+        public ResetQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ResetQueryHandler> logger , IEmailSender emailSender)
         {
             _dbContext = dbContext;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         public Task<PasswordResetResponse> Handle(PasswordResetQuery request, CancellationToken cancellationToken)
@@ -56,6 +59,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     throw new ArgumentNullException(nameof(usuariocreated));
                 }
                 usuariocreated.PasswordResetToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+                var message = new Message(new string[] { usuariocreated.email }, "Codigo de reseteo de clave", usuariocreated.PasswordResetToken);
+                _emailSender.SendEmail(message);
                 usuariocreated.ResetTokenExpires = DateTime.Now.AddDays(1);
                 _dbContext.Usuarios.Update(usuariocreated);
                 _dbContext.DbContext.SaveChanges();

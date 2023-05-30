@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Core.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
@@ -50,7 +51,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             _logger.LogInformation("ActualizarContrasenaCommand.HandleAsync {Request}", request);
 
             var user = _dbContext.Usuarios.Where(u => u.email == request._request.email).FirstOrDefault();
-            using (var hash = new HMACSHA512()) //esto es para el password
+             if (user == null)
+                {
+                    throw new CustomException("No existe el usuario");
+                }
+                using (var hash = new HMACSHA512()) //esto es para el password
             {
                 user.passwordSalt = hash.Key;
                 user.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request._request.Password));

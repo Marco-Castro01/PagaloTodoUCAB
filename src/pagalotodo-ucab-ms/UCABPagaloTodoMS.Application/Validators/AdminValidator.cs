@@ -3,10 +3,10 @@ using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Validators;
 
-public class UsuarioValidator : AbstractValidator<UsuarioEntity>
+public class AdminValidator : AbstractValidator<AdminEntity>
 {
 
-    public UsuarioValidator()
+    public AdminValidator()
     {
         RuleFor(usuario => usuario.name).NotNull();
         RuleFor(usuario => usuario.cedula).NotNull();
