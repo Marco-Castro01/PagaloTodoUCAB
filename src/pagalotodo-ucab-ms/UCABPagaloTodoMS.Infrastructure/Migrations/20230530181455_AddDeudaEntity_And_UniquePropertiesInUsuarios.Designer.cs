@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UCABPagaloTodoMS.Infrastructure.Database;
 
@@ -11,9 +12,10 @@ using UCABPagaloTodoMS.Infrastructure.Database;
 namespace UCABPagaloTodoMS.Infrastructure.Migrations
 {
     [DbContext(typeof(UCABPagaloTodoDbContext))]
-    partial class UCABPagaloTodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230530181455_AddDeudaEntity_And_UniquePropertiesInUsuarios")]
+    partial class AddDeudaEntity_And_UniquePropertiesInUsuarios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,6 +78,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ConsumidorEntityId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -102,6 +107,8 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ConsumidorEntityId");
 
                     b.HasIndex("servicioId");
 
@@ -340,6 +347,10 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.DeudaEntity", b =>
                 {
+                    b.HasOne("UCABPagaloTodoMS.Core.Entities.ConsumidorEntity", null)
+                        .WithMany("deudas")
+                        .HasForeignKey("ConsumidorEntityId");
+
                     b.HasOne("UCABPagaloTodoMS.Core.Entities.ServicioEntity", "servicio")
                         .WithMany("deudas")
                         .HasForeignKey("servicioId");
@@ -382,6 +393,8 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ConsumidorEntity", b =>
                 {
+                    b.Navigation("deudas");
+
                     b.Navigation("pago");
                 });
 

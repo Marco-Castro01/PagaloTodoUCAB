@@ -36,7 +36,7 @@ namespace UCABPagaloTodoMS.Controllers
         [HttpGet("admins")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<ValoresResponse>>> ConsultaAdmins()
+        public async Task<ActionResult<List<AdminResponse>>> ConsultaAdmins()
         {
             _logger.LogInformation("Entrando al método que consulta los admins");
             try
