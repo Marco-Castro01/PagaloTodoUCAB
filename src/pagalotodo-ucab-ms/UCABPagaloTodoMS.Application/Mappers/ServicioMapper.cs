@@ -1,5 +1,6 @@
 ﻿using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
+using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Mappers
@@ -13,18 +14,21 @@ namespace UCABPagaloTodoMS.Application.Mappers
                 Id = entity.Id,
                 name = entity.name,
                 accountNumber = entity.accountNumber,
-                PrestadorServicioId = entity.PrestadorServicio
+                prestadorServicioId= entity.PrestadorServicio.Id
                 
             };
             return response;    
         }
 
-        public static ServicioEntity MapRequestEntity(ServicioRequest request)
+        public static ServicioEntity MapRequestEntity(ServicioRequest request, IUCABPagaloTodoDbContext DbContext)
         {
             var entity = new ServicioEntity()
             {
                name = request.name,
                accountNumber = request.accountNumber,
+               PrestadorServicio = DbContext.PrestadorServicio.Find(request.PrestadorServicioId),
+               tipoServicio = request.tipoServicio,
+               statusServicio = request.statusServicio
             };
             return entity;
         }

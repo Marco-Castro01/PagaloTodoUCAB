@@ -45,13 +45,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarServicioQueryHandler.HandleAsync");
 
-                var result = _dbContext.Servicio.Select(c => new ServicioResponse()
+                var result = _dbContext.Servicio.Where(c=>c.deleted==false).Select(c => new ServicioResponse()
                 {
                     Id = c.Id,
                     name = c.name,
                     accountNumber = c.accountNumber,
-                    PrestadorServicioId = c.PrestadorServicio
-                    
+                    prestadorServicioId = c.PrestadorServicio.Id,
+                    prestadorServicioName = c.PrestadorServicio.name
+                   
                 });
 
                 return await result.ToListAsync();

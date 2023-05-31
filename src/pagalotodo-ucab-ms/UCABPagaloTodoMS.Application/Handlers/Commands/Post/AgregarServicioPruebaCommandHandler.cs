@@ -47,7 +47,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             try
             {
                 _logger.LogInformation("AgregarServicioPruebaCommandHandler.HandleAsync {Request}" , request);
-                var entity = ServicioMapper.MapRequestEntity(request._request);
+                var entity = ServicioMapper.MapRequestEntity(request._request,_dbContext);
                 _dbContext.Servicio.Add(entity);
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
