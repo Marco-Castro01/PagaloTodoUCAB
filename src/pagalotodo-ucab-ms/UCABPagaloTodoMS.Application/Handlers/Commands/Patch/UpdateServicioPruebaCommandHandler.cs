@@ -12,18 +12,18 @@ using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
-    public class AgregarServicioPruebaCommandHandler : IRequestHandler<AgregarServicioPruebaCommand, Guid>
+    public class UpdateServicioPruebaCommandHandler : IRequestHandler<UpdateServicioPruebaCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<AgregarServicioPruebaCommandHandler> _logger;
+        private readonly ILogger<UpdateServicioPruebaCommandHandler> _logger;
 
-        public AgregarServicioPruebaCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<AgregarServicioPruebaCommandHandler> logger)
+        public UpdateServicioPruebaCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<UpdateServicioPruebaCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public async Task<Guid> Handle(AgregarServicioPruebaCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(UpdateServicioPruebaCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -43,20 +43,23 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
-        private async Task<Guid> HandleAsync(AgregarServicioPruebaCommand request)
+        private async Task<Guid> HandleAsync(UpdateServicioPruebaCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
             {
                 _logger.LogInformation("AgregarServicioPruebaCommandHandler.HandleAsync {Request}" , request);
-                var entity = ServicioMapper.MapRequestEntity(request._request,_dbContext);
+                var entity = ServicioMapper.MapRequestUpdateEntity(request._request,_dbContext);
                 ServicioValidator ServicioValidator = new ServicioValidator();
                 ValidationResult result = await ServicioValidator.ValidateAsync(entity);
                 if (!result.IsValid)
                 {
                     throw new ValidationException(result.Errors);
                 }
-                _dbContext.Servicio.Add(entity);
+
+                _dbContext.Servicio.Update(entity);
+                _dbContext.DbContext.SaveChanges();
+
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();

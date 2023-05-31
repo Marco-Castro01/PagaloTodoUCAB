@@ -25,9 +25,4 @@
     <ProjectReference Include="..\UCABPagaloTodoMS.Infrastructure\UCABPagaloTodoMS.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Handlers\Commands\Delete\" />
-    <Folder Include="Handlers\Commands\Path\" />
-  </ItemGroup>
-
 </Project>

@@ -53,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("AgregarPagoPruebaCommandHandler.HandleAsync {Request}" , request);
                 var entity = PagoMapper.MapRequestEntity(request._request,_dbContext);
                 PagoValidator pagoValidator = new PagoValidator();
-                ValidationResult result = pagoValidator.Validate(entity);
+                ValidationResult result = await pagoValidator.ValidateAsync(entity);
                 if (!result.IsValid)
                 {
                     throw new ValidationException(result.Errors);
