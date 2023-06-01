@@ -5,7 +5,10 @@ using Moq;
 using UCABPagaloTodoMS.Infrastructure.Database;
 using UCABPagaloTodoMS.Core.Entities;
 using UCABPagaloTodoMS.Infrastructure.Migrations;
-
+using Castle.Components.DictionaryAdapter;
+using Bogus.DataSets;
+using System.Text;
+using Microsoft.Data.SqlClient.Server;
 
 namespace UCABPagaloTodoMS.Tests.DataSeed
 {
@@ -20,7 +23,7 @@ namespace UCABPagaloTodoMS.Tests.DataSeed
     public static Mock<DbSet<ServicioEntity>> mockSetServicioEntity = new Mock<DbSet<ServicioEntity>>();
     public static Mock<DbSet<UsuarioEntity>> mockSetUsuarioEntity = new Mock<DbSet<UsuarioEntity>>();
     public static Mock<DbSet<ValoresEntity>> mockSetValoresEntity = new Mock<DbSet<ValoresEntity>>();
-
+        private static byte[] passwordHash;
 
         public static void SetupDbContextData(this Mock<IUCABPagaloTodoDbContext> mockContext)
         {
@@ -39,7 +42,7 @@ namespace UCABPagaloTodoMS.Tests.DataSeed
             {
                  new BaseEntity
                 {
-                   // Id = 1,
+                    Id = new Guid("75fe535f-e5bc-4457-be0e-3c12302266a5"),
                     CreatedBy = "Bismarck",
                     UpdatedAt = DateTime.Now,
                     
@@ -54,7 +57,7 @@ namespace UCABPagaloTodoMS.Tests.DataSeed
                 {
                     Nombre = "prueba",
                     Longitud = 2,
-                    //Servicio
+                    Servicio = new List<ServicioEntity> {}
                 },
 
 
@@ -67,17 +70,8 @@ namespace UCABPagaloTodoMS.Tests.DataSeed
                     name = "Prueba1",
                     lastName = "Arteaga",
                     cedula = "123456789",
+                    pago =  new List<PagoEntity> {}
 
-                },
-
-
-
-            };
-            var Pagos = new List<PagoEntity>
-            {
-                 new PagoEntity
-                {
-                    cedula = "123456789"
                 },
 
 
@@ -87,7 +81,8 @@ namespace UCABPagaloTodoMS.Tests.DataSeed
             {
                  new PrestadorServicioEntity
                 {
-                    cedula = "123456789"
+                    rif = "123456789",
+                    Servicio = new List<ServicioEntity> {},
                 },
 
 
@@ -97,34 +92,92 @@ namespace UCABPagaloTodoMS.Tests.DataSeed
             {
                  new ServicioEntity
                 {
-                    cedula = "123456789"
+                    name = "prueba",
+                    accountNumber = "1",
+                    Pago = new List<PagoEntity>{},
+                    CamposConciliacion = new List<CamposConciliacionEntity>{},
+                    PrestadorServicio = new PrestadorServicioEntity()
                 },
 
 
 
             };
-            var Usuario = new List<UsuarioEntity>
+
+
+
+            /*var Usuario = new List<UsuarioEntity>
             {
                  new UsuarioEntity
                 {
-                    cedula = "123456789"
+
+                  email = "bismarck@gmail.com",
+                  name = "bismarck",
+                  cedula = "123456789",
+                  status = true
+                },
+
+            };
+            */
+
+            var Pago = new List<PagoEntity>
+            {
+                 new PagoEntity
+                {
+                    valor = 1.2 , 
+                    servicio =  new ServicioEntity(),
+                    consumidor = new ConsumidorEntity(),
                 },
 
 
 
             };
+         
+         
             var Valores = new List<ValoresEntity>
             {
                  new ValoresEntity
                 {
-                    cedula = "123456789"
+                    Nombre = "Bismarck",
+                    Apellido = "Ponce",
+                    Identificacion = ""
                 },
 
 
 
             };
 
+            mockContext.Setup(x => x.Admin).Returns(mockSetAdminEntity.Object);
+            mockContext.Setup(c => c.Admin).Returns(Admin.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
+            mockContext.Setup(x => x.Base).Returns(mockSetBaseEntity.Object);
+            mockContext.Setup(c => c.Base).Returns(Base.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            mockContext.Setup(x => x.CamposConciliacion).Returns(mockSetCamposConciliacionEntity.Object);
+            mockContext.Setup(c => c.CamposConciliacion).Returns(CamposConciliacion.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            mockContext.Setup(x => x.Consumidor).Returns(mockSetConsumidorEntity.Object);
+            mockContext.Setup(c => c.Consumidor).Returns(Consumidor.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            mockContext.Setup(x => x.PrestadorServicio).Returns(mockSetPrestadorServicioEntity.Object);
+            mockContext.Setup(c => c.PrestadorServicio).Returns(Prestador.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            mockContext.Setup(x => x.Servicio).Returns(mockSetServicioEntity.Object);
+            mockContext.Setup(c => c.Servicio).Returns(Servicio.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            mockContext.Setup(x => x.Pago).Returns(mockSetSPagoEntity.Object);
+            mockContext.Setup(c => c.Pago).Returns(Pago.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            mockContext.Setup(x => x.Valores).Returns(mockSetValoresEntity.Object);
+            mockContext.Setup(c => c.Valores).Returns(Valores.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(c => c.SaveEfContextChanges("APP", It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
         }
     }
+}

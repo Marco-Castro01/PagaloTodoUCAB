@@ -8,7 +8,7 @@ using UCABPagaloTodoMS.Application.Handlers.Queries;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection.Metadata;
 using Xunit;
-
+using UCABPagaloTodoMS.Application.Requests;
 
 namespace UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Commands.AdminPrueba
 {
@@ -33,10 +33,11 @@ namespace UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Commands.AdminPru
         public async Task Handle_ReturnsExpectedGuid_WhenRequestIsValid()
         {
             // Arrange
-            var request = new AgregarAdminPruebaCommand { /* initialize properties */ };
+            var request = new AgregarAdminPruebaCommand(new AdminRequest());
             var expectedGuid = Guid.NewGuid();
-            
-public class AgregarAdminPruebaCommandHandlerTests
+        }
+
+        public class AgregarAdminPruebaCommandHandlerTests
         {
             private readonly Mock<IUCABPagaloTodoDbContext> _dbContextMock;
             private readonly Mock<ILogger<ConsultarAdminQueryHandler>> _loggerMock;
@@ -50,83 +51,33 @@ public class AgregarAdminPruebaCommandHandlerTests
             }
 
             [Fact]
-            public async Task Handle_ReturnsExpectedGuid_WhenRequestIsValid()
+            public async Task HandleAsync_RequestIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                var request = new AgregarAdminPruebaCommand { /* initialize properties */ };
-                var expectedGuid = Guid.NewGuid();
-                
-public class AgregarAdminPruebaCommandHandlerTests
-            {
-                private readonly Mock<IUCABPagaloTodoDbContext> _dbContextMock;
-                private readonly Mock<ILogger<AgregarAdminPruebaCommandHandler>> _loggerMock;
-                private readonly AgregarAdminPruebaCommandHandler _agregarAdminPruebaCommandHandler;
+                var handler = new AgregarAdminPruebaCommandHandler();
+                var request = new AgregarAdminPruebaCommand(null);
 
-                public AgregarAdminPruebaCommandHandlerTests()
-                {
-                    _dbContextMock = new Mock<IUCABPagaloTodoDbContext>();
-                    _loggerMock = new Mock<ILogger<AgregarAdminPruebaCommandHandler>>();
-                    _agregarAdminPruebaCommandHandler = new AgregarAdminPruebaCommandHandler(_dbContextMock.Object, _loggerMock.Object);
-                }
-
-                [Fact]
-                public async Task Handle_ReturnsExpectedGuid_WhenRequestIsValid()
-                {
-                    // Arrange
-                    var request = new AgregarAdminPruebaCommand { /* initialize properties */ };
-                    var expectedGuid = Guid.NewGuid();
-                    _dbContextMock
-                        .Setup(m => m.BeginTransaction())
-                        .Returns(new Mock<IDbContextTransaction>().Object);
-                    _dbContextMock
-                        .Setup(m => m.Admin.Add(It.IsAny<Admin>()))
-                        .Callback<Admin>(e =>
-                        {
-                            e.IdSigo 
-            
-                    _dbContextMock
-                        .Setup(m => m.BeginTransaction())
-                        .Returns(new Mock<IDbContextTransaction>().Object);
-                            _dbContextMock
-                    .Setup(m => m.Admin.Add(It.IsAny<Admin>()))
-                    .Callback<Admin>(e =>
-                        {
-                            e.Id = expectedGuid;
-                        });
-                            _dbContextMock
-                    .Setup(m => m.SaveEfContextChanges("APP"))
-                    .Returns(Task.CompletedTask);
-
-                            // Act
-                            var actualGuid = await _agregarAdminPruebaCommandHandler.Handle(request, CancellationToken.None);
-
-                            // Assert
-                            Assert.Equal(expectedGuid, actualGuid);
-                        }
-
-                    [Fact]
-                public async Task Handle_ThrowsException_WhenDbContextThrowsException()
-                    {
-                        // Arrange
-                        var request = new AgregarAdminPruebaCommand { /* initialize properties */ };
-                        _dbContextMock
-                            .Setup(m => m.BeginTransaction())
-                            .Returns(new Mock<IDbContextTransaction>().Object);
-                        _dbContextMock
-                            .Setup(m => m.Admin.Add(It.IsAny<Admin>()))
-                            .ThrowsException();
-                        _dbContextMock
-                            .Setup(m => m.SaveEfContextChanges("APP"))
-                            .Returns(Task.CompletedTask);
-
-                        // Act and Assert
-                        await Assert.ThrowsAsync<Exception>(() => _agregarAdminPruebaCommandHandler.Handle(request, CancellationToken.None));
-                    }
-                }
-
-
+                // Act & Assert
+                await Assert.ThrowsAsync<ArgumentNullException>(() => handler.Handle(request, CancellationToken.None));
             }
 
+            [Fact]
+            public async Task HandleAsync_RequestIsNotNull_ReturnsGuid()
+            {
+                // Arrange
+                var handlerMock = new Mock<AgregarAdminPruebaCommandHandler>() { CallBase = true };
+                var request = new AgregarAdminPruebaCommand(new AgregarAdminPruebaRequest());
 
-}
+                // Mock the HandleAsync method to return a Guid
+                var guid = Guid.NewGuid();
+                handlerMock.Setup(x => x.HandleAsync(request)).ReturnsAsync(guid);
+
+                // Act
+                var result = await handlerMock.Object.Handle(request, CancellationToken.None);
+
+                // Assert
+                Assert.Equal(guid, result);
+            }
+        }
     }
+}

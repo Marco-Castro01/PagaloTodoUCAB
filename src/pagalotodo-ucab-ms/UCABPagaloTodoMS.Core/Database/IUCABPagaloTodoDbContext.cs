@@ -19,6 +19,7 @@ namespace UCABPagaloTodoMS.Core.Database
         {
             get;
         }
+        object Base { get; }
 
         IDbContextTransactionProxy BeginTransaction();
 
