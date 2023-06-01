@@ -68,7 +68,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
-                _logger.LogInformation("AgregarPagoDirectoCommandHandler.HandleAsync {Response}", id);
+                _logger.LogInformation("AgregarPagoPorValidacionCommandHandler.HandleAsync {Response}", id);
                 return id;
             }
             catch (Exception ex)
