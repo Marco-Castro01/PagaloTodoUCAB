@@ -29,5 +29,6 @@ namespace UCABPagaloTodoMS.Application.Mappers
             };
             return entity;
         }
+        
     }
 }

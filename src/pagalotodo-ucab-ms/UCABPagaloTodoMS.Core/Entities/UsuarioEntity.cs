@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace UCABPagaloTodoMS.Core.Entities;
-[Index(nameof(name), IsUnique = true)]
+[Index(nameof(email), IsUnique = true)]
 [Index(nameof(cedula), IsUnique = true)]
 [Index(nameof(nickName), IsUnique = true)]
 public abstract class UsuarioEntity : BaseEntity
@@ -21,5 +21,6 @@ public abstract class UsuarioEntity : BaseEntity
     public string nickName { get; set; }
     public bool status { get; set; }
     public string? Discriminator;
+    
 
 }

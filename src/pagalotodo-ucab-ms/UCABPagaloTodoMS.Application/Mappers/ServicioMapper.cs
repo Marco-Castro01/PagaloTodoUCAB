@@ -32,5 +32,26 @@ namespace UCABPagaloTodoMS.Application.Mappers
             };
             return entity;
         }
+        public static ServicioEntity MapRequestUpdateEntity(UpdateServicioRequest request, IUCABPagaloTodoDbContext DbContext)
+        {
+            
+            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio).FirstOrDefault();
+            entity.name = request.name;
+            entity.accountNumber = request.accountNumber;
+            entity.tipoServicio = request.tipoServicio;
+            entity.statusServicio = request.statusServicio;
+            entity.UpdatedAt=DateTime.Now;
+            entity.UpdatedBy = "APP";
+            
+            return entity;
+        }
+        public static ServicioEntity MapRequestDeleteEntity(DeleteServicioRequest request, IUCABPagaloTodoDbContext DbContext)
+        {
+            
+            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio).FirstOrDefault();
+            entity.deleted = request.delete;
+            
+            return entity;
+        }
     }
 }
