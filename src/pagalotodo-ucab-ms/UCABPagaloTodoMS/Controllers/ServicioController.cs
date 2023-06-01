@@ -21,7 +21,7 @@ namespace UCABPagaloTodoMS.Controllers
         }
 
         /// <summary>
-        ///     Endpoint para la consulta de Pago
+        ///     Endpoint para la consulta de pagoDirecto
         /// </summary>
         /// <remarks>
         ///     ## Description

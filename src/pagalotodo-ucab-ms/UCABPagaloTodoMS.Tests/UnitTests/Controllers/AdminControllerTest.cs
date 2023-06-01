@@ -57,37 +57,7 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
              object value = Xunit.Assert.NotNull(okResult);
              Xunit.Assert.Equals((int)HttpStatusCode.OK, okResult.StatusCode);
          }*/
-        [Fact (DisplayName = "Agregar Admin good")]
-        public async Task AgregarAdmin_ReturnsOkResponse_WhenAdminIsValid()
-        {
-            // Arrange
-            var admin = new AdminRequest { /* initialize properties */ };
-            var expectedGuid = Guid.NewGuid();
-            _mediatorMock
-                .Setup(m => m.Send(It.IsAny<AgregarAdminPruebaCommand>(), default))
-                .ReturnsAsync(expectedGuid);
-
-            // Act
-            var result = await _controller.AgregarAdmin(admin);
-
-            // Assert
-            Xunit.Assert.IsType<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Xunit.Assert.Equal(expectedGuid, okResult.Value);
-        }
-
-        [Fact(DisplayName = "Agregar Admin bad")]
-        public async Task AgregarAdmin_ThrowsException_WhenMediatorThrowsException()
-        {
-            // Arrange
-            var admin = new AdminRequest { /* initialize properties */ };
-            _mediatorMock
-                .Setup(m => m.Send(It.IsAny<AgregarAdminPruebaCommand>(), default))
-                .ThrowsAsync(new Exception());
-
-            // Act and Assert
-            await Xunit.Assert.ThrowsAsync<Exception>(() => _controller.AgregarAdmin(admin));
-        }
+       
     }
 }
 

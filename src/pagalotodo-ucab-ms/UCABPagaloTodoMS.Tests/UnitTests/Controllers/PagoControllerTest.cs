@@ -42,14 +42,14 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
 
 
 
-        [Fact(DisplayName = "Pago good")]
+        [Fact(DisplayName = "pagoDirecto good")]
         public async Task AgregarPago_ReturnsOkResponse_WhenPagoIsValid()
         {
             // Arrange
-            var pago = new PagoRequest { /* initialize properties */ };
+            var pago = new PagoDirectoRequest { /* initialize properties */ };
             var expectedGuid = Guid.NewGuid();
             _mediatorMock
-                .Setup(m => m.Send(It.IsAny<AgregarPagoPruebaCommand>(), default))
+                .Setup(m => m.Send(It.IsAny<AgregarPagoDirectoCommand>(), default))
                 .ReturnsAsync(expectedGuid);
 
             // Act
@@ -61,13 +61,13 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
             Xunit.Assert.Equal(expectedGuid, okResult.Value);
         }
 
-        [Fact(DisplayName = "Pago Bad")]
+        [Fact(DisplayName = "pagoDirecto Bad")]
         public async Task AgregarPago_ThrowsException_WhenMediatorThrowsException()
         {
             // Arrange
-            var pago = new PagoRequest { /* initialize properties */ };
+            var pago = new PagoDirectoRequest { /* initialize properties */ };
             _mediatorMock
-                .Setup(m => m.Send(It.IsAny<AgregarPagoPruebaCommand>(), default))
+                .Setup(m => m.Send(It.IsAny<AgregarPagoDirectoCommand>(), default))
                 .ThrowsAsync(new Exception());
 
             // Act and Assert

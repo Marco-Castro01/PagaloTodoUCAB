@@ -4,11 +4,11 @@ using UCABPagaloTodoMS.Application.Responses;
 
 namespace UCABPagaloTodoMS.Application.Commands
 {
-    public class AgregarPagoPruebaCommand : IRequest<Guid>
+    public class UpdateDeudaStatusCommand : IRequest<Guid>
     {
-        public PagoRequest _request { get; set; }
+        public UpdateDeudaStatusRequest _request { get; set; }
 
-        public AgregarPagoPruebaCommand(PagoRequest request)
+        public UpdateDeudaStatusCommand(UpdateDeudaStatusRequest request)
         {
             _request = request;
         }
