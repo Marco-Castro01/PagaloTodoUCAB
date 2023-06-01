@@ -53,10 +53,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             var transaccion = _dbContext.BeginTransaction();
             try
             {
-                _logger.LogInformation("AgregarPagoDirectoCommandHandler.HandleAsync {Request}" , request);
+                _logger.LogInformation("AgregarPagoPorValidacionCommandHandler.HandleAsync {Request}" , request);
                 var entity = PagoMapper.MapRequestPorValidacionEntity(request.Request,_dbContext);
-                PagoDirectoValidator pagoDirectoValidator = new PagoDirectoValidator();
-                ValidationResult result = await pagoDirectoValidator.ValidateAsync(entity);
+                PagoPorValidacionValidator pagoPorValidacionValidator = new PagoPorValidacionValidator();
+                ValidationResult result = await pagoPorValidacionValidator.ValidateAsync(entity);
                 if (!result.IsValid)
                 {
                     throw new ValidationException(result.Errors);
@@ -64,14 +64,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 
                 _dbContext.Pago.Add(entity);
-                var query = new UpdateDeudaStatusCommand(new UpdateDeudaStatusRequest()
-                {
-                    
-                    idDeuda = request.Request.IdDeuda,
-                    deudaStatus = true
-                    
-                });
-                var resp = await _mediator.Send(query);
 
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
