@@ -4,11 +4,11 @@ using UCABPagaloTodoMS.Core.Entities;
 
 public class ConsultarDeudaQuery : IRequest<List<DeudaResponse>>
 {
-    public Guid IdDeuda { get; set; }
+    public string Identificador { get; set; }
 
-    public ConsultarDeudaQuery(Guid idDeuda)
+    public ConsultarDeudaQuery(string identificador)
     {
-        IdDeuda= idDeuda;
+        Identificador= identificador;
     }
 
 }

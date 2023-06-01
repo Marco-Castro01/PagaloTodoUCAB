@@ -11,7 +11,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
     public class ConsultarDeudaQueryHandler : IRequestHandler<ConsultarDeudaQuery, List<DeudaResponse>>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<ConsultarPagoPorServicioQueryHandler> _logger;
+        private readonly ILogger<ConsultarDeudaQueryHandler> _logger;
 
         public ConsultarDeudaQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarDeudaQueryHandler> logger)
         {
@@ -46,11 +46,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
                 
-                var result = _dbContext.Deuda.Where(c => c.Id==request.IdDeuda).Select(c => new DeudaResponse()
+                var result = _dbContext.Deuda.Where(c => c.identificador== request.Identificador && c.deudaStatus ==false)
+                    .Select(c => new DeudaResponse()
                 {
-                   identificador = request.
-                   
-                    
+                    idDeuda = c.Id,
+                   identificador = request.Identificador,
+                   servicioId = c.servicio.Id,
+                   servicioName = c.servicio.name,
+                   deuda = c.deuda
+
+
 
                 });
 

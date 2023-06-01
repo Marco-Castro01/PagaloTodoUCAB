@@ -165,8 +165,7 @@ namespace UCABPagaloTodoMS.Controllers
         //-----------------------------------------------------------------------
 
        
-       
-        
+    
         /// <summary>
         ///     Endpoint que registra un pagoDirecto.
         /// </summary>
@@ -174,13 +173,13 @@ namespace UCABPagaloTodoMS.Controllers
         ///     ## Description
         ///     ### Post registra Pagos
         ///     ## Url
-        ///     POST /PrestadorServicio/PrestadorServicio
+        ///     POST /pago/pagoPorValidacion
         /// </remarks>
         /// <response code="200">
         ///     Accepted:
         ///     - Operation successful.
         /// </response>
-        /// <returns>Retorna el id del nuevo registro.</returns>
+        /// <returns>Retorna mensaje de confirmacion o de error.</returns>
         [HttpPost("pagoPorValidacion")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

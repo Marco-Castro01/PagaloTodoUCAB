@@ -6,6 +6,7 @@ using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
+using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Validators;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Infrastructure.Database;
@@ -18,6 +19,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<AgregarPagoPorValidacionCommandHandler> _logger;
+        private readonly IMediator _mediator;
+
 
         public AgregarPagoPorValidacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<AgregarPagoPorValidacionCommandHandler> logger)
         {
@@ -61,7 +64,15 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 
                 _dbContext.Pago.Add(entity);
-               
+                var query = new UpdateDeudaStatusCommand(new UpdateDeudaStatusRequest()
+                {
+                    
+                    idDeuda = request.Request.IdDeuda,
+                    deudaStatus = true
+                    
+                });
+                var resp = await _mediator.Send(query);
+
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
