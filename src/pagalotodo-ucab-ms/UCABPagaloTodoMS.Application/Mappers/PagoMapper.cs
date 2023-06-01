@@ -2,6 +2,7 @@
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
+using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Application.Mappers
 {
@@ -18,14 +19,29 @@ namespace UCABPagaloTodoMS.Application.Mappers
             return response;    
         }
 
-        public static PagoEntity MapRequestEntity(PagoRequest request, IUCABPagaloTodoDbContext DbContext)
+        public static PagoEntity MapRequestDirectoEntity(PagoDirectoRequest directoRequest, IUCABPagaloTodoDbContext DbContext)
         {
+            
             var entity = new PagoEntity()
             {
-                valor = request.Valor,
-                consumidor = DbContext.Consumidor.Find(request.ConsumidorId),
-                servicio = DbContext.Servicio.Find(request.ServicioId)
-               
+                valor = directoRequest.Valor,
+                consumidor = DbContext.Consumidor.Find(directoRequest.ConsumidorId),
+                servicio = DbContext.Servicio.Find(directoRequest.ServicioId),
+                
+
+            };
+            return entity;
+        }
+        public static PagoEntity MapRequestPorValidacionEntity(PagoPorValidacionRequest Request, IUCABPagaloTodoDbContext DbContext)
+        {
+            
+            var entity = new PagoEntity()
+            {
+                valor = DbContext.Deuda.Find(Request.IdDeuda)?.deuda,
+                consumidor = DbContext.Consumidor.Find(Request.ConsumidorId),
+                servicio = DbContext.Servicio.Find(Request.ServicioId),
+                
+
             };
             return entity;
         }

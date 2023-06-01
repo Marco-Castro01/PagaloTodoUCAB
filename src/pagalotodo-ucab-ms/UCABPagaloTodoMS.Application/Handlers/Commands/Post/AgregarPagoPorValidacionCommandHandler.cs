@@ -14,24 +14,24 @@ using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
-    public class AgregarPagoPruebaCommandHandler : IRequestHandler<AgregarPagoPruebaCommand, Guid>
+    public class AgregarPagoPorValidacionCommandHandler : IRequestHandler<AgregarPagoPorValidacionCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<AgregarPagoPruebaCommandHandler> _logger;
+        private readonly ILogger<AgregarPagoPorValidacionCommandHandler> _logger;
 
-        public AgregarPagoPruebaCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<AgregarPagoPruebaCommandHandler> logger)
+        public AgregarPagoPorValidacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<AgregarPagoPorValidacionCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public async Task<Guid> Handle(AgregarPagoPruebaCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(AgregarPagoPorValidacionCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                if (request._request == null)
+                if (request.Request == null)
                 {
-                    _logger.LogWarning("AgregarPagoPruebaCommandHandler.Handle: Request nulo.");
+                    _logger.LogWarning("AgregarPagoDirectoCommandHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
                 else
@@ -45,29 +45,32 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
-        private async Task<Guid> HandleAsync(AgregarPagoPruebaCommand request)
+        private async Task<Guid> HandleAsync(AgregarPagoPorValidacionCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
             {
-                _logger.LogInformation("AgregarPagoPruebaCommandHandler.HandleAsync {Request}" , request);
-                var entity = PagoMapper.MapRequestEntity(request._request,_dbContext);
-                PagoValidator pagoValidator = new PagoValidator();
-                ValidationResult result = await pagoValidator.ValidateAsync(entity);
+                _logger.LogInformation("AgregarPagoDirectoCommandHandler.HandleAsync {Request}" , request);
+                var entity = PagoMapper.MapRequestPorValidacionEntity(request.Request,_dbContext);
+                PagoDirectoValidator pagoDirectoValidator = new PagoDirectoValidator();
+                ValidationResult result = await pagoDirectoValidator.ValidateAsync(entity);
                 if (!result.IsValid)
                 {
                     throw new ValidationException(result.Errors);
                 }
+
+                
                 _dbContext.Pago.Add(entity);
+               
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
-                _logger.LogInformation("AgregarPagoPruebaCommandHandler.HandleAsync {Response}", id);
+                _logger.LogInformation("AgregarPagoDirectoCommandHandler.HandleAsync {Response}", id);
                 return id;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error AgregarPagoPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                _logger.LogError(ex, "Error AgregarPagoDirectoCommandHandlerAgregarPagoCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
                 throw new CustomException(ex.Message);
             }

@@ -33,6 +33,8 @@ public class UCABPagaloTodoDbContext : DbContext, IUCABPagaloTodoDbContext
         }
     }
 
+    public object Base { get; }
+
     public IDbContextTransactionProxy BeginTransaction()
     {
         return new DbContextTransactionProxy(this);

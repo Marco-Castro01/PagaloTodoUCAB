@@ -20,7 +20,7 @@ namespace UCABPagaloTodoMS.Controllers
         }
 
         /// <summary>
-        ///     Endpoint para la consulta de Pago
+        ///     Endpoint para la consulta de pagoDirecto
         /// </summary>
         /// <remarks>
         ///     ## Description
@@ -48,13 +48,13 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los Pagos. Exception: " + ex);
-                throw;
+                return BadRequest("Error en la consulta");
             }
         }
 
         //-------------------------------------------------------
         /// <summary>
-        ///     Endpoint para la consulta de Pago
+        ///     Endpoint para la consulta de pagoDirecto
         /// </summary>
         /// <remarks>
         ///     ## Description
@@ -82,13 +82,13 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los Pagos. Exception: " + ex);
-                throw;
+                return BadRequest("Error en la consulta");
             }
         }
 
         //-----------------------------------------------------------------------
         /// <summary>
-        ///     Endpoint para la consulta de Pago
+        ///     Endpoint para la consulta de pagoDirecto
         /// </summary>
         /// <remarks>
         ///     ## Description
@@ -116,7 +116,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los Pagos. Exception: " + ex);
-                throw;
+                return BadRequest("Error en la consulta");
             }
         }
 
@@ -126,7 +126,49 @@ namespace UCABPagaloTodoMS.Controllers
        
         
         /// <summary>
-        ///     Endpoint que registra un Pago.
+        ///     Endpoint que registra un pagoDirecto.
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Post registra Pagos
+        ///     ## Url
+        ///     POST /pago/pagoDirecto
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna mensaje de confirmacion o de error.</returns>
+        [HttpPost("pagoDirecto")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Guid>> AgregarPagoDirecto(PagoDirectoRequest pagoDirecto)
+        {
+            _logger.LogInformation("Entrando al método que registra los Admins");
+            try
+            {
+                var query = new AgregarPagoDirectoCommand(pagoDirecto);
+                var response = await _mediator.Send(query);
+                return Ok("Pago Exitoso");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un pago. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        
+        
+        
+        
+        //-----------------------------------------------------------------------
+
+       
+       
+        
+        /// <summary>
+        ///     Endpoint que registra un pagoDirecto.
         /// </summary>
         /// <remarks>
         ///     ## Description
@@ -139,17 +181,17 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna el id del nuevo registro.</returns>
-        [HttpPost("pago")]
+        [HttpPost("pagoPorValidacion")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> AgregarPago(PagoRequest Pago)
+        public async Task<ActionResult<Guid>> AgregarPagoPorValidacion(PagoPorValidacionRequest pagoPorValidacion)
         {
             _logger.LogInformation("Entrando al método que registra los Admins");
             try
             {
-                var query = new AgregarPagoPruebaCommand(Pago);
+                var query = new AgregarPagoPorValidacionCommand(pagoPorValidacion);
                 var response = await _mediator.Send(query);
-                return Ok(response);
+                return Ok("Pago exitoso");
             }
             catch (Exception ex)
             {

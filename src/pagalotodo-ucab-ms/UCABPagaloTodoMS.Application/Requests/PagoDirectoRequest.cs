@@ -2,7 +2,7 @@
 
 namespace UCABPagaloTodoMS.Application.Requests
 {
-    public class PagoRequest
+    public class PagoDirectoRequest
     {
         public double? Valor { get; set; }
         public Guid ServicioId { get; set; }
