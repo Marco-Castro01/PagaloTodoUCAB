@@ -13,6 +13,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Controllers;
@@ -20,46 +21,55 @@ using Xunit;
 
 namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
 {
-    public class AdminControllerTest
+
+
+public class AdminsControllerTests
+{
+    private readonly Mock<IMediator> _mediatorMock;
+    private readonly Mock<ILogger<AdminController>> _loggerMock;
+    private readonly AdminController _controller;
+
+    public AdminsControllerTests()
     {
-        private readonly AdminController _controller;
-        private readonly Mock<IMediator> _mediatorMock;
-        private readonly Mock<ILogger<AdminController>> _loggerMock;
+        _loggerMock = new Mock<ILogger<AdminController>>();
+        _mediatorMock = new Mock<IMediator>();
+        _controller = new AdminController(_loggerMock.Object, _mediatorMock.Object);
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext();
+        _controller.ControllerContext.ActionDescriptor = new ControllerActionDescriptor();
+    }
 
-
-        public AdminControllerTest()
+    [Fact(DisplayName = "prueba unitaria 1 de admin good")]
+    public async Task ConsultaAdmins_ReturnsOkResult()
+    {
+        // Arrange
+        var response = new List<AdminResponse>()
         {
-            _loggerMock = new Mock<ILogger<AdminController>>();
-            _mediatorMock = new Mock<IMediator>();
-            _controller = new AdminController(_loggerMock.Object, _mediatorMock.Object);
-            _controller.ControllerContext = new ControllerContext();
-            _controller.ControllerContext.HttpContext = new DefaultHttpContext();
-            _controller.ControllerContext.ActionDescriptor = new ControllerActionDescriptor();
+            new AdminResponse() { cedula = "123456789", nickName = "admin1",  email = "admin1@example.com", status = false, password = "123456789"  },
+            new AdminResponse() {  cedula = "87654321", nickName = "admin2",  email = "admin2@example.com", status = true , password = "123456789"},
+        };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<ConsultarAdminPruebaQuery>(), default)).ReturnsAsync(response);
 
-        }
+        // Act
+        var result = await _controller.ConsultaAdmins();
 
+        // Assert
+        var okResult = Xunit.Assert.IsType<OkObjectResult>(result.Result);
+        var model = Xunit.Assert.IsAssignableFrom<List<AdminResponse>>(okResult.Value);
+        Xunit.Assert.Equal(response.Count, model.Count);
+    }
 
-        /* [Fact(DisplayName = " Agregar Admin Prueba 1")]
-         public async Task AgregarAdminPrueba()
-         {
-             var usuario = new AdminRequest
-             {
-                 cedula = "123456"
-             };
+    [Fact(DisplayName = "prueba unitaria 1 de admin bad")]
+    public async Task ConsultaAdmins_ReturnsBadRequestResult()
+    {
+        // Arrange
+        _mediatorMock.Setup(m => m.Send(It.IsAny<ConsultarAdminPruebaQuery>(), default)).ThrowsAsync(new Exception());
 
-             _mediatorMock.Setup(x => x.Send(It.IsAny<AgregarAdminPruebaCommand>(), It.IsAny<CancellationToken>()))
-                 .Returns(Task.FromResult<Guid>(new Guid()));
+        // Act
+        var result = await _controller.ConsultaAdmins();
 
-             var result = await _controller.AgregarAdmin(usuario);
-
-             Xunit.Assert.IsType<OkObjectResult>(result);
-             var okResult = result as OkObjectResult;
-             object value = Xunit.Assert.NotNull(okResult);
-             Xunit.Assert.Equals((int)HttpStatusCode.OK, okResult.StatusCode);
-         }*/
-       
+        // Assert
+        Xunit.Assert.IsType<BadRequestResult>(result.Result);
     }
 }
-
-
-
+}

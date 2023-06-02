@@ -46,7 +46,7 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
             public async Task AgregarCamposConciliacion_ReturnsOkResponse_WhenCamposConciliacionIsValid()
             {
                 // Arrange
-                var camposConciliacion = new CamposConciliacionRequest { /* initialize properties */ };
+                var camposConciliacion = new CamposConciliacionRequest { };
                 var expectedGuid = Guid.NewGuid();
                 _mediatorMock
                     .Setup(m => m.Send(It.IsAny<AgregarCamposConciliacionPruebaCommand>(), default))
@@ -65,7 +65,7 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
             public async Task AgregarCamposConciliacion_ThrowsException_WhenMediatorThrowsException()
             {
                 // Arrange
-                var camposConciliacion = new CamposConciliacionRequest { /* initialize properties */ };
+                var camposConciliacion = new CamposConciliacionRequest { };
                 _mediatorMock
                     .Setup(m => m.Send(It.IsAny<AgregarCamposConciliacionPruebaCommand>(), default))
                     .ThrowsAsync(new Exception());

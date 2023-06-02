@@ -105,20 +105,7 @@ namespace UCABPagaloTodoMS.Tests.DataSeed
 
 
 
-            /*var Usuario = new List<UsuarioEntity>
-            {
-                 new UsuarioEntity
-                {
-
-                  email = "bismarck@gmail.com",
-                  name = "bismarck",
-                  cedula = "123456789",
-                  status = true
-                },
-
-            };
-            */
-
+              
             var Pago = new List<PagoEntity>
             {
                  new PagoEntity

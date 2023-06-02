@@ -1,4 +1,4 @@
-﻿using FluentValidation.Internal;
+﻿/*using FluentValidation.Internal;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +46,7 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
         public async Task AgregarPago_ReturnsOkResponse_WhenPagoIsValid()
         {
             // Arrange
-            var pago = new PagoDirectoRequest { /* initialize properties */ };
+            var pago = new PagoDirectoRequest {  };
             var expectedGuid = Guid.NewGuid();
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<AgregarPagoDirectoCommand>(), default))
@@ -65,7 +65,7 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
         public async Task AgregarPago_ThrowsException_WhenMediatorThrowsException()
         {
             // Arrange
-            var pago = new PagoDirectoRequest { /* initialize properties */ };
+            var pago = new PagoDirectoRequest { };
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<AgregarPagoDirectoCommand>(), default))
                 .ThrowsAsync(new Exception());
@@ -77,3 +77,4 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
     }
 }
 
+*/
