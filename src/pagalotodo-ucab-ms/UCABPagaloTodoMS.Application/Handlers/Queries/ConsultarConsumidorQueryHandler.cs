@@ -46,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarConsumidorQueryHandler.HandleAsync");
 
+                // Consulta los registros de la tabla Consumidor y los mapea a objetos ConsumidorResponse
                 var result = _dbContext.Consumidor.Select(c => new ConsumidorResponse()
                 {
                     Id = c.Id,
@@ -55,6 +56,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     email = c.email,
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)

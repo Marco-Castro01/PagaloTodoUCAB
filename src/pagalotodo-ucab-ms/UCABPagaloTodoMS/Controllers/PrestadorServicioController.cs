@@ -38,7 +38,7 @@ namespace UCABPagaloTodoMS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<PrestadorServicioResponse>>> ConsultaPrestadorServicio()
         {
-            _logger.LogInformation("Entrando al método que consulta los admins");
+            _logger.LogInformation("Entrando al método que consulta los Prestadores de Servicios");
             try
             {
                 var query = new ConsultarPrestadorServicioPruebaQuery();

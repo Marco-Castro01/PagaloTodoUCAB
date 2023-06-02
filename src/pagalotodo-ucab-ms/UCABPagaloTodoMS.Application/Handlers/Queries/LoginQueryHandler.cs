@@ -26,7 +26,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<ConsultarValoresQueryHandler> _logger;
 
-        public LoginQueryHandler(IConfiguration configuration,  IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarValoresQueryHandler> logger)
+        public LoginQueryHandler(IConfiguration configuration, IUCABPagaloTodoDbContext dbContext, ILogger<ConsultarValoresQueryHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -59,31 +59,33 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             try
             {
                 _logger.LogInformation("LoginQuery.HandleAsync");
+
+                // Buscar el usuario en la base de datos por su correo electrónico
                 var usuariocreated = _dbContext.Usuarios.Where(c => c.email == usuario._request.email).FirstOrDefault();
                 if (usuariocreated == null)
                 {
-                    _logger.LogWarning("Ha ocurrido un error el Usuario no existe");
+                    _logger.LogWarning("Ha ocurrido un error: el Usuario no existe");
                     throw new ArgumentNullException(nameof(usuariocreated));
                 }
+
+                // Verificar la contraseña del usuario
                 if (!VerifyPasswordHash(usuario._request.Password!, usuariocreated.passwordHash, usuariocreated.passwordSalt))
                 {
-
-                    _logger.LogWarning("Ha ocurrido un error Contrasena incorrecta");
+                    _logger.LogWarning("Ha ocurrido un error: Contraseña incorrecta");
                     throw new ArgumentNullException(nameof(usuariocreated));
                 }
             
+                // Obtener los datos del usuario para generar el token
                 var result = _dbContext.Usuarios.Where(u => u.email == usuario._request.email)
-                .Select(a => new UsuariosAllResponse
-                {
-                    Id = a.Id,
-                    Discriminator = a.Discriminator,
-                    email = a.email,
-                    name = a.name, 
-                    nickName = a.nickName,
-                    status = a.status
-
-                }
-                    ).First();
+                    .Select(a => new UsuariosAllResponse
+                    {
+                        Id = a.Id,
+                        Discriminator = a.Discriminator,
+                        email = a.email,
+                        name = a.name, 
+                        nickName = a.nickName,
+                        status = a.status
+                    }).First();
 
                 return Generate(result);
             }
@@ -93,14 +95,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 throw new CustomException(ex.Message);
             }
         }
+
         public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-                         using (var hash = new HMACSHA512(passwordSalt))
-                {
-                    var ComputedHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                    return ComputedHash.SequenceEqual(passwordHash);
-                }
-  
+            using (var hash = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
         }
 
         private string Generate(UsuariosAllResponse user)
@@ -108,7 +110,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            // Crear los claims
+            // Crear los claims (información del usuario)
             var claims = new[]
             {
                 new Claim("Id", user.Id.ToString()),
@@ -118,9 +120,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 new Claim(ClaimTypes.Role, user.Discriminator),
             };
 
-
-            // Crear el token
-
+            // Crear el token JWT
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
@@ -130,13 +130,5 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
-
     }
 }
-
-
-
-      
-

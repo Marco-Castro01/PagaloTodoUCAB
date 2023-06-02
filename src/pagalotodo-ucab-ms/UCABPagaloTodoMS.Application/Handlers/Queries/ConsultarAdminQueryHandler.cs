@@ -46,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarAdminQueryHandler.HandleAsync");
 
+                // Consulta los registros de la tabla Admin y los mapea a objetos AdminResponse
                 var result = _dbContext.Admin.Select(c => new AdminResponse()
                 {
                     Id = c.Id,
@@ -55,6 +56,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     email = c.email,
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)

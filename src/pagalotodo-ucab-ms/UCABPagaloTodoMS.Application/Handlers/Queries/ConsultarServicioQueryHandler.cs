@@ -46,16 +46,17 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarServicioQueryHandler.HandleAsync");
 
-                var result = _dbContext.Servicio.Where(c=>c.deleted==false).Select(c => new ServicioResponse()
+                // Consulta todos los registros de la tabla Servicio donde deleted es falso
+                var result = _dbContext.Servicio.Where(c => c.deleted == false).Select(c => new ServicioResponse()
                 {
                     Id = c.Id,
                     name = c.name,
                     accountNumber = c.accountNumber,
                     prestadorServicioId = c.PrestadorServicio.Id,
                     prestadorServicioName = c.PrestadorServicio.name
-                   
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)

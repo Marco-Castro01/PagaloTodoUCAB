@@ -14,17 +14,31 @@ using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
+    /// <summary>
+    /// Clase que maneja el comando para agregar un pago directo.
+    /// </summary>
     public class AgregarPagoDirectoCommandHandler : IRequestHandler<AgregarPagoDirectoCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<AgregarPagoDirectoCommandHandler> _logger;
 
+        /// <summary>
+        /// Constructor de la clase AgregarPagoDirectoCommandHandler.
+        /// </summary>
+        /// <param name="dbContext">Contexto de base de datos</param>
+        /// <param name="logger">Instancia de ILogger</param>
         public AgregarPagoDirectoCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<AgregarPagoDirectoCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Maneja el comando para agregar un pago directo.
+        /// </summary>
+        /// <param name="request">Comando para agregar un pago directo</param>
+        /// <param name="cancellationToken">Token de cancelación</param>
+        /// <returns>Identificador del pago directo agregado</returns>
         public async Task<Guid> Handle(AgregarPagoDirectoCommand request, CancellationToken cancellationToken)
         {
             try
@@ -45,6 +59,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
+        /// <summary>
+        /// Maneja asincrónicamente el comando para agregar un pago directo.
+        /// </summary>
+        /// <param name="request">Comando para agregar un pago directo</param>
+        /// <returns>Identificador del pago directo agregado</returns>
         private async Task<Guid> HandleAsync(AgregarPagoDirectoCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();

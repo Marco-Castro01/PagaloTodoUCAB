@@ -50,6 +50,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarUsuariosQueryHandler.HandleAsync");
 
+                // Consulta todos los registros de la tabla Usuarios
                 var result = _dbContext.Usuarios.Select(c => new UsuariosAllResponse()
                 {
                     Id = c.Id,
@@ -60,7 +61,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     Discriminator = c.Discriminator
                 }).ToList();
 
-                return  result;
+                return result;
             }
             catch (Exception ex)
             {

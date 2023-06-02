@@ -41,26 +41,25 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
         }
 
-        private async Task<List<DeudaResponse>> HandleAsync(ConsultarDeudaQuery  request)
+        private async Task<List<DeudaResponse>> HandleAsync(ConsultarDeudaQuery request)
         {
             try
             {
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
-                
-                var result = _dbContext.Deuda.Where(c => c.identificador== request.Identificador && c.deudaStatus ==false)
+
+                // Consulta los registros de la tabla Deuda que coincidan con el identificador y deudaStatus especificados en la consulta
+                var result = _dbContext.Deuda.Where(c => c.identificador == request.Identificador && c.deudaStatus == false)
                     .Select(c => new DeudaResponse()
-                {
-                    idDeuda = c.Id,
-                   identificador = request.Identificador,
-                   servicioId = c.servicio.Id,
-                   servicioName = c.servicio.name,
-                   deuda = c.deuda
+                    {
+                        idDeuda = c.Id,
+                        identificador = request.Identificador,
+                        servicioId = c.servicio.Id,
+                        servicioName = c.servicio.name,
+                        deuda = c.deuda
+                    });
 
-
-
-                });
-
-                return await result.ToListAsync() ;
+                // Ejecuta la consulta y devuelve los resultados como una lista
+                return await result.ToListAsync();
             }
             catch (Exception ex)
             {

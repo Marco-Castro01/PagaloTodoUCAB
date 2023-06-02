@@ -40,26 +40,28 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
         }
 
-        private async Task<List<PagoResponse>> HandleAsync(ConsultarPagoPorConsumidorQuery  request)
+        private async Task<List<PagoResponse>> HandleAsync(ConsultarPagoPorConsumidorQuery request)
         {
             try
             {
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
-                
-                var result = _dbContext.Pago.Where(c => c.consumidor.Id == request.IdConsumidor).Select(c => new PagoResponse()
-                {
-                    Id = c.Id,
-                    valor = c.valor,
-                    consumidorId = c.consumidor.Id,
-                    servicioId = c.servicio.Id,
-                    PrestadorServicioNombre = c.servicio.PrestadorServicio.name,
-                    NombreServicio = c.servicio.name,
-                    NombreConsumidor = c.consumidor.name
-                    
 
-                });
+                // Consulta los registros de la tabla Pago que correspondan al consumidor especificado en la consulta
+                var result = _dbContext.Pago
+                    .Where(c => c.consumidor.Id == request.IdConsumidor)
+                    .Select(c => new PagoResponse()
+                    {
+                        Id = c.Id,
+                        valor = c.valor,
+                        consumidorId = c.consumidor.Id,
+                        servicioId = c.servicio.Id,
+                        PrestadorServicioNombre = c.servicio.PrestadorServicio.name,
+                        NombreServicio = c.servicio.name,
+                        NombreConsumidor = c.consumidor.name
+                    });
 
-                return await result.ToListAsync() ;
+                // Ejecuta la consulta y devuelve los resultados como una lista
+                return await result.ToListAsync();
             }
             catch (Exception ex)
             {

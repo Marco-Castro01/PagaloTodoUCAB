@@ -52,14 +52,18 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Request}", request);
 
+                // Buscar el usuario que se va a editar
                 var user = _dbContext.Usuarios.Where(u => u.email == request._request.email).FirstOrDefault();
+
+                // Actualizar los datos del usuario con los valores del comando
                 user.status = request._request.status;
                 user.name = request._request.name;
                 user.nickName = request._request.nickName;
+
                 _dbContext.Usuarios.Update(user);
-                _dbContext.DbContext.SaveChanges();
-                var id = user.Id;
                 await _dbContext.SaveEfContextChanges("APP");
+
+                var id = user.Id;
                 transaccion.Commit();
                 _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Response}", id);
                 return id;
@@ -67,7 +71,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
+                _logger.LogError(ex, "Error EditarUsuarioCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
                 throw new CustomException(ex.Message);
             }

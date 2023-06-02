@@ -46,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarPrestadorServicioQueryHandler.HandleAsync");
 
+                // Consulta todos los registros de la tabla PrestadorServicio
                 var result = _dbContext.PrestadorServicio.Select(c => new PrestadorServicioResponse()
                 {
                     Id = c.Id,
@@ -55,6 +56,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     email = c.email,
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)

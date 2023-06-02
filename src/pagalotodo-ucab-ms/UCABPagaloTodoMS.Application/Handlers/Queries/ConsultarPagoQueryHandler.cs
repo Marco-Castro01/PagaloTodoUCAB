@@ -46,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
 
+                // Consulta todos los registros de la tabla Pago
                 var result = _dbContext.Pago.Select(c => new PagoResponse()
                 {
                     Id = c.Id,
@@ -55,10 +56,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     PrestadorServicioNombre = c.servicio.PrestadorServicio.name,
                     NombreServicio = c.servicio.name,
                     NombreConsumidor = c.consumidor.name
-                    
-
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)
