@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -45,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarCamposConciliacionQueryHandler.HandleAsync");
 
+                // Consulta los registros de la tabla CamposConciliacion y los mapea a objetos CamposConciliacionResponse
                 var result = _dbContext.CamposConciliacion.Select(c => new CamposConciliacionResponse()
                 {
                     Id = c.Id,
@@ -52,12 +54,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     Longitud = c.Longitud
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarCamposConciliacionQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

@@ -7,17 +7,26 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
 using UCABPagaloTodoMS.Core.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
+    /// <summary>
+    /// Clase que maneja el comando para cambiar la contraseña.
+    /// </summary>
     public class CambiarContrasenaCommandHandler : IRequestHandler<CambiarContrasenaCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<CambiarContrasenaCommandHandler> _logger;
 
+        /// <summary>
+        /// Constructor de la clase CambiarContrasenaCommandHandler.
+        /// </summary>
+        /// <param name="dbContext">Contexto de base de datos</param>
+        /// <param name="logger">Logger</param>
         public CambiarContrasenaCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<CambiarContrasenaCommandHandler> logger)
         {
             _dbContext = dbContext;
@@ -51,25 +60,30 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogInformation("CambiarContrasenaCommand.HandleAsync {Request}", request);
 
+                // Buscar el usuario que tiene el token de reinicio de contraseña
                 var user = _dbContext.Usuarios.Where(u => u.PasswordResetToken == request._request.token).FirstOrDefault();
-              if (user == null || user.ResetTokenExpires < DateTime.Now)
-               {
-                    _logger.LogWarning("Ha ocurrido un error Token invalido");
+
+                // Verificar si el usuario no existe o el token ha expirado
+                if (user == null || user.ResetTokenExpires < DateTime.Now)
+                {
+                    _logger.LogWarning("Ha ocurrido un error: Token inválido");
                     throw new ArgumentNullException(nameof(user));
-
-
                 }
-                using (var hash = new HMACSHA512()) //esto es para el password
+
+                // Generar una nueva contraseña
+                using (var hash = new HMACSHA512())
                 {
                     user.passwordSalt = hash.Key;
-                    user.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request._request.password));
+                    user.passwordHash = hash.ComputeHash(Encoding.UTF8.GetBytes(request._request.password));
                 }
-                    user.ResetTokenExpires = null;
-                    user.PasswordResetToken = null;
+
+                user.ResetTokenExpires = null;
+                user.PasswordResetToken = null;
+
                 _dbContext.Usuarios.Update(user);
-                _dbContext.DbContext.SaveChanges();
-                var id = user.Id;
                 await _dbContext.SaveEfContextChanges("APP");
+
+                var id = user.Id;
                 transaccion.Commit();
                 _logger.LogInformation("CambiarContrasenaCommand.HandleAsync {Response}", id);
                 return id;
@@ -77,9 +91,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
+                _logger.LogError(ex, "Error CambiarContrasenaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

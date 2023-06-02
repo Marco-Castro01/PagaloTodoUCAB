@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -32,10 +33,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     return HandleAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _logger.LogWarning("ConsultarPagoQueryHandler.Handle: ArgumentNullException");
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
 
@@ -45,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
 
+                // Consulta todos los registros de la tabla Pago
                 var result = _dbContext.Pago.Select(c => new PagoResponse()
                 {
                     Id = c.Id,
@@ -54,16 +56,15 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     PrestadorServicioNombre = c.servicio.PrestadorServicio.name,
                     NombreServicio = c.servicio.name,
                     NombreConsumidor = c.consumidor.name
-                    
-
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarPagoQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

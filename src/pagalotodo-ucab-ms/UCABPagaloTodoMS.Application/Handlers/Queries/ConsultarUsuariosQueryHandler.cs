@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
@@ -36,10 +37,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     return HandleAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _logger.LogWarning("ConsultarUsuariosQueryHandler.Handle: ArgumentNullException");
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
 
@@ -49,6 +50,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarUsuariosQueryHandler.HandleAsync");
 
+                // Consulta todos los registros de la tabla Usuarios
                 var result = _dbContext.Usuarios.Select(c => new UsuariosAllResponse()
                 {
                     Id = c.Id,
@@ -59,12 +61,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     Discriminator = c.Discriminator
                 }).ToList();
 
-                return  result;
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

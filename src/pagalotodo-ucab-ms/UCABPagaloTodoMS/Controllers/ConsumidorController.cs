@@ -47,8 +47,8 @@ namespace UCABPagaloTodoMS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Ocurrio un error en la consulta de los Prestadores de servicios. Exception: " + ex);
-                throw;
+                _logger.LogError("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
+                return BadRequest("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
             }
         }
 

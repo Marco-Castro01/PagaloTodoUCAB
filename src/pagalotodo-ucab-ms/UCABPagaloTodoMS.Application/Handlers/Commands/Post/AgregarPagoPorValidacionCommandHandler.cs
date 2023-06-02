@@ -15,19 +15,31 @@ using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
+    /// <summary>
+    /// Clase que maneja el comando para agregar un pago por validación.
+    /// </summary>
     public class AgregarPagoPorValidacionCommandHandler : IRequestHandler<AgregarPagoPorValidacionCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<AgregarPagoPorValidacionCommandHandler> _logger;
-        private readonly IMediator _mediator;
 
-
+        /// <summary>
+        /// Constructor de la clase AgregarPagoPorValidacionCommandHandler.
+        /// </summary>
+        /// <param name="dbContext">Contexto de base de datos</param>
+        /// <param name="logger">Instancia de ILogger</param>
         public AgregarPagoPorValidacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<AgregarPagoPorValidacionCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Maneja el comando para agregar un pago por validación.
+        /// </summary>
+        /// <param name="request">Comando para agregar un pago por validación</param>
+        /// <param name="cancellationToken">Token de cancelación</param>
+        /// <returns>Identificador del pago por validación agregado</returns>
         public async Task<Guid> Handle(AgregarPagoPorValidacionCommand request, CancellationToken cancellationToken)
         {
             try
@@ -48,6 +60,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
+        /// <summary>
+        /// Maneja asincrónicamente el comando para agregar un pago por validación.
+        /// </summary>
+        /// <param name="request">Comando para agregar un pago por validación</param>
+        /// <returns>Identificador del pago por validación agregado</returns>
         private async Task<Guid> HandleAsync(AgregarPagoPorValidacionCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();
@@ -61,10 +78,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 {
                     throw new ValidationException(result.Errors);
                 }
-
                 
                 _dbContext.Pago.Add(entity);
-
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
@@ -73,7 +88,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error AgregarPagoDirectoCommandHandlerAgregarPagoCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                _logger.LogError(ex, "Error AgregarPagoPorValidacionCommandHandlerAgregarPagoCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
                 throw new CustomException(ex.Message);
             }

@@ -12,24 +12,38 @@ using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
+    /// <summary>
+    /// Manejador del comando para eliminar un servicio de prueba.
+    /// </summary>
     public class DeleteServicioPruebaCommandHandler : IRequestHandler<DeleteServicioPruebaCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<DeleteServicioPruebaCommandHandler> _logger;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase DeleteServicioPruebaCommandHandler.
+        /// </summary>
+        /// <param name="dbContext">Contexto de base de datos de UCABPagaloTodo.</param>
+        /// <param name="logger">Logger para el manejo de registros.</param>
         public DeleteServicioPruebaCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<DeleteServicioPruebaCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Maneja la ejecución del comando para eliminar un servicio de prueba.
+        /// </summary>
+        /// <param name="request">Comando de eliminación de servicio de prueba.</param>
+        /// <param name="cancellationToken">Token de cancelación.</param>
+        /// <returns>El identificador del servicio eliminado.</returns>
         public async Task<Guid> Handle(DeleteServicioPruebaCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 if (request._request == null)
                 {
-                    _logger.LogWarning("AgregarServicioPruebaCommandHandler.Handle: Request nulo.");
+                    _logger.LogWarning("EliminarServicioPruebaCommandHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
                 else
@@ -48,7 +62,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             var transaccion = _dbContext.BeginTransaction();
             try
             {
-                _logger.LogInformation("AgregarServicioPruebaCommandHandler.HandleAsync {Request}" , request);
+                _logger.LogInformation("EliminarServicioPruebaCommandHandler.HandleAsync {Request}", request);
                 var entity = ServicioMapper.MapRequestDeleteEntity(request._request,_dbContext);
                 ServicioValidator ServicioValidator = new ServicioValidator();
                 ValidationResult result = await ServicioValidator.ValidateAsync(entity);

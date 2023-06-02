@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -32,10 +33,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     return HandleAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _logger.LogWarning("ConsultarServicioQueryHandler.Handle: ArgumentNullException");
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
 
@@ -45,22 +46,23 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarServicioQueryHandler.HandleAsync");
 
-                var result = _dbContext.Servicio.Where(c=>c.deleted==false).Select(c => new ServicioResponse()
+                // Consulta todos los registros de la tabla Servicio donde deleted es falso
+                var result = _dbContext.Servicio.Where(c => c.deleted == false).Select(c => new ServicioResponse()
                 {
                     Id = c.Id,
                     name = c.name,
                     accountNumber = c.accountNumber,
                     prestadorServicioId = c.PrestadorServicio.Id,
                     prestadorServicioName = c.PrestadorServicio.name
-                   
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarServicioQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -32,10 +33,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     return HandleAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _logger.LogWarning("ConsultarPrestadorServicioQueryHandler.Handle: ArgumentNullException");
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
 
@@ -45,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarPrestadorServicioQueryHandler.HandleAsync");
 
+                // Consulta todos los registros de la tabla PrestadorServicio
                 var result = _dbContext.PrestadorServicio.Select(c => new PrestadorServicioResponse()
                 {
                     Id = c.Id,
@@ -54,12 +56,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     email = c.email,
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarPrestadorServicioQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

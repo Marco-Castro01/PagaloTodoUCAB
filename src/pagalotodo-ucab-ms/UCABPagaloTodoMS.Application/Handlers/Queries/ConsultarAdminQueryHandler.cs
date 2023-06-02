@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -45,6 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarAdminQueryHandler.HandleAsync");
 
+                // Consulta los registros de la tabla Admin y los mapea a objetos AdminResponse
                 var result = _dbContext.Admin.Select(c => new AdminResponse()
                 {
                     Id = c.Id,
@@ -54,12 +56,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     email = c.email,
                 });
 
+                // Ejecuta la consulta y devuelve los resultados como una lista
                 return await result.ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarAdminQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

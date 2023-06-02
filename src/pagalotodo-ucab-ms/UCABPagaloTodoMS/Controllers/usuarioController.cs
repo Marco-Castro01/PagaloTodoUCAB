@@ -45,7 +45,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los valores de prueba. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -65,7 +65,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la edicion de usuarios: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -158,7 +158,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -178,7 +178,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -199,7 +199,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar cambiar la contrasena. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -219,7 +219,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar actualizar la contrasena. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 

@@ -1,17 +1,18 @@
 ﻿using FluentValidation;
-using GreenPipes;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
-using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
 using UCABPagaloTodoMS.Application.Validators;
 using UCABPagaloTodoMS.Core.Database;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
-namespace UCABPagaloTodoMS.Application.Handlers.Commands
+namespace UCABPagaloTodoMS.Application.Handlers.Commands.Patch
 {
+    /// <summary>
+    /// Clase que maneja el comando para actualizar el estado de una deuda.
+    /// </summary>
     public class UpdateDeudaStatusCommandHandler : IRequestHandler<UpdateDeudaStatusCommand, Guid>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
@@ -23,6 +24,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             _logger = logger;
         }
 
+        /// <summary>
+        /// Maneja el comando para actualizar el estado de una deuda.
+        /// </summary>
+        /// <param name="request">Comando para actualizar el estado de una deuda</param>
+        /// <param name="cancellationToken">Token de cancelación</param>
+        /// <returns>Identificador de la deuda actualizada</returns>
         public async Task<Guid> Handle(UpdateDeudaStatusCommand request, CancellationToken cancellationToken)
         {
             try
@@ -43,6 +50,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
+        /// <summary>
+        /// Maneja asincrónicamente el comando para actualizar el estado de una deuda.
+        /// </summary>
+        /// <param name="request">Comando para actualizar el estado de una deuda</param>
+        /// <returns>Identificador de la deuda actualizada</returns>
         private async Task<Guid> HandleAsync(UpdateDeudaStatusCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();

@@ -144,7 +144,7 @@ namespace UCABPagaloTodoMS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> AgregarPagoDirecto(PagoDirectoRequest pagoDirecto)
         {
-            _logger.LogInformation("Entrando al método que registra los Admins");
+            _logger.LogInformation("Entrando al método que registra El pago");
             try
             {
                 var query = new AgregarPagoDirectoCommand(pagoDirecto);

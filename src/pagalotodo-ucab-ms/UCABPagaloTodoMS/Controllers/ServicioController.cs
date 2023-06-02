@@ -49,7 +49,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los Servicio. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -72,7 +72,7 @@ namespace UCABPagaloTodoMS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> AgregarServicio(ServicioRequest Servicio)
         {
-            _logger.LogInformation("Entrando al método que registra los Admins");
+            _logger.LogInformation("Entrando al método que registra los servicios");
             try
             {
                 var query = new AgregarServicioPruebaCommand(Servicio);
@@ -121,12 +121,12 @@ namespace UCABPagaloTodoMS.Controllers
             }
             catch (CustomException ex)
             {
-                _logger.LogError("Ocurrio un error al intentar registrar un Servicio. Exception: " + ex);
+                _logger.LogError("Ocurrio un error al intentar Modificar un Servicio. Exception: " + ex);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Ocurrio un error al intentar registrar un Servicio. Exception: " + ex);
+                _logger.LogError("Ocurrio un error al intentar Modificar un Servicio. Exception: " + ex);
                 return BadRequest(ex.Message);
             }
         }
@@ -150,7 +150,7 @@ namespace UCABPagaloTodoMS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> EliminarServicio(DeleteServicioRequest Servicio)
         {
-            _logger.LogInformation("Entrando al método que registra los Admins");
+            _logger.LogInformation("Entrando al método que Elimina");
             try
             {
                 var query = new DeleteServicioPruebaCommand(Servicio);
@@ -159,12 +159,12 @@ namespace UCABPagaloTodoMS.Controllers
             }
             catch (CustomException ex)
             {
-                _logger.LogError("Ocurrio un error al intentar registrar un Servicio. Exception: " + ex);
+                _logger.LogError("Ocurrio un error al intentar Eliminar un Servicio. Exception: " + ex);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Ocurrio un error al intentar registrar un Servicio. Exception: " + ex);
+                _logger.LogError("Ocurrio un error al intentar Eliminar un Servicio. Exception: " + ex);
                 return BadRequest(ex.Message);
             }
         }
