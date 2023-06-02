@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
@@ -46,10 +47,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     return HandleAsync(request);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _logger.LogWarning("ConsultarValoresQueryHandler.Handle: ArgumentNullException");
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
 
@@ -89,7 +90,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error Login.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
         public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)

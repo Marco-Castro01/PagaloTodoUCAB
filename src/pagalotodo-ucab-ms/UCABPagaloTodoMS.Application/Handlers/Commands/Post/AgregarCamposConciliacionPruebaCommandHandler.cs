@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
 using UCABPagaloTodoMS.Core.Database;
@@ -56,7 +57,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogError(ex, "Error AgregarCamposConciliacionPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

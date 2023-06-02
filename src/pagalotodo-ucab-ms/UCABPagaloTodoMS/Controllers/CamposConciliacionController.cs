@@ -48,7 +48,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los CamposConciliacion. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -81,7 +81,7 @@ namespace UCABPagaloTodoMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un admin. Exception: " + ex);
-                throw;
+                return BadRequest(ex.Message);
             }
         }
     }

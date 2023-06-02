@@ -73,7 +73,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         {
             _logger.LogError(ex, "Error ActualizarContrasenaCommand.HandleAsync. {Mensaje}", ex.Message);
             transaccion.Rollback();
-            throw;
+            throw new CustomException(ex.Message);
         }
     }
 }
