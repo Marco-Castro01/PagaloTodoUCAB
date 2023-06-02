@@ -59,7 +59,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UnitTestsApplication\Handlers\Queries\" />
     <Folder Include="UnitTestsInfrastructure\Services\" />
   </ItemGroup>
 
