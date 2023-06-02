@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -32,10 +33,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     return HandleAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _logger.LogWarning("ConsultarValoresQueryHandler.Handle: ArgumentNullException");
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
 
@@ -45,19 +46,19 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarValoresQueryHandler.HandleAsync");
 
-                var result = _dbContext.Valores.Where(c=>c.Nombre == "Carlos").Select(c => new ValoresResponse()
+                var result = _dbContext.Valores.Select(c => new ValoresResponse()
                 {
                     Id = c.Id,
                     Nombre = c.Nombre + " " + c.Apellido,
                     Identificacion = c.Identificacion,
-                });
+                }).ToList();
 
-                return await result.ToListAsync();
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarValoresQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw;
+                throw new CustomException(ex.Message);
             }
         }
     }

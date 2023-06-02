@@ -9,6 +9,7 @@ public class BaseEntity
     public string? CreatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+    public bool  deleted { get; set; }
 
     public string? UpdatedBy { get; set; }
 }
