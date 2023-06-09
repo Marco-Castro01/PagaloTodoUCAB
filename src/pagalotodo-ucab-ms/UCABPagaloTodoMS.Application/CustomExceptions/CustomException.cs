@@ -15,4 +15,8 @@ public class CustomException : Exception
         : base(message, inner)
     {
     }
+    public override string ToString()
+    {
+        return $"{typeof(CustomException).FullName}: {Message}\n{StackTrace}";
+    }
 }

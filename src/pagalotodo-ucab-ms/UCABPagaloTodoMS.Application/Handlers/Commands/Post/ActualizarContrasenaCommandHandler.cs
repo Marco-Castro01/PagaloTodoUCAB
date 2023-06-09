@@ -46,10 +46,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("CambiarContrasenaCommand.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch (Exception)
             {
@@ -89,11 +92,17 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("ActualizarContrasenaCommand.HandleAsync {Response}", id);
                 return id;
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError(ex, "Error ActualizarContrasenaCommand.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ActualizarContrasenaCommand.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
-                throw new CustomException(ex.Message);
+                throw;
             }
         }
     }

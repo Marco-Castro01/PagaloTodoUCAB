@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
@@ -45,6 +46,10 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (CustomException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los CamposConciliacion. Exception: " + ex);
@@ -77,6 +82,10 @@ namespace UCABPagaloTodoMS.Controllers
                 var query = new AgregarCamposConciliacionPruebaCommand(campo);
                 var response = await _mediator.Send(query);
                 return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

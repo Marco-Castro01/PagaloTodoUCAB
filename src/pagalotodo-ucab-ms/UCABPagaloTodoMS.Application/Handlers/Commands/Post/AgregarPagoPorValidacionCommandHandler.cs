@@ -54,6 +54,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     return await HandleAsync(request);
                 }
             }
+            catch (CustomException)
+            {
+                throw;
+
+            }
             catch(Exception)
             {
                 throw;
@@ -85,6 +90,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Commit();
                 _logger.LogInformation("AgregarPagoPorValidacionCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error AgregarPagoPorValidacionCommandHandlerAgregarPagoCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al realizar pago por validacion", ex);
             }
             catch (Exception ex)
             {

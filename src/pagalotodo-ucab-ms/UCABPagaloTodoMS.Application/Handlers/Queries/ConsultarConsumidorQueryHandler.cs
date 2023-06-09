@@ -28,10 +28,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("ConsultarConsumidorQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync();
-                }
+
+                return HandleAsync();
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request nulo", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -62,7 +68,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarPrestadorServicioQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error",ex);
             }
         }
     }

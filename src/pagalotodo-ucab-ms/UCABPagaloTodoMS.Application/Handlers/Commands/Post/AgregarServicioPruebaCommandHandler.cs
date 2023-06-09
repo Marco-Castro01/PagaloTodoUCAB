@@ -51,6 +51,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     return await HandleAsync(request);
                 }
             }
+            catch (CustomException)
+            {
+                throw;
+
+            }
             catch(Exception)
             {
                 throw;
@@ -81,6 +86,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Commit();
                 _logger.LogInformation("AgregarServicioPruebaCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error AgregarServicioPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al agregar un servicio", ex);
             }
             catch (Exception ex)
             {

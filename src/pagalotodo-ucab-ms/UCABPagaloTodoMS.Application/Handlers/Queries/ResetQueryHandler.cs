@@ -36,15 +36,21 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("PasswordReset.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync(request);
-                }
+
+                return HandleAsync(request);
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request Nulo: ", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
                 _logger.LogWarning("ConsultarValoresQueryHandler.Handle: ArgumentNullException");
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error En consulta: ",ex);
             }
         }
 
@@ -66,7 +72,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 usuariocreated.PasswordResetToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
 
                 // Enviar un correo electrónico al usuario con el token de restablecimiento de contraseña
-                var message = new Message(new string[] { usuariocreated.email }, "Código de reseteo de clave", usuariocreated.PasswordResetToken);
+                var message = new Message(new string[] {usuariocreated.email}, "Código de reseteo de clave",
+                    usuariocreated.PasswordResetToken);
                 _emailSender.SendEmail(message);
 
                 // Establecer la fecha de vencimiento del token de restablecimiento de contraseña
@@ -82,10 +89,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     info = "Token enviado"
                 };
             }
+            catch (ArgumentNullException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error .HandleAsync. {Mensaje}", ex.Message);
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error en Reset: ",ex);
             }
         }
     }

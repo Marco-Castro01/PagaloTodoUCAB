@@ -28,10 +28,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("ConsultarPrestadorServicioQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync();
-                }
+
+                return HandleAsync();
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request Nulo", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

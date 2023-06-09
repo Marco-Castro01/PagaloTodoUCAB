@@ -49,6 +49,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands.Patch
                     return await HandleAsync(request);
                 }
             }
+            catch(CustomException)
+            {
+                throw;
+            }
             catch(Exception)
             {
                 throw;
@@ -65,10 +69,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands.Patch
             var transaccion = _dbContext.BeginTransaction();
             try
             {
-                _logger.LogInformation("AgregarServicioPruebaCommandHandler.HandleAsync {Request}" , request);
-                var entity = ServicioMapper.MapRequestUpdateEntity(request._request,_dbContext);
-                ServicioValidator ServicioValidator = new ServicioValidator();
-                ValidationResult result = await ServicioValidator.ValidateAsync(entity);
+                _logger.LogInformation("AgregarServicioPruebaCommandHandler.HandleAsync {Request}", request);
+                var entity = ServicioMapper.MapRequestUpdateEntity(request._request, _dbContext);
+                ServicioValidator servicioValidator = new ServicioValidator();
+                ValidationResult result = await servicioValidator.ValidateAsync(entity);
                 if (!result.IsValid)
                 {
                     throw new ValidationException(result.Errors);
@@ -82,6 +86,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands.Patch
                 transaccion.Commit();
                 _logger.LogInformation("AgregarServicioPruebaCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                throw new CustomException("Error al modificar", ex);
             }
             catch (Exception ex)
             {

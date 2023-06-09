@@ -46,6 +46,10 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (CustomException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error en la consulta de los Servicio. Exception: " + ex);

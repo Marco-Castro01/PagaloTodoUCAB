@@ -34,10 +34,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("EditarUsuarioCommand.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch (Exception)
             {
@@ -65,9 +68,15 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 var id = user.Id;
                 transaccion.Commit();
-                _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Response}", id);
+                _logger.LogInformation("EditarUsuarioCommandHandler.HandleAsync {Response}", id);
                 return id;
 
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError(ex, "Error AEditarUsuarioCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw;
             }
             catch (Exception ex)
             {

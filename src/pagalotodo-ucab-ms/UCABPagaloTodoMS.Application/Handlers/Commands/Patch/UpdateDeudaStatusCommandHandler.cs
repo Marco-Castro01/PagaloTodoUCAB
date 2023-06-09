@@ -80,11 +80,18 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands.Patch
                 _logger.LogInformation("ModificarStatusDeudaCommandHandler.HandleAsync {Response}", id);
                 return id;
             }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error ModificarStatusDeudaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al modificar El estatus de la deuda",ex);
+
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ModificarStatusDeudaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
-                throw new CustomException(ex.Message);
+                throw;
 
             }
         }

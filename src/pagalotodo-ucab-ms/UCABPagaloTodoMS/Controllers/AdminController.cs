@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
@@ -44,6 +45,10 @@ namespace UCABPagaloTodoMS.Controllers
                 var query = new ConsultarAdminPruebaQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

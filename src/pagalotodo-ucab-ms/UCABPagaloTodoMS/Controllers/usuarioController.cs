@@ -175,6 +175,11 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message); 
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
@@ -196,6 +201,11 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message); 
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar cambiar la contrasena. Exception: " + ex);
@@ -215,6 +225,11 @@ namespace UCABPagaloTodoMS.Controllers
                 var query = new ActualizarContrasenaCommand(usuario);
                 var response = await _mediator.Send(query);
                 return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message); 
             }
             catch (Exception ex)
             {

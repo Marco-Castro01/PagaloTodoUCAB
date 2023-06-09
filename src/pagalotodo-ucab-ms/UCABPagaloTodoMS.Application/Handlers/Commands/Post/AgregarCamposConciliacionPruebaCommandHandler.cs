@@ -1,9 +1,12 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
+using UCABPagaloTodoMS.Application.Validators;
 using UCABPagaloTodoMS.Core.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
@@ -42,10 +45,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("AgregarCamposConciliacionPruebaCommandHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch (Exception)
             {
@@ -65,12 +71,24 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogInformation("AgregarCamposConciliacionPruebaCommandHandler.HandleAsync {Request}", request);
                 var entity = CamposConciliacionMapper.MapRequestEntity(request._request);
+                CamposConciliacionValidator campoConciliacionValidator = new CamposConciliacionValidator();
+                ValidationResult result = await campoConciliacionValidator.ValidateAsync(entity);
+                if (!result.IsValid)
+                {
+                    throw new ValidationException(result.Errors);
+                }
                 _dbContext.CamposConciliacion.Add(entity);
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
                 _logger.LogInformation("AgregarCamposConciliacionPruebaCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error AgregarCamposConciliacionPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al crear Campo de conciliacion", ex);
             }
             catch (Exception ex)
             {

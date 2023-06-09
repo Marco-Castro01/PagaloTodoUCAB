@@ -51,6 +51,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     return await HandleAsync(request);
                 }
             }
+            catch (CustomException)
+            {
+                throw;
+            }
             catch(Exception)
             {
                 throw;
@@ -79,6 +83,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Commit();
                 _logger.LogInformation("EliminarServicioPruebaCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error EliminarServicioPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al eliminar Servicio", ex);
+
             }
             catch (Exception ex)
             {

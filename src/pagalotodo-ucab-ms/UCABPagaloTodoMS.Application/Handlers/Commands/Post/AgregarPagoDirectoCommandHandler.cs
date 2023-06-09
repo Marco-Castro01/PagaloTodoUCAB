@@ -48,10 +48,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("AgregarPagoDirectoCommandHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+                
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch(Exception)
             {
@@ -83,6 +87,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Commit();
                 _logger.LogInformation("AgregarPagoDirectoCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error AgregarPagoDirectoCommandHandlerAgregarPagoCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al hacer Pago",ex);
             }
             catch (Exception ex)
             {
