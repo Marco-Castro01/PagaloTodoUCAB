@@ -6,6 +6,7 @@ using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Base;
+using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Controllers
 {
@@ -56,46 +57,6 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        /// <summary>
-        ///     Endpoint que registra un Servicio.
-        /// </summary>
-        /// <remarks>
-        ///     ## Description
-        ///     ### Post registra Servicio
-        ///     ## Url
-        ///     POST /Servicio/Servicio
-        /// </remarks>
-        /// <response code="200">
-        ///     Accepted:
-        ///     - Operation successful.
-        /// </response>
-        /// <returns>Retorna el id del nuevo registro.</returns>
-        [HttpPost("servicio")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> AgregarServicio(ServicioRequest Servicio)
-        {
-            _logger.LogInformation("Entrando al método que registra los servicios");
-            try
-            {
-                var query = new AgregarServicioPruebaCommand(Servicio);
-                var response = await _mediator.Send(query);
-                return Ok("Registro exitoso");
-            }
-            catch (CustomException ex)
-            {
-                _logger.LogError("Ocurrio un error al intentar registrar un Servicio. Exception: " + ex);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Ocurrio un error al intentar registrar un Servicio. Exception: " + ex);
-                return BadRequest(ex);
-            }
-        }
-        
-        
         
         /// <summary>
         ///     Endpoint que Actualiza un Servicio.
@@ -114,12 +75,12 @@ namespace UCABPagaloTodoMS.Controllers
         [HttpPatch("servicio")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> ModificarServicio(UpdateServicioRequest Servicio)
+        public async Task<ActionResult<Guid>> ModificarServicio(UpdateServicioRequest servicio)
         {
             _logger.LogInformation("Entrando al método que registra los Admins");
             try
             {
-                var query = new UpdateServicioPruebaCommand(Servicio);
+                var query = new UpdateServicioPruebaCommand(servicio);
                 var response = await _mediator.Send(query);
                 return Ok("Actualizacion Realizada Exitosamente");
             }
@@ -132,6 +93,52 @@ namespace UCABPagaloTodoMS.Controllers
             {
                 _logger.LogError("Ocurrio un error al intentar Modificar un Servicio. Exception: " + ex);
                 return BadRequest(ex.Message);
+            }
+        }
+        
+        
+        
+        /// <summary>
+        ///     Endpoint para la asignacion de un servicio
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Post Servicios/{servicioId}/Campo
+        ///     ## Url
+        ///     POST /
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de CamposConciliacionResponse.</returns>
+        [HttpPost("/servicio/{servicioId}/campo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> CreacionYAsignacionDeServicio(Guid servicioId,[FromBody] CamposAsigRequest servicioRequests)
+        {
+            _logger.LogInformation("Entrando al método que envia cambia la contrasena");
+            try
+            {
+               
+                var query = new AsignarCamposCommand(servicioId,servicioRequests);
+                var response = await _mediator.Send(query);
+
+                string mess = "Asignacion exitosa";
+                if (response == null)
+                    mess = "No se envio campo para asignar";
+                return Ok(mess);
+                
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return StatusCode(422,ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar cambiar la contrasena. Exception: " + ex);
+                return BadRequest(ex);
             }
         }
         
