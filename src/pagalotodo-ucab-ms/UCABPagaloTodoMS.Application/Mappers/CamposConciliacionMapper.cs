@@ -22,7 +22,8 @@ namespace UCABPagaloTodoMS.Application.Mappers
             var entity = new CamposConciliacionEntity()
             {
                Nombre = request.Nombre,
-               Longitud = request.Longitud
+               Longitud = request.Longitud,
+               deleted = false
             };
             return entity;
         }

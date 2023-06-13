@@ -14,6 +14,7 @@ namespace UCABPagaloTodoMS.Core.Database
         DbSet<ServicioEntity> Servicio { get; }
         DbSet<DeudaEntity> Deuda { get; }
         DbSet<CamposConciliacionEntity> CamposConciliacion { get; }
+        DbSet<ServicioCampoEntity> ServicioCampo { get; }
 
         DbContext DbContext
         {

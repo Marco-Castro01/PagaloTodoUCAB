@@ -25,6 +25,7 @@ public class UCABPagaloTodoDbContext : DbContext, IUCABPagaloTodoDbContext
     public virtual DbSet<DeudaEntity> Deuda { get; set; } = null!;
     public virtual DbSet<CamposConciliacionEntity> CamposConciliacion { get; set; } = null!;
 
+    public virtual DbSet<ServicioCampoEntity> ServicioCampo { get; set; } = null!;
     public DbContext DbContext
     {
         get
@@ -43,7 +44,13 @@ public class UCABPagaloTodoDbContext : DbContext, IUCABPagaloTodoDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<ServicioCampoEntity>()
+            .HasKey(sc => new { sc.ServicioId, sc.CampoId });
+        
     }
+  
 
     virtual public void SetPropertyIsModifiedToFalse<TEntity, TProperty>(TEntity entity,
         Expression<Func<TEntity, TProperty>> propertyExpression) where TEntity : class

@@ -22,21 +22,6 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("CamposConciliacionEntityServicioEntity", b =>
-                {
-                    b.Property<Guid>("CamposConciliacionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ServicioId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CamposConciliacionId", "ServicioId");
-
-                    b.HasIndex("ServicioId");
-
-                    b.ToTable("CamposConciliacionEntityServicioEntity");
-                });
-
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -53,7 +38,6 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -101,7 +85,7 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("servicioId")
+                    b.Property<Guid>("servicioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -151,6 +135,27 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.HasIndex("servicioId");
 
                     b.ToTable("Pago");
+                });
+
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioCampoEntity", b =>
+                {
+                    b.Property<Guid>("ServicioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CampoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ServicioId", "CampoId");
+
+                    b.HasIndex("CampoId");
+
+                    b.ToTable("ServicioCampo");
                 });
 
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioEntity", b =>
@@ -332,26 +337,13 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("PrestadorServicioEntity");
                 });
 
-            modelBuilder.Entity("CamposConciliacionEntityServicioEntity", b =>
-                {
-                    b.HasOne("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", null)
-                        .WithMany()
-                        .HasForeignKey("CamposConciliacionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UCABPagaloTodoMS.Core.Entities.ServicioEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ServicioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.DeudaEntity", b =>
                 {
                     b.HasOne("UCABPagaloTodoMS.Core.Entities.ServicioEntity", "servicio")
                         .WithMany("deudas")
-                        .HasForeignKey("servicioId");
+                        .HasForeignKey("servicioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("servicio");
                 });
@@ -371,6 +363,25 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Navigation("servicio");
                 });
 
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioCampoEntity", b =>
+                {
+                    b.HasOne("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", "Campo")
+                        .WithMany("ServicioCampo")
+                        .HasForeignKey("CampoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UCABPagaloTodoMS.Core.Entities.ServicioEntity", "Servicio")
+                        .WithMany("ServicioCampo")
+                        .HasForeignKey("ServicioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Campo");
+
+                    b.Navigation("Servicio");
+                });
+
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioEntity", b =>
                 {
                     b.HasOne("UCABPagaloTodoMS.Core.Entities.PrestadorServicioEntity", "PrestadorServicio")
@@ -382,9 +393,16 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Navigation("PrestadorServicio");
                 });
 
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", b =>
+                {
+                    b.Navigation("ServicioCampo");
+                });
+
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioEntity", b =>
                 {
                     b.Navigation("Pago");
+
+                    b.Navigation("ServicioCampo");
 
                     b.Navigation("deudas");
                 });
