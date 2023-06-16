@@ -1,0 +1,42 @@
+﻿@model List<UsuariosModel>
+
+<h1>Usuarios</h1>
+
+@if (ViewBag.Error != null)
+{
+    <p>Error: @ViewBag.Error</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Cédula</th>
+                <th>Nickname</th>
+                <th>Estado</th>
+                <th>Opciones</th> <!-- Nueva columna -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.Id</td>
+                    <td>@usuario.email</td>
+                    <td>@usuario.name</td>
+                    <td>@usuario.cedula</td>
+                    <td>@usuario.nickName</td>
+                    <td>@(usuario.status ? "Activo" : "Inactivo")</td>
+                    <td>
+                        <a href="@Url.Action("Modificar", "Usuarios", new { id = usuario.Id })">Modificar</a>
+                        <a href="@Url.Action("Eliminar", "Usuarios", new { id = usuario.Id })">Eliminar</a>
+                        <a href="@Url.Action("CambiarContrasena", "Usuarios", new { id = usuario.Id })">Cambiar contraseña</a>
+                    </td> <!-- Nueva columna -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}

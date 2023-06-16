@@ -9,6 +9,7 @@ using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
+using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -51,15 +52,46 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarUsuariosQueryHandler.HandleAsync");
 
                 // Consulta todos los registros de la tabla Usuarios
-                var result = _dbContext.Usuarios.Select(c => new UsuariosAllResponse()
-                {
-                    Id = c.Id,
-                    email = c.email,
-                    name = c.name,
-                    nickName = c.nickName,
-                    status = c.status,
-                    Discriminator = c.Discriminator
-                }).ToList();
+                var result = _dbContext.Usuarios
+      .OfType<AdminEntity>()
+      .Select(c => new UsuariosAllResponse()
+      {
+          Id = c.Id,
+          email = c.email,
+          name = c.name,
+          nickName = c.nickName,
+          cedula = c.cedula,
+          status = c.status,
+          rif = "",
+          Discriminator = c.Discriminator
+      })
+      .Union(_dbContext.Usuarios
+          .OfType<PrestadorServicioEntity>()
+          .Select(c => new UsuariosAllResponse()
+          {
+              Id = c.Id,
+              email = c.email,
+              name = c.name,
+              nickName = c.nickName,
+              cedula = c.cedula,
+              rif = c.rif,
+              status = c.status,
+              Discriminator = c.Discriminator
+          }))
+      .Union(_dbContext.Usuarios
+          .OfType<ConsumidorEntity>()
+          .Select(c => new UsuariosAllResponse()
+          {
+              Id = c.Id,
+              email = c.email,
+              name = c.name,
+              nickName = c.nickName,
+              cedula = c.cedula,
+              rif = "",
+              status = c.status,
+              Discriminator = c.Discriminator
+          }))
+      .ToList();
 
                 return result;
             }
