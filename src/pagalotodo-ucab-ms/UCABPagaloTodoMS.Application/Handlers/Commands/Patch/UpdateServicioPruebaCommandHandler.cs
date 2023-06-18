@@ -89,7 +89,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands.Patch
             }
             catch (ValidationException ex)
             {
+                _logger.LogError(ex, "Error AgregarServicioPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
                 throw new CustomException("Error al modificar", ex);
+                
             }
             catch (Exception ex)
             {

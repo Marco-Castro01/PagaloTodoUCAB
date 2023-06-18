@@ -79,7 +79,7 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
             try
             {
-                var query = new AgregarCamposConciliacionPruebaCommand(campo);
+                var query = new AgregarCamposConciliacionCommand(campo);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }

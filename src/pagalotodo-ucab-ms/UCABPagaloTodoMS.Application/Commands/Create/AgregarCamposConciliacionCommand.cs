@@ -4,11 +4,11 @@ using UCABPagaloTodoMS.Application.Responses;
 
 namespace UCABPagaloTodoMS.Application.Commands
 {
-    public class AgregarCamposConciliacionPruebaCommand : IRequest<Guid>
+    public class AgregarCamposConciliacionCommand : IRequest<Guid>
     {
         public CamposConciliacionRequest _request { get; set; }
 
-        public AgregarCamposConciliacionPruebaCommand(CamposConciliacionRequest request)
+        public AgregarCamposConciliacionCommand(CamposConciliacionRequest request)
         {
             _request = request;
         }

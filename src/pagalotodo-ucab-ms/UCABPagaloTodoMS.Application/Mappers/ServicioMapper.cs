@@ -20,15 +20,17 @@ namespace UCABPagaloTodoMS.Application.Mappers
             return response;    
         }
 
-        public static ServicioEntity MapRequestEntity(ServicioRequest request, IUCABPagaloTodoDbContext DbContext)
+        public static ServicioEntity MapRequestEntity(Guid prestadorServicioId,ServicioRequest request, IUCABPagaloTodoDbContext DbContext)
         {
             var entity = new ServicioEntity()
             {
                name = request.name,
                accountNumber = request.accountNumber,
-               PrestadorServicio = DbContext.PrestadorServicio.Find(request.PrestadorServicioId),
+               PrestadorServicio = DbContext.PrestadorServicio.Find(prestadorServicioId),
                tipoServicio = request.tipoServicio,
-               statusServicio = request.statusServicio
+               statusServicio = request.statusServicio,
+               
+               
             };
             return entity;
         }
