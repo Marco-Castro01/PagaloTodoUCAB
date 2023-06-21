@@ -1,20 +1,16 @@
-﻿html, body * {
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
-}
-
-body {
-    background: linear-gradient( rgba(246,247,249,0.8), rgba(246,247,249,0.8)), url(https://dl.dropboxusercontent.com/u/22006283/preview/codepen/sky-clouds-cloudy-mountain.jpg) no-repeat center center fixed;
-    background-size: cover;
-}
-
-.btn.btn-link{
+﻿.btn.btn-link{
     display:flex;
     justify-content:center;
 }
 .p-login{
     text-align:center;
     color:#fff;
+}
+.labelcehck {
+    display: inline-flex !important;
+}
+.dropdown-item{
+    color: black !important;
 }
 
 
@@ -27,10 +23,11 @@ body {
     margin-right: auto;
     border-top: solid 1px rgba(255,255,255,.5);
     border-radius: 5px;
-    padding:20px;
+    padding: 20px;
     box-shadow: 0px 2px 7px rgba(0,0,0,0.2);
     overflow: hidden;
     transition: all .5s ease;
+    margin-top: 40px;
 }
 
 
@@ -42,10 +39,6 @@ body {
     transition: all .5s ease;
 }
 
-.nav-up {
-    transform: translateY(-100px);
-    opacity: 0;
-}
 
 li {
     padding-left: 10px;
@@ -57,7 +50,7 @@ li {
     color: #ffffff;
 }
 
-.signin-active a {
+.signin a {
     padding-bottom: 10px;
     color: #ffffff;
     text-decoration: none;
@@ -66,7 +59,7 @@ li {
     cursor: pointer;
 }
 
-.signin-inactive a {
+.signin a {
     padding-bottom: 0;
     color: rgba(255,255,255,.3);
     text-decoration: none;
@@ -74,107 +67,35 @@ li {
     cursor: pointer;
 }
 
-.signup-active a {
+.active {
     cursor: pointer;
     color: #ffffff;
     text-decoration: none;
     border-bottom: solid 2px #1059FF;
     padding-bottom: 10px;
 }
-
-.signup-inactive a {
-    cursor: pointer;
-    color: rgba(255,255,255,.3);
-    text-decoration: none;
-    transition: all .25s ease;
+.active a {
+    color: #ffffff;
 }
 
-.form-signin {
-   display:block;
+.active-form{
+    display: block;
     font-size: 16px;
     font-weight: 300;
     padding-left: 37px;
     padding-right: 37px;
     transition: opacity .5s ease, transform .5s ease;
 }
-
-.form-signin-left {
+.deactivate{
     display:none;
     transform: translateX(-400px);
     opacity: .0;
-}
-
-.form-signup {
-    display:none;
-    font-size: 16px;
-    font-weight: 300;
-    padding-left: 37px;
-    padding-right: 37px;
-    padding-top: 55px;
-    position: relative;
-    top: -375px;
-    left: 400px;
-    opacity: 0;
-    transition: all .5s ease;
-}
-
-.form-signup-left {
-    display:contents;
-    transform: translateX(-399px);
-    opacity: 1;
-}
-
-.form-signup-down {
-    top: 0px;
-    opacity: 0;
-}
-
-.success {
-    width: 80%;
-    height: 150px;
-    text-align: center;
-    position: relative;
-    top: -890px;
-    left: 450px;
-    opacity: .0;
-    transition: all .8s .4s ease;
-}
-
-.success-left {
-    transform: translateX(-406px);
-    opacity: 1;
-}
-
-.successtext {
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: 300;
-    margin-top: -35px;
-    padding-left: 37px;
-    padding-right: 37px;
-}
-
-#check path {
-    stroke: #ffffff;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: .85px;
-    stroke-dasharray: 60px 300px;
-    stroke-dashoffset: -166px;
-    fill: rgba(255,255,255,.0);
-    transition: stroke-dashoffset 2s ease .5s, fill 1.5s ease 1.0s;
-}
-
-#check.checked path {
-    stroke-dashoffset: 33px;
-    fill: rgba(255,255,255,.03);
 }
 
 .form-signin input, .form-signup input {
     color: #ffffff;
     font-size: 13px;
 }
-
 .form-styling {
     width: 100%;
     height: 35px;
@@ -183,6 +104,7 @@ li {
     border-radius: 20px;
     margin-bottom: 20px;
     background: rgba(255,255,255,.2);
+    color: #fff;
 }
 
 label {
@@ -259,18 +181,4 @@ label {
     top: -420px;
     color: rgba(255,255,255,0);
     background-color: rgba(255,255,255,1);
-}
-
-a.btn-signup:hover, a.btn-signin:hover {
-    cursor: pointer;
-    background-color: #0F4FE6;
-    transition: background-color .5s;
-}
-
-
-h1 {
-    color: #ffffff;
-    font-size: 35px;
-    font-weight: 300;
-    text-align: center;
 }

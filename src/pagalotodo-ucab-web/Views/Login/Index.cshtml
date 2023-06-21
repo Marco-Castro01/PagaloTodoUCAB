@@ -4,11 +4,11 @@
     <div class="frame">
         <div class="nav">
             <ul class="links">
-                <li class="signin-active"><a class="btn">Ingresar</a></li>
-                <li class="signup-inactive"><a class="btn">Registrarse </a></li>
+                <li class="signin active"><a class="btn">Ingresar</a></li>
+                <li class="signup"><a class="btn">Registrarse </a></li>
             </ul>
         </div>
-        <div class="form-signin">
+        <div class="form-signin active-form">
             @using (Html.BeginForm("Index", "Login", FormMethod.Post))
             {
                 @Html.ValidationSummary()
@@ -31,7 +31,7 @@
 
         </div>
 
-        <div class="form-signup">
+        <div class="form-signup deactivate">
             @using (Html.BeginForm("RegistrarConsumidor", "Login", FormMethod.Post))
             {
                 @Html.ValidationSummary()

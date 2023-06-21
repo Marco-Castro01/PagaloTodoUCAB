@@ -9,21 +9,21 @@
     <link rel="stylesheet" href="~/UCABPagaloTodoWeb.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/LoginStyle.css">
 </head>
+
+    
 <body>
     <header>
         @if (Context.Session.GetString("userid") != null)
         {
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-3">
+            <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
                 <div class="container-fluid">
-                    <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">ServicesDeskUCAB</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PAGALOTODOUCAB</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
-
                     </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1 ml-auto">
-
+                    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                        <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
@@ -33,17 +33,15 @@
                                     <a class="nav-link" asp-area="" asp-controller="Login" asp-action="GestionUsuarios">Gestion de usuarios</a>
                                 </li>
                             }
-                            else
-                            {
-                              
-                            }
-                        <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Configuracion</a>
-                            <div class="dropdown-menu">
-                                <a class="nav-link dropdown-item" asp-area="" asp-controller="Login" asp-action="Cerrar">Cerrar sesión</a>
-                                <a class="nav-link dropdown-item" asp-area="" asp-controller="Login" asp-action="CambiarPassword">Cambiar contrasena</a>
-                            </div>
-                        </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Configuracion</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Login" asp-action="Cerrar">Cerrar sesión</a>
+                                    <a class="dropdown-item"  href="@Url.Action("CambiarContrasena", "Login", new { id = (Context.Session.GetString("userid")) })">Cambiar contraseña</a>
+
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>
@@ -54,16 +52,14 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - UCABPagaloTodoWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/LoginScript.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+        @await RenderSectionAsync("Scripts", required: false)
+
 </body>
+    
+
 </html>
