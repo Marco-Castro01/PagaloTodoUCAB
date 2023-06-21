@@ -8,15 +8,26 @@
 }
 else
 {
-    <table>
-        <thead>
+    <a href="@Url.Action("RegistrarAdmin", "Login" ) ">
+        <button type="button" class="btn btn-success">Agregar Administrador</button>
+    </a>
+    <a href="@Url.Action("RegistrarPrestador", "Login")">
+
+        <button type="button" class="btn btn-success">Agregar Prestador</button>
+    </a>
+    
+    <div class="table-responsive">
+<table class="table table-striped table-bordered">
+        <thead class="thead-dark">
             <tr>
                 <th>ID</th>
                 <th>Email</th>
                 <th>Nombre</th>
                 <th>Cédula</th>
                 <th>Nickname</th>
-                <th>Estado</th>
+                <th>Estado</th>  
+                <th>Rif</th>
+                <th>TIpo de usuario</th>
                 <th>Opciones</th> <!-- Nueva columna -->
             </tr>
         </thead>
@@ -30,13 +41,17 @@ else
                     <td>@usuario.cedula</td>
                     <td>@usuario.nickName</td>
                     <td>@(usuario.status ? "Activo" : "Inactivo")</td>
+                    <td>@usuario.rif</td>
+                    <td> @usuario.Discriminator</td>
+
+
                     <td>
-                        <a href="@Url.Action("Modificar", "Usuarios", new { id = usuario.Id })">Modificar</a>
-                        <a href="@Url.Action("Eliminar", "Usuarios", new { id = usuario.Id })">Eliminar</a>
-                        <a href="@Url.Action("CambiarContrasena", "Usuarios", new { id = usuario.Id })">Cambiar contraseña</a>
+                         <a href="@Url.Action("Modificar", "Login", new { cedula = usuario.cedula,name=usuario.name, rif= usuario.rif, id = usuario.Id, nickname = usuario.nickName, usuario.status})">Modificar</a>
+                        <a href="@Url.Action("CambiarContrasena", "Login", new { id = usuario.Id })">Cambiar contraseña</a>
                     </td> <!-- Nueva columna -->
                 </tr>
             }
         </tbody>
     </table>
+    </div>
 }

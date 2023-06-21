@@ -2,6 +2,6 @@
 {
     public class ActualizarContrasenaModel
     {
-        public string Password { get; set; }
+        public string password { get; set; }
     }
 }
