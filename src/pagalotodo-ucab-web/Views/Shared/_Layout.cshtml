@@ -30,14 +30,14 @@
                             @if (Context.Session.GetString("userrole") == "AdminEntity")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Login" asp-action="GestionUsuarios">Gestion de usuarios</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="GestionUsuarios">Gestion de usuarios</a>
                                 </li>
                             }
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Configuracion</a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" asp-area="" asp-controller="Login" asp-action="Cerrar">Cerrar sesión</a>
-                                    <a class="dropdown-item"  href="@Url.Action("CambiarContrasena", "Login", new { id = (Context.Session.GetString("userid")) })">Cambiar contraseña</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Cerrar">Cerrar sesión</a>
+                                    <a class="dropdown-item"  href="@Url.Action("CambiarContrasena", "User", new { id = (Context.Session.GetString("userid")) })">Cambiar contraseña</a>
 
                                 </div>
                             </li>

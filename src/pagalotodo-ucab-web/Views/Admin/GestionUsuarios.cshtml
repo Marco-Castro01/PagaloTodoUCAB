@@ -8,10 +8,10 @@
 }
 else
 {
-    <a href="@Url.Action("RegistrarAdmin", "Login" ) ">
+    <a href="@Url.Action("RegistrarAdmin", "Admin" ) ">
         <button type="button" class="btn btn-success">Agregar Administrador</button>
     </a>
-    <a href="@Url.Action("RegistrarPrestador", "Login")">
+    <a href="@Url.Action("RegistrarPrestador", "Admin")">
 
         <button type="button" class="btn btn-success">Agregar Prestador</button>
     </a>
@@ -46,8 +46,8 @@ else
 
 
                     <td>
-                         <a href="@Url.Action("Modificar", "Login", new { cedula = usuario.cedula,name=usuario.name, rif= usuario.rif, id = usuario.Id, nickname = usuario.nickName, usuario.status})">Modificar</a>
-                        <a href="@Url.Action("CambiarContrasena", "Login", new { id = usuario.Id })">Cambiar contraseña</a>
+                         <a href="@Url.Action("Modificar", "Admin", new { cedula = usuario.cedula,name=usuario.name, rif= usuario.rif, id = usuario.Id, nickname = usuario.nickName, usuario.status})">Modificar</a>
+                            <a href="@Url.Action("CambiarContrasena", "Admin", new { id = usuario.Id })">Cambiar contraseña</a>
                     </td> <!-- Nueva columna -->
                 </tr>
             }
