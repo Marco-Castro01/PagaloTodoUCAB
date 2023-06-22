@@ -36,12 +36,19 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
+    <PackageReference Include="FirebaseAuthentication.net" Version="4.0.2" />
+
+    <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
+
+    <PackageReference Include="FireSharp" Version="2.0.4" />
+
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
 
 
     <PackageReference Include="MockQueryable.Moq" Version="5.0.1" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="XunitXml.TestLogger" Version="3.0.70" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
