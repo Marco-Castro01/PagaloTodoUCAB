@@ -10,6 +10,8 @@ using UCABPagaloTodoMS.Application.Handlers.Queries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Firebase.Auth.Providers;
+using FireSharp.Config;
 using Microsoft.OpenApi.Models;
 using UCABPagaloTodoMS.Application.Mailing;
 
@@ -62,20 +64,20 @@ public class Startup
 
             // Especificar que los métodos o controladores que requieren autenticación deben utilizar este esquema de seguridad
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
+                    {
+                    new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                        },
+                    new List<string>()
+                    }
 
-    });
+                });
 
         });
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -98,8 +100,8 @@ public class Startup
         services.Configure<AppSettings>(appSettingsSection);
         services.AddTransient<IUCABPagaloTodoDbContext, UCABPagaloTodoDbContext>();
         var emailConfig = Configuration
-   .GetSection("EmailConfiguration")
-   .Get<EmailConfiguration>();
+            .GetSection("EmailConfiguration")
+            .Get<EmailConfiguration>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddSingleton(emailConfig);
         services.AddEndpointsApiExplorer();
@@ -108,6 +110,9 @@ public class Startup
 
         services.AddMediatR(
        typeof(ConsultarValoresQueryHandler).GetTypeInfo().Assembly);
+        
+
+
     }
 
     public void Configure(IApplicationBuilder app)

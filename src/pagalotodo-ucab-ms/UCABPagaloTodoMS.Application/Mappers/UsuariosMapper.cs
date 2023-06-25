@@ -19,7 +19,7 @@ namespace UCABPagaloTodoMS.Application.Mappers
         public static AdminEntity MapRequestAdminEntity(AdminRequest request)
         {
                          
-                    var u = new AdminEntity();
+            var u = new AdminEntity();
             using (var hash = new HMACSHA512())
             {
                 u.email = request.email;

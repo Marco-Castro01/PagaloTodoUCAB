@@ -56,6 +56,37 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        
+        
+        
+        
+        
+        
+        [HttpGet("prestador_servicio/{idPrestadorServicio}/crear_archivo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> generacionArchivo(Guid idPrestadorServicio)
+        {
+            _logger.LogInformation("Entrando al método que genera el archivo de conciliacion");
+            try
+            {
+                var query = new CrearYEnviarArchivoConciliacionCommand(idPrestadorServicio);
+                var response = await _mediator.Send(query);
+                if(response.Equals("No posee servicios asociados"))
+                    return StatusCode(204,response);
+                return response;
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo,ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la consulta de los Admins. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }
