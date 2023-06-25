@@ -87,7 +87,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 _dbContext.Usuarios.Add(entity);
                 var id = entity.Id;
-                
+                await _dbContext.SaveEfContextChanges("APP");
+                transaccion.Commit(); 
                 _logger.LogInformation("AgregarAdminHandler.HandleAsync {Response}", id);
                 return id;
             }catch (ValidationException ex)
