@@ -73,7 +73,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de valores ejemplo.</returns>
-        [HttpPost("/prestadorServicio/{prestadorServicioId}/servicio")]
+        [HttpPost("/prestador/{prestadorServicioId}/servicio")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> creacionYAsignacionDeServicio(Guid prestadorServicioId,[FromBody] ServicioRequest ServicioRequests)
@@ -96,6 +96,40 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex);
             }
         }
+        
+        
+        
+        
+        
+        
+        
+        [HttpDelete("/prestador/{prestadorId}/enviarArchivo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> ArchivoDeConciliacion(IFormFile file, Guid prestadorId)
+        {
+            _logger.LogInformation("Entrando al método que Elimina");
+            try
+            { 
+                if (file == null && file.Length == 0)
+                    return BadRequest("Debe seleccionar un archivo para cargar.");
+
+                var query = new RecibirArchivoConciliacionCommand(file,prestadorId);
+                var response = await _mediator.Send(query);
+                return Ok("Eliminacion Exitosa");
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar Eliminar un Servicio. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar Eliminar un Servicio. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        
     }
 
     

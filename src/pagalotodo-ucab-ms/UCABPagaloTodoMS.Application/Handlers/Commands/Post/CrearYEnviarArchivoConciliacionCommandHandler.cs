@@ -21,6 +21,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Newtonsoft;
 using UCABPagaloTodoMS.Core.Entities;
+using UCABPagaloTodoMS.Core.Enums;
+using UCABPagaloTodoMS.Infrastructure.Migrations;
 using ValidationException = FluentValidation.ValidationException;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
@@ -154,7 +156,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 {
                     Id = new Guid(),
                     urlFirebase = dowloadURL,
-                    prestadorServicio = prestador
+                    prestadorServicio = prestador,
+                    tipoArchivo = ArchivoFirebase.enviado
+                    
                 });
 
                 await _dbContext.SaveEfContextChanges("APP");
