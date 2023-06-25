@@ -63,19 +63,18 @@ namespace UCABPagaloTodoMS.Controllers
         
         
         
-        [HttpGet("prestador_servicio/{idPrestadorServicio}/crear_archivo")]
+        [HttpGet("prestador_servicio/{idPrestadorServicio}/cierreContable")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<string>> generacionArchivo(Guid idPrestadorServicio)
+        public async Task<ActionResult<List<CierreContableResponse>>> cierreContable(Guid idPrestadorServicio)
         {
             _logger.LogInformation("Entrando al método que genera el archivo de conciliacion");
             try
             {
-                var query = new CrearYEnviarArchivoConciliacionCommand(idPrestadorServicio);
+                var query = new CierreContableCommand(idPrestadorServicio);
                 var response = await _mediator.Send(query);
-                if(response.Equals("No posee servicios asociados"))
-                    return StatusCode(204,response);
-                return response;
+               
+                return Ok(response);
             }
             catch (CustomException ex)
             {

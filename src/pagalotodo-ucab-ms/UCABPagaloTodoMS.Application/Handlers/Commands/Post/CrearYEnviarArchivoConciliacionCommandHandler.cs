@@ -115,7 +115,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     if (string.IsNullOrEmpty(campos))
                         throw new CustomException(500,"ERROR: No tiene nombre el campo");
 
-                    campos += ",monto,check";
+                    campos ="identificador,"+campos+",monto,campo";
 
                     csvContent.AppendLine("Servicio: " + servicio.name);
                     csvContent.AppendLine(campos);
@@ -124,6 +124,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     foreach (var pago in listPagos)
                     { 
                         StringBuilder datosString = new StringBuilder();
+                        datosString.Append(pago.Id+",");
                         foreach (var campo in campos.Split(","))
                         {
                             if (campo.Equals("nombre"))
