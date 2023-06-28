@@ -5,6 +5,8 @@ using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
+ 
+
 namespace UCABPagaloTodoMS.Infrastructure.Database;
 
 
@@ -49,6 +51,7 @@ public class UCABPagaloTodoDbContext : DbContext, IUCABPagaloTodoDbContext
 
         modelBuilder.Entity<ServicioCampoEntity>()
             .HasKey(sc => new { sc.ServicioId, sc.CampoId });
+        
         
     }
   

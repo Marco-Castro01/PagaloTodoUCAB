@@ -2,10 +2,12 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Firebase.Auth.Providers;
 using Firebase.Storage;
 using UCABPagaloTodoMS.Application.Commands;
@@ -84,6 +86,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             var transaccion = _dbContext.BeginTransaction();
             try
             {
+                
                 _logger.LogInformation("AgregarPrestadorCommandHandler.HandleAsync {Request}", request);
                 StringBuilder csvContent = new StringBuilder();
                 var FirebaseStorage = new FirebaseStorage("pagalotodoucab-927ea.appspot.com");
@@ -111,11 +114,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     if (servicio.ServicioCampo == null || servicio.ServicioCampo.Count == 0)
                         return "No posee servicios asociados";
 
-                    string campos = string.Join(",", servicio.ServicioCampo.Select(sc => sc.Campo?.Nombre));
+                    string campos = string.Join(";", servicio.ServicioCampo.Select(sc => sc.Campo?.Nombre));
                     if (string.IsNullOrEmpty(campos))
                         throw new CustomException(500,"ERROR: No tiene nombre el campo");
 
-                    campos ="identificador,"+campos+",monto,campo";
+                    campos ="identificador;"+campos+";monto;check";
 
                     csvContent.AppendLine("Servicio: " + servicio.name);
                     csvContent.AppendLine(campos);
@@ -124,23 +127,21 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     foreach (var pago in listPagos)
                     { 
                         StringBuilder datosString = new StringBuilder();
-                        datosString.Append(pago.Id+",");
-                        foreach (var campo in campos.Split(","))
+                        datosString.Append(pago.Id+";");
+                        foreach (var campo in campos.Split(";"))
                         {
                             if (campo.Equals("nombre"))
-                                datosString.Append(pago.consumidor.name + " " + pago.consumidor.lastName + ",");
+                                datosString.Append(pago.consumidor.name + " " + pago.consumidor.lastName + ";");
                             if (campo.Equals("cedula"))
-                                datosString.Append(pago.consumidor.cedula + ",");
+                                datosString.Append(pago.consumidor.cedula + ";");
                             if (campo.Equals("email"))
-                                datosString.Append(pago.consumidor.email + ",");
+                                datosString.Append(pago.consumidor.email + ";");
                             if (campo.Equals("nickname"))
-                                datosString.Append(pago.consumidor.nickName + ",");
+                                datosString.Append(pago.consumidor.nickName + ";");
                             
                         }
                         datosString.Append(pago.valor.ToString());
                         csvContent.AppendLine(datosString.ToString());
-                        
-                        
                     }
                 }
 
