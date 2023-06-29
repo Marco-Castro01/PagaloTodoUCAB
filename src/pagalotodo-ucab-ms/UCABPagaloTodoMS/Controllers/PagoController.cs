@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
@@ -148,17 +150,24 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna mensaje de confirmacion o de error.</returns>
-        [HttpPost("pagoDirecto")]
+        [HttpPost("servicio/{idServicio}/pagoDirecto")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> AgregarPagoDirecto(PagoDirectoRequest pagoDirecto)
+        public async Task<ActionResult<Guid>> AgregarPagoDirecto(PagoDirectoRequest pagoDirecto,Guid idServicio)
         {
             _logger.LogInformation("Entrando al método que registra El pago");
             try
             {
-                var query = new AgregarPagoDirectoCommand(pagoDirecto);
+                string id = User.FindFirstValue("Id");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con consumidor");
+
+                
+                var query = new AgregarPagoDirectoCommand(pagoDirecto,idServicio,new Guid(id));
                 var response = await _mediator.Send(query);
-                return Ok("Pago Exitoso");
+
+
+                    return Ok("Pago Exitoso");
             }
             catch (Exception ex)
             {

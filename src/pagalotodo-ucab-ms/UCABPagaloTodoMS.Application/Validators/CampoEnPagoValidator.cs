@@ -8,15 +8,25 @@ public class CampoEnPagoValidator : AbstractValidator<CamposPagosRequest>
     public CampoEnPagoValidator()
     {
         RuleFor(x => x.Nombre).NotEmpty().WithMessage("Debe tener un nombre de campo");
-        RuleFor(x => x.Longitud).GreaterThan(0).WithMessage("La longitud debe ser mayor a 0");
+        RuleFor(x => x.Longitud).Must((request, longitud) =>
+        {
+            if (request.TipoDato == TipoDato.fecha)
+            {
+                return longitud == 0;
+            }
+            else
+            {
+                return longitud > 0;
+            }
+        }).WithMessage(request => request.TipoDato == TipoDato.fecha ? "La longitud debe ser 0 para el TipoDato Fecha." : "La longitud debe ser mayor a 0 para otros tipos de dato.");
 
-        RuleFor(x => x.formatofecha)
-            .Must((request, formatofecha) =>
+        RuleFor(x => x.contenido)
+            .Must((request, contenido) =>
             {
                 if (request.TipoDato == TipoDato.fecha)
                 {
                     // Validar el formato de fecha aquí
-                    return Regex.IsMatch(formatofecha, @"^(?:(?:(?:0?[1-9]|1\d|2[0-8])([\/.-])(?:0?[1-9]|1[0-2])\1(?:\d{4}|\d{2}))|(?:(?:(?:0?[1-9]|1[0-2])([\/.-])(?:0?[1-9]|1\d|2[0-8])\2(?:\d{4}|\d{2}))|(?:(?:\d{4}|\d{2})([\/.-])(?:0?[1-9]|1[0-2])\3(?:0?[1-9]|1\d|2[0-8]))))$");
+                    return Regex.IsMatch(contenido, @"^(?:(?:(?:0?[1-9]|1\d|2[0-8])([\/.-])(?:0?[1-9]|1[0-2])\1(?:\d{4}|\d{2}))|(?:(?:(?:0?[1-9]|1[0-2])([\/.-])(?:0?[1-9]|1\d|2[0-8])\2(?:\d{4}|\d{2}))|(?:(?:\d{4}|\d{2})([\/.-])(?:0?[1-9]|1[0-2])\3(?:0?[1-9]|1\d|2[0-8]))))$");
                 }
                 return true;
             })
@@ -29,20 +39,34 @@ public class CampoEnPagoValidator : AbstractValidator<CamposPagosRequest>
             {
                 return request.formatofecha == null &&
                        request.separadorDeDecimales == null &&
-                       (request.separadorDeMiles == "," || request.separadorDeMiles == ".");
+                       (request.separadorDeMiles == "," || request.separadorDeMiles == ".") &&
+                       request.contenido.All(char.IsDigit);
+
+
             }
             else if (tipoDato == TipoDato.conDecimal)
             {
                 return request.formatofecha == null &&
                        (request.separadorDeMiles == "," || request.separadorDeMiles == ".") &&
                        (request.separadorDeDecimales == "," || request.separadorDeDecimales == ".") &&
-                       request.separadorDeMiles != request.separadorDeDecimales;
+                       request.separadorDeMiles != request.separadorDeDecimales &&
+                       Regex.IsMatch(request.contenido, @"^[0-9]+(\.[0-9]+)?$");
             }
             else if (tipoDato == TipoDato.hiperTexto)
             {
-                return request.formatofecha == null &&
+                return request.formatofecha != null &&
                        request.separadorDeMiles == null &&
                        request.separadorDeDecimales == null;
+
+            }else if (tipoDato==TipoDato.fecha)
+            {
+                return request.contenido != null &&
+                       request.formatofecha != null &&
+                       request.separadorDeMiles == null &&
+                       request.separadorDeDecimales == null &&
+                       request.Longitud == 0;
+
+
             }
 
             return false;
