@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace UCABPagaloTodoMS.Application.CustomExceptions
 {
@@ -53,6 +54,15 @@ namespace UCABPagaloTodoMS.Application.CustomExceptions
 
             return new CustomException(codigo, mensaje, ex, ex.Errors.Select(e => new Error { Campo = e.PropertyName, Mensaje = e.ErrorMessage }).ToList());
         }
+
+/*
+        public CustomException FormatListaDeExcepciones(List<ValidationFailure> validationFailures)
+        {
+            string errores =String.Join("\n",validationFailures.Select(e => e.ErrorMessage).ToList());
+
+            return new CustomException()
+        }
+        */
     }
 
     public class Error
