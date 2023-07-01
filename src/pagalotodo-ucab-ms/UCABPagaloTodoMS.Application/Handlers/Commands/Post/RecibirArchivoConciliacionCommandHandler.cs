@@ -11,6 +11,8 @@ using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
 using UCABPagaloTodoMS.Core.Enums;
+using UCABPagaloTodoMS.Core.Services;
+using UCABPagaloTodoMS.Infrastructure.Services;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
@@ -19,12 +21,15 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<RecibirArchivoConciliacionCommandHandler> _logger;
         private readonly FirebaseStorage _firebaseStorage;
+        private readonly IRabbitMQProducer _rabbitMQProducer;
 
-        public RecibirArchivoConciliacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<RecibirArchivoConciliacionCommandHandler> logger)
+        public RecibirArchivoConciliacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<RecibirArchivoConciliacionCommandHandler> logger, IRabbitMQProducer rabbitMQProducer)
         {
             _dbContext = dbContext;
             _logger = logger;
+            _rabbitMQProducer = rabbitMQProducer;
             _firebaseStorage = new FirebaseStorage("pagalotodoucab-927ea.appspot.com");
+
         }
 
         public async Task<string> Handle(RecibirArchivoConciliacionCommand request, CancellationToken cancellationToken)
@@ -46,6 +51,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                         dowloadURL = await _firebaseStorage.Child(firebaseStoragePath).GetDownloadUrlAsync();
                     }
                 }
+
+                // Aquí se llaman las funciones que se encargarán de procesar el archivo recibido y enviarlo a la cola
+                await ProcesarYEnviarAColaRabbit(csvContent);
+
+                // Se inicia el consumidor en un nuevo hilo
+    
+                // Esperar a que el consumo de mensajes se haya iniciado antes de continuar
 
                 if (string.IsNullOrEmpty(dowloadURL))
                     throw new CustomException(500, "Error en guardado de archivo en Firebase");
@@ -77,5 +89,41 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 throw new CustomException(ex.Message);
             }
         }
+
+        public async Task ProcesarYEnviarAColaRabbit(IFormFile file)
+        {
+            List<string> lines = new List<string>();
+
+            using (StreamReader reader = new StreamReader(file.OpenReadStream()))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (IsLineValid(line))
+                    {
+                        lines.Add(line);
+                    }
+                }
+            }
+
+            await Task.Run(() =>
+            {
+                Parallel.ForEach(lines, line =>
+                {
+                    _rabbitMQProducer.PublishMessageToQueue1(line.Split(";")[0] + ";" + line.Split(";")[1]);
+                });
+            });
+        }
+
+        private bool IsLineValid(string line)
+        {
+            if (line.Contains("Servicio") || line.Contains("identificador"))
+            {
+                return false;
+            }
+
+            return !string.IsNullOrWhiteSpace(line);
+        }
+        
     }
 }
