@@ -4,16 +4,18 @@ using UCABPagaloTodoMS.Infrastructure.Database;
 using UCABPagaloTodoMS.Infrastructure.Settings;
 using UCABPagaloTodoMS.Providers.Implementation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using RestSharp;
 using MediatR;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Firebase.Auth.Providers;
-using FireSharp.Config;
 using Microsoft.OpenApi.Models;
+using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.Handlers.Commands;
+using UCABPagaloTodoMS.Application.Handlers.Commands.Patch;
 using UCABPagaloTodoMS.Application.Mailing;
+using UCABPagaloTodoMS.Core.Services;
+using UCABPagaloTodoMS.Infrastructure.Services;
 
 namespace UCABPagaloTodoMS;
 
@@ -38,6 +40,16 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        
+        //Servicio RabbitMQ
+        services.AddTransient<IRabbitMQService, RabbitMQService>();
+        services.AddTransient<IRabbitMQProducer, RabbitMQProducer>();
+        services.AddHostedService<RabbitMqConsumerHostedService>();
+
+        
+        //---------
+        services.AddMediatR(typeof(RecibirArchivoConciliacionCommandHandler));
+
         services.AddCors(options =>
         {
             options.AddPolicy(_allowAllOriginsPolicy,
@@ -110,11 +122,12 @@ public class Startup
 
         services.AddMediatR(
        typeof(ConsultarValoresQueryHandler).GetTypeInfo().Assembly);
+
         
 
 
     }
-
+    
     public void Configure(IApplicationBuilder app)
     {
         var appSettingsSection = Configuration.GetSection("AppSettings");

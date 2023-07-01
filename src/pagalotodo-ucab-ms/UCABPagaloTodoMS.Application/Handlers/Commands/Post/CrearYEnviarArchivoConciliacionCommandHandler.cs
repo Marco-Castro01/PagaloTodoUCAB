@@ -118,16 +118,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     if (string.IsNullOrEmpty(campos))
                         throw new CustomException(500,"ERROR: No tiene nombre el campo");
 
-                    campos ="identificador;"+campos+";monto;check";
+                    campos ="identificador;check;"+campos+";monto";
 
-                    csvContent.AppendLine("Servicio: " + servicio.name);
+                    csvContent.AppendLine("Servicio; " + servicio.name);
                     csvContent.AppendLine(campos);
                    
                     List<PagoEntity> listPagos = _dbContext.Pago.Where(c => c.servicio != null && c.servicio.Id == servicio.Id && c.CreatedAt>=fechaUltimoCierre).Include(o => o.consumidor).ToList();
                     foreach (var pago in listPagos)
                     { 
                         StringBuilder datosString = new StringBuilder();
-                        datosString.Append(pago.Id+";");
+                        datosString.Append(pago.Id+";en espera;");
                         foreach (var campo in campos.Split(";"))
                         {
                             if (campo.Equals("nombre"))
