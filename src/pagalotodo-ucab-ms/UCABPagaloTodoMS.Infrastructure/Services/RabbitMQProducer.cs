@@ -13,13 +13,13 @@ namespace UCABPagaloTodoMS.Infrastructure.Services
             _rabbitMQService = rabbitMQService;
         }
 
-        public void PublishMessageToQueue1(string message)
+        public void PublishMessageToConciliacion_Queue(string message)
         {
             var body = Encoding.UTF8.GetBytes(message);
             _rabbitMQService.PublishToQueue1(body);
         }
 
-        public void PublishMessageToQueue2(string message)
+        public void PublishMessageToVerificacion_Queue(string? message)
         {
             var body = Encoding.UTF8.GetBytes(message);
             _rabbitMQService.PublishToQueue2(body);
