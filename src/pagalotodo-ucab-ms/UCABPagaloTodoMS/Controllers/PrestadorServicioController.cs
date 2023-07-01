@@ -136,6 +136,50 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        /// <summary>
+        ///     Endpoint para El envio del archivo conciliadoo
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Post Servicios
+        ///     ## Url
+        ///     POST /
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de valores ejemplo.</returns>
+        [HttpPost("/prestador/archivoVerificacion/{servicioId}/enviarArchivo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> ArchivoDeVerificacion(IFormFile file, Guid servicioId)
+        {
+            _logger.LogInformation("Entrando al método que envia el archivo de conciliacion de respuesta");
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest("Debe seleccionar un archivo para cargar.");
+
+                var command = new RecibirArchivoVerificacionCommand(file, servicioId,new Guid("5516f619-498f-4132-7621-08db743ec357"));
+                var response = await _mediator.Send(command);
+                return Ok("Envio Exitoso");
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError(ex, "Error al intentar enviar archivo");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al intentar enviar archivo");
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        
+        
         /// <summary>
         ///     Endpoint para la configuracion de los campos a recibir en los pagos
         /// </summary>

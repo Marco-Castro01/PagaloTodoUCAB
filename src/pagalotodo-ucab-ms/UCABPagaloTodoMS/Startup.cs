@@ -41,12 +41,11 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         
-        //Servicio RabbitMQ
+        //RabbitMQ
         services.AddTransient<IRabbitMQService, RabbitMQService>();
         services.AddTransient<IRabbitMQProducer, RabbitMQProducer>();
-        services.AddHostedService<RabbitMqConsumerHostedService>();
-
-        
+        services.AddHostedService<RabbitMqConsumerConciliacionHS>();
+        services.AddHostedService<RabbitMqConsumerVerificacionHS>();
         //---------
         services.AddMediatR(typeof(RecibirArchivoConciliacionCommandHandler));
 

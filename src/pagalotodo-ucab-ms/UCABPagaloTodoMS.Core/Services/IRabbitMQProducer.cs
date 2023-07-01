@@ -2,8 +2,8 @@
 {
     public interface IRabbitMQProducer
     {
-        void PublishMessageToQueue1(string message);
+        void PublishMessageToConciliacion_Queue(string message);
         
-        void PublishMessageToQueue2(string message);
+        void PublishMessageToVerificacion_Queue(string? message);
     }
 }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Core.Database;
@@ -16,14 +17,14 @@ using UCABPagaloTodoMS.Infrastructure.Services;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
-    public class RecibirArchivoConciliacionCommandHandler : IRequestHandler<RecibirArchivoConciliacionCommand, string>
+    public class RecibirArchivoVerificacionCommandHandler : IRequestHandler<RecibirArchivoVerificacionCommand, string>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<RecibirArchivoConciliacionCommandHandler> _logger;
+        private readonly ILogger<RecibirArchivoVerificacionCommandHandler> _logger;
         private readonly FirebaseStorage _firebaseStorage;
         private readonly IRabbitMQProducer _rabbitMQProducer;
 
-        public RecibirArchivoConciliacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<RecibirArchivoConciliacionCommandHandler> logger, IRabbitMQProducer rabbitMQProducer)
+        public RecibirArchivoVerificacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<RecibirArchivoVerificacionCommandHandler> logger, IRabbitMQProducer rabbitMQProducer)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -32,29 +33,31 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
         }
 
-        public async Task<string> Handle(RecibirArchivoConciliacionCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(RecibirArchivoVerificacionCommand request, CancellationToken cancellationToken)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
             {
                 IFormFile csvContent = request._file;
-                PrestadorServicioEntity prestador = await _dbContext.PrestadorServicio.FindAsync(request._idprestadorservicio) ?? throw new InvalidOperationException();
-
+                PrestadorServicioEntity prestador = _dbContext.PrestadorServicio.Include(o=>o.Servicio).FirstOrDefault(o=>o.Id==request._IdPrestador) ?? throw new InvalidOperationException();
+                bool algunObjetoTieneId = prestador.Servicio.Any(objeto => objeto.Id == request._idServicio);
+                if (!algunObjetoTieneId)
+                    throw new CustomException(403, "Error al conectar con servicio proporcionado");
+                
                 string dowloadURL = "";
                 using (StreamReader reader = new StreamReader(csvContent.OpenReadStream()))
                 {
                     string csvContentString = await reader.ReadToEndAsync();
                     using (MemoryStream memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(csvContentString)))
                     {
-                        string firebaseStoragePath = "archivos_recibidos/" + prestador.nickName + "-" + DateTime.Now.ToString("dd-MM-yyyy_HH:mm:ss") + ".csv";
+                        string firebaseStoragePath = "archivos_recibidos_verificacion/" + request._file.FileName+"-"+prestador.nickName + "-" + DateTime.Now.ToString("dd-MM-yyyy_HH:mm:ss") + ".csv";
                         var load = await _firebaseStorage.Child(firebaseStoragePath).PutAsync(memoryStream);
                         dowloadURL = await _firebaseStorage.Child(firebaseStoragePath).GetDownloadUrlAsync();
                     }
                 }
 
                 // Aquí se llaman las funciones que se encargarán de procesar el archivo recibido y enviarlo a la cola
-                await ProcesarYEnviarAColaRabbit(csvContent);
-
+                await ProcesarYEnviarAColaRabbit(request._file,request._idServicio);
                 // Se inicia el consumidor en un nuevo hilo
     
                 // Esperar a que el consumo de mensajes se haya iniciado antes de continuar
@@ -90,10 +93,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
-        public async Task ProcesarYEnviarAColaRabbit(IFormFile file)
+        public Task ProcesarYEnviarAColaRabbit(IFormFile file,Guid idServicio)
         {
-            List<string> lines = new List<string>();
-
+            StringBuilder archivoConvert = new StringBuilder();
+            archivoConvert.AppendLine("idServicio:"+idServicio);
             using (StreamReader reader = new StreamReader(file.OpenReadStream()))
             {
                 string line;
@@ -101,18 +104,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 {
                     if (IsLineValid(line))
                     {
-                        lines.Add(line);
+                        archivoConvert.AppendLine(line);
+
                     }
+
                 }
             }
-
-            await Task.Run(() =>
-            {
-                Parallel.ForEach(lines, line =>
-                {
-                    _rabbitMQProducer.PublishMessageToConciliacion_Queue(line.Split(";")[0] + ";" + line.Split(";")[1]);
-                });
-            });
+            _rabbitMQProducer.PublishMessageToVerificacion_Queue(archivoConvert.ToString());
+            return Task.CompletedTask;
         }
 
         private bool IsLineValid(string line)

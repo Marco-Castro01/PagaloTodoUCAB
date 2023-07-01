@@ -8,7 +8,7 @@ using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Infrastructure.Services
 {
-    public class RabbitMqConsumerHostedService : IHostedService
+    public class RabbitMqConsumerConciliacionHS : IHostedService
     {
         private readonly string _queueName;
         private readonly IConnection _connection;
@@ -16,7 +16,7 @@ namespace UCABPagaloTodoMS.Infrastructure.Services
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly IServiceProvider _serviceProvider;
 
-        public RabbitMqConsumerHostedService(IServiceProvider serviceProvider)
+        public RabbitMqConsumerConciliacionHS(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             var factory = new ConnectionFactory
