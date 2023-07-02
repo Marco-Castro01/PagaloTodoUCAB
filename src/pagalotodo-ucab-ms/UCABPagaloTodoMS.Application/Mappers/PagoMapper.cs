@@ -35,14 +35,14 @@ namespace UCABPagaloTodoMS.Application.Mappers
             };
             return entity;
         }
-        public static PagoEntity MapRequestPorValidacionEntity(PagoPorValidacionRequest Request, IUCABPagaloTodoDbContext DbContext)
+        public static PagoEntity MapRequestPorValidacionEntity(DeudaEntity deuda,Guid consumidorId, IUCABPagaloTodoDbContext DbContext)
         {
             
             var entity = new PagoEntity()
             {
-                valor = DbContext.Deuda.Find(Request.IdDeuda)?.deuda,
-                consumidor = DbContext.Consumidor.Find(Request.ConsumidorId),
-                servicio = DbContext.Servicio.Find(Request.ServicioId),
+                valor = deuda.deuda,
+                consumidor = DbContext.Consumidor.Find(consumidorId),
+                servicio = deuda.servicio
                 
 
             };
