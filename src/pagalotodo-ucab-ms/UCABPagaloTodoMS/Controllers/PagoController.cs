@@ -167,7 +167,7 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
 
 
-                    return Ok("Pago Exitoso");
+                return Ok("Pago Exitoso");
             }
             catch (Exception ex)
             {
@@ -198,15 +198,16 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna mensaje de confirmacion o de error.</returns>
-        [HttpPost("pagoPorValidacion")]
+        [HttpPost("/Consumidor/pago/{idDeuda}/pagar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> AgregarPagoPorValidacion(PagoPorValidacionRequest pagoPorValidacion)
+        public async Task<ActionResult<Guid>> AgregarPagoPorValidacion(PagoVerificacionRequest pagoVerif,Guid idDeuda)
         {
             _logger.LogInformation("Entrando al método que registra los Admins");
             try
             {
-                var query = new AgregarPagoPorValidacionCommand(pagoPorValidacion);
+                var idConsumidor = new Guid("3db298c1-9e17-45fb-7625-08db743ec357");
+                var query = new AgregarPagoPorverificacionCommand(pagoVerif, idConsumidor,idDeuda);
                 var response = await _mediator.Send(query);
                 return Ok("Pago exitoso");
             }
