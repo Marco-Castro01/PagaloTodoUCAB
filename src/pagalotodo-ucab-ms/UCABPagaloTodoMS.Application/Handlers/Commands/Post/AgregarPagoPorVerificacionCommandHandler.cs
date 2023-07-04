@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
@@ -75,8 +76,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             try
             {
                 _logger.LogInformation("AgregarPagoPorVerificacionCommandHandler.HandleAsync {Request}" , request);
-                var deuda = _dbContext.Deuda.Include(o=>o.servicio).FirstOrDefault(x=>x.Id==request._idDeuda);
+                var deuda = _dbContext.Deuda.Include(o=>o.servicio).FirstOrDefault(x=>x.Id==request._idDeuda && x.deleted==false);
                 var entity = PagoMapper.MapRequestPorValidacionEntity(deuda,request._idConsumidor,_dbContext);
+                var json=JsonConvert.SerializeObject(request._request.camposPagos);
+                entity.formatoPago = json;
                 validarPago(entity);
                 validarCamposEnlista(request._request.camposPagos);
                 _dbContext.Pago.Add(entity);

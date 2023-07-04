@@ -53,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
 
                 // Consulta todos los registros de la tabla Pago
-                var result = _dbContext.Pago.Select(c => new PagoResponse()
+                var result = _dbContext.Pago.Where(x=>x.deleted==false).Select(c => new PagoResponse()
                 {
                     Id = c.Id,
                     valor = c.valor,

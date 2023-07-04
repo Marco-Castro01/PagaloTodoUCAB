@@ -87,11 +87,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             try
             {
                 _logger.LogInformation("AgregarPrestadorCommandHandler.HandleAsync {Request}", request);
-                var prestadorServicio = _dbContext.PrestadorServicio.FirstOrDefault(c => c.Id == request);
+                var prestadorServicio = _dbContext.PrestadorServicio.FirstOrDefault(c => c.Id == request && c.deleted==false);
                 var servicios = _dbContext.Servicio
-                    .Where(c => c.PrestadorServicio.Id == prestadorServicio.Id).Include(p=>p.Pago).ToList();
+                    .Where(c => c.PrestadorServicio.Id == prestadorServicio.Id && c.deleted==false).Include(p=>p.Pago).ToList();
                 var ultimoCierreFecha = await _dbContext.ArchivoFirebase
-                    .Where(l => l.prestadorServicio.Id == prestadorServicio.Id)
+                    .Where(l => l.prestadorServicio.Id == prestadorServicio.Id && l.deleted==false)
                     .OrderByDescending(p => p.CreatedAt)
                     .Select(p => p.CreatedAt)
                     .FirstOrDefaultAsync();

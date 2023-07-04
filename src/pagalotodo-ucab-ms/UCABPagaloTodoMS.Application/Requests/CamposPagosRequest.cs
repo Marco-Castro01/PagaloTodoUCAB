@@ -11,8 +11,9 @@ namespace UCABPagaloTodoMS.Application.Requests
         public TipoDato TipoDato { get; set; }
         public string? separadorDeMiles { get; set; } = null;
         public string? separadorDeDecimales { get; set; } = null;
-        
         public string? formatofecha { get; set; } = null;
+        public bool inCOnciliacion { get; set; } = false;
+
         
         
     }

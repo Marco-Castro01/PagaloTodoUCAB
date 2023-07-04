@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
@@ -44,6 +45,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que Lista los pagos realizados por El consumidor");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new ConsultarDeudaQuery(request,idServicio);
                 var response = await _mediator.Send(query);
                 return Ok(response);

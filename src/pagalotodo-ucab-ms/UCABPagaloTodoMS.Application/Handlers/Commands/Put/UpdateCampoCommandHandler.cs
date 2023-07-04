@@ -6,26 +6,29 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Mappers;
+using UCABPagaloTodoMS.Application.Validators;
 using UCABPagaloTodoMS.Core.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
-    public class EditarUsuarioCommandHandler : IRequestHandler<EditarUsuarioCommand, Guid>
+    public class UpdateCampoCommandHandler : IRequestHandler<UpdateCampoCommand, string>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<EditarUsuarioCommandHandler> _logger;
+        private readonly ILogger<UpdateCampoCommandHandler> _logger;
 
-        public EditarUsuarioCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<EditarUsuarioCommandHandler> logger)
+        public UpdateCampoCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<UpdateCampoCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public async Task<Guid> Handle(EditarUsuarioCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(UpdateCampoCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -48,28 +51,32 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
-        private async Task<Guid> HandleAsync(EditarUsuarioCommand request)
+        private async Task<string> HandleAsync(UpdateCampoCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
             {
                 _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Request}", request);
 
-                // Buscar el usuario que se va a editar
-                var user = _dbContext.Usuarios.FirstOrDefault(u => u.email == request._request.email && u.deleted==false);
+                var campo = _dbContext.CamposConciliacion
+                    .FirstOrDefault(x=>x.Id==request._idCampo && x.deleted==false);
+                if (campo == null)
+                    throw new CustomException(404 ,"Campo no existente");
+                campo.Longitud = request._request.Longitud;
+                campo.Nombre = request._request.Nombre;
+                CamposConciliacionValidator campoValidator = new CamposConciliacionValidator();
+                ValidationResult result = await campoValidator.ValidateAsync(campo);
+                if (!result.IsValid)
+                {
+                    throw new ValidationException(result.Errors);
+                }
 
-                // Actualizar los datos del usuario con los valores del comando
-                user.status = request._request.status;
-                user.name = request._request.name;
-                user.nickName = request._request.nickName;
-
-                _dbContext.Usuarios.Update(user);
+                _dbContext.CamposConciliacion.Update(campo);
                 await _dbContext.SaveEfContextChanges("APP");
 
-                var id = user.Id;
                 transaccion.Commit();
-                _logger.LogInformation("EditarUsuarioCommandHandler.HandleAsync {Response}", id);
-                return id;
+                _logger.LogInformation("EditarUsuarioCommandHandler.HandleAsync {Response}", campo.Id);
+                return "Modificacion exitosa";
 
             }
             catch (CustomException ex)

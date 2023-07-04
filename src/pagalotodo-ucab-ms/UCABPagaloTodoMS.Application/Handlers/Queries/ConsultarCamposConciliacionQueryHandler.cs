@@ -53,7 +53,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarCamposConciliacionQueryHandler.HandleAsync");
 
                 // Consulta los registros de la tabla CamposConciliacion y los mapea a objetos CamposConciliacionResponse
-                var result = _dbContext.CamposConciliacion.Select(c => new CamposConciliacionResponse()
+                var result = _dbContext.CamposConciliacion
+                    .Where(x=>x.deleted==false)
+                    .Select(c => new CamposConciliacionResponse()
                 {
                     Id = c.Id,
                     Nombre = c.Nombre,

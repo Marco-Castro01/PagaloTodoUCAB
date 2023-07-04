@@ -22,6 +22,8 @@ using FireSharp.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Newtonsoft;
+using Newtonsoft.Json;
+using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Core.Entities;
 using UCABPagaloTodoMS.Core.Enums;
 using UCABPagaloTodoMS.Infrastructure.Migrations;
@@ -94,7 +96,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 PrestadorServicioEntity prestador = await _dbContext.PrestadorServicio.FindAsync(request) ?? throw new InvalidOperationException();
                 var fechaUltimoCierre = await _dbContext.ArchivoFirebase
-                    .Where(c => c.prestadorServicio.Id == prestador.Id)
+                    .Where(c => c.prestadorServicio.Id == prestador.Id && c.deleted==false)
                     .OrderByDescending(c=>c.CreatedAt)
                     .Select(c => c.CreatedAt)
                     .FirstOrDefaultAsync();
@@ -110,7 +112,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 foreach (var servicio in listServicio)
                 {
-                    servicio.ServicioCampo = _dbContext.ServicioCampo.Where(c => c.ServicioId == servicio.Id).Include(o => o.Campo).ToList();
+                    servicio.ServicioCampo = _dbContext.ServicioCampo
+                        .Where(c => c.ServicioId == servicio.Id )
+                        .Include(o => o.Campo).ToList();
                     if (servicio.ServicioCampo == null || servicio.ServicioCampo.Count == 0)
                         return "No posee servicios asociados";
 
@@ -118,30 +122,46 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     if (string.IsNullOrEmpty(campos))
                         throw new CustomException(500,"ERROR: No tiene nombre el campo");
 
-                    campos ="identificador;check;"+campos+";monto";
-
+                    if (servicio.formatoDePagos!=null)
+                    {
+                        List<CamposPagosRequest> camposP = CamposPersonalizados(servicio);
+                        campos ="identificador;check;"+campos+";"+ConvertCamposPInStringHead(camposP)+"monto";
+                    }
+                    else
+                    {
+                        campos ="identificador;check;"+campos+";monto";
+                    }
+                    
                     csvContent.AppendLine("Servicio; " + servicio.name);
                     csvContent.AppendLine(campos);
-                   
                     List<PagoEntity> listPagos = _dbContext.Pago.Where(c => c.servicio != null && c.servicio.Id == servicio.Id && c.CreatedAt>=fechaUltimoCierre).Include(o => o.consumidor).ToList();
-                    foreach (var pago in listPagos)
-                    { 
-                        StringBuilder datosString = new StringBuilder();
-                        datosString.Append(pago.Id+";en espera;");
-                        foreach (var campo in campos.Split(";"))
-                        {
-                            if (campo.Equals("nombre"))
-                                datosString.Append(pago.consumidor.name + " " + pago.consumidor.lastName + ";");
-                            if (campo.Equals("cedula"))
-                                datosString.Append(pago.consumidor.cedula + ";");
-                            if (campo.Equals("email"))
-                                datosString.Append(pago.consumidor.email + ";");
-                            if (campo.Equals("nickname"))
-                                datosString.Append(pago.consumidor.nickName + ";");
-                            
+
+                    if (listPagos == null || listPagos.Count == 0)
+                    {
+                        foreach (var pago in listPagos)
+                        { 
+                            StringBuilder datosString = new StringBuilder();
+                            datosString.Append(pago.Id+";en espera;");
+                            foreach (var campo in campos.Split(";"))
+                            {
+                                if (campo.Equals("nombre"))
+                                    datosString.Append(pago.consumidor.name + " " + pago.consumidor.lastName + ";");
+                                if (campo.Equals("cedula"))
+                                    datosString.Append(pago.consumidor.cedula + ";");
+                                if (campo.Equals("email"))
+                                    datosString.Append(pago.consumidor.email + ";");
+                                if (campo.Equals("nickname"))
+                                    datosString.Append(pago.consumidor.nickName + ";");
+                            } 
+                        
+                            if (servicio.formatoDePagos!=null){
+                                List<CamposPagosRequest> camposPa =JsonConvert.DeserializeObject<List<CamposPagosRequest>>(pago.formatoPago);
+                                datosString.Append(ConvertCamposPInStringBody(camposPa));
+                            }
+                        
+                            datosString.Append(pago.valor.ToString());
+                            csvContent.AppendLine(datosString.ToString());
                         }
-                        datosString.Append(pago.valor.ToString());
-                        csvContent.AppendLine(datosString.ToString());
                     }
                 }
 
@@ -154,6 +174,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 if (dowloadURL == "")
                     throw new CustomException(500, "Error en guardado de archivo en firebase");
+                
                 _dbContext.ArchivoFirebase.Add(new ArchivoFirebaseEntity()
                 {
                     Id = new Guid(),
@@ -166,7 +187,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
                 _logger.LogInformation("AgregarPrestadorCommandHandler.HandleAsync {Response}", dowloadURL);
-                
                 return dowloadURL;
             }
             catch (CustomException ex)
@@ -181,9 +201,45 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Rollback();
                 throw new CustomException(ex.Message);
             }
-
         }
-    }
 
+        public string ConvertCamposPInStringHead(List<CamposPagosRequest> campos)
+        {
+            string resultado = "";
+            foreach (var campo in campos )
+            {
+                if (campo.inCOnciliacion) // Verifica la condición adicional
+                {
+                    resultado += campo.Nombre + ";"; // Agrega el atributo al string
+                }
+            }
+            return resultado;
+        }
+        public string ConvertCamposPInStringBody( List<CamposPagosRequest>campos)
+        {
+            string resultado = "";
+            foreach (var campo in campos )
+            {
+                if (campo.inCOnciliacion) // Verifica la condición adicional
+                {
+                    resultado += campo.contenido + ";"; // Agrega el atributo al string
+                }
+            }
+            return resultado;
+        }
+        public List<CamposPagosRequest> CamposPersonalizados(ServicioEntity servicio)
+        {
+
+            List<CamposPagosRequest> listaObjetos = JsonConvert.DeserializeObject<List<CamposPagosRequest>>(servicio.formatoDePagos);
+            return listaObjetos;
+        }
+        
+    }
+    
+    
+
+
+
+    
     
 }

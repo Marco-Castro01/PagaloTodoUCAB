@@ -53,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarAdminQueryHandler.HandleAsync");
 
                 // Consulta los registros de la tabla Admin y los mapea a objetos AdminResponse
-                var result = _dbContext.Admin.Select(c => new AdminResponse()
+                var result = _dbContext.Admin.Where(x=>x.deleted==false).Select(c => new AdminResponse()
                 {
                     Id = c.Id,
                     cedula = c.cedula,

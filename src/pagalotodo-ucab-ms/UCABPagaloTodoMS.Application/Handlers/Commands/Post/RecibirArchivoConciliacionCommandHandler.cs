@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Core.Database;
@@ -38,7 +39,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             try
             {
                 IFormFile csvContent = request._file;
-                PrestadorServicioEntity prestador = await _dbContext.PrestadorServicio.FindAsync(request._idprestadorservicio) ?? throw new InvalidOperationException();
+                PrestadorServicioEntity prestador = await _dbContext
+                    .PrestadorServicio
+                    .FirstOrDefaultAsync(c=>c.Id==request._idprestadorservicio && c.deleted==false ) ?? throw new InvalidOperationException();
 
                 string dowloadURL = "";
                 using (StreamReader reader = new StreamReader(csvContent.OpenReadStream()))
