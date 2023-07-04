@@ -36,7 +36,8 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de CamposConciliacion.</returns>
-        [HttpGet("CamposConciliacion")]
+        [HttpGet("CamposConciliacion/Consultar")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<CamposConciliacionResponse>>> ConsultaCamposConciliacion()
@@ -44,16 +45,13 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los CamposConciliacion");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new ConsultarCamposConciliacionPruebaQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
             catch (CustomException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -76,8 +74,8 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna el id del nuevo registro.</returns>
-        [HttpPost("CamposConciliacion")]
-        //[Authorize(Roles = "AdminEntity")]
+        [HttpPost("CamposConciliacion/Agregar")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> AgregarCamposConciliacion(CamposConciliacionRequest campo)
@@ -85,16 +83,13 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new AgregarCamposConciliacionCommand(campo);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
             catch (CustomException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -119,7 +114,7 @@ namespace UCABPagaloTodoMS.Controllers
          /// </response>
          /// <returns>Retorna el id del nuevo registro.</returns>
          [HttpPatch("/CamposConciliacion/{idCampo}/update")]
-         //[Authorize(Roles = "AdminEntity")]
+         [Authorize(Roles = "AdminEntity")]
          [ProducesResponseType(StatusCodes.Status200OK)]
          [ProducesResponseType(StatusCodes.Status400BadRequest)]
          public async Task<ActionResult<Guid>> UpdateCamposConciliacion(CamposConciliacionRequest campo,Guid idCampo)
@@ -127,16 +122,14 @@ namespace UCABPagaloTodoMS.Controllers
              _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
              try
              {
-                 string id = User.FindFirstValue("Id");
-                 //if (string.IsNullOrEmpty(id))
-                     //return StatusCode(422,"Error con Usuario: Debe loguearse");
+               
                  var query = new UpdateCampoCommand(campo,idCampo);
                  var response = await _mediator.Send(query);
                  return Ok(response);
              }
              catch (CustomException ex)
              {
-                 return BadRequest(ex.Message);
+                 return StatusCode(ex.Codigo,ex.Message);
              }
              catch (Exception ex)
              {
@@ -160,8 +153,8 @@ namespace UCABPagaloTodoMS.Controllers
          ///     - Operation successful.
          /// </response>
          /// <returns>Retorna el id del nuevo registro.</returns>
-         [HttpPatch("/CamposConciliacion/{idCampo}/delete")]
-         //[Authorize(Roles = "AdminEntity")]
+         [HttpDelete("/CamposConciliacion/{idCampo}/delete")]
+         [Authorize(Roles = "AdminEntity")]
          [ProducesResponseType(StatusCodes.Status200OK)]
          [ProducesResponseType(StatusCodes.Status400BadRequest)]
          public async Task<ActionResult<Guid>> DeleteCampoConciliacion(Guid idCampo)
@@ -169,16 +162,13 @@ namespace UCABPagaloTodoMS.Controllers
              _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
              try
              {
-                 string id = User.FindFirstValue("Id");
-                 //if (string.IsNullOrEmpty(id))
-                 //return StatusCode(422,"Error con Usuario: Debe loguearse");
                  var query = new DeleteCampoCommand(idCampo);
                  var response = await _mediator.Send(query);
                  return Ok(response);
              }
              catch (CustomException ex)
              {
-                 return BadRequest(ex.Message);
+                 return StatusCode(ex.Codigo,ex.Message);
              }
              catch (Exception ex)
              {

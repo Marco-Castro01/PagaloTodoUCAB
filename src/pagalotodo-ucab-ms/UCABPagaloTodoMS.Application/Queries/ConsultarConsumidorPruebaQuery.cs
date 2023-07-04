@@ -6,4 +6,3 @@ namespace UCABPagaloTodoMS.Application.Queries
     public class ConsultarConsumidorPruebaQuery : IRequest<List<ConsumidorResponse>>
     { }
 }
-

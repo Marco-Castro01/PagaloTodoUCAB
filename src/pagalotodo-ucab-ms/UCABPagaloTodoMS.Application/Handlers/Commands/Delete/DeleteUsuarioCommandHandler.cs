@@ -15,17 +15,17 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
     /// <summary>
     /// Manejador del comando para eliminar un servicio de prueba.
     /// </summary>
-    public class DeleteServicioPruebaCommandHandler : IRequestHandler<DeleteServicioPruebaCommand, Guid>
+    public class DeleteUsuarioCommandHandler : IRequestHandler<DeleteUsuarioCommand, string>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<DeleteServicioPruebaCommandHandler> _logger;
+        private readonly ILogger<DeleteUsuarioCommandHandler> _logger;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase DeleteServicioPruebaCommandHandler.
         /// </summary>
         /// <param name="dbContext">Contexto de base de datos de UCABPagaloTodo.</param>
         /// <param name="logger">Logger para el manejo de registros.</param>
-        public DeleteServicioPruebaCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<DeleteServicioPruebaCommandHandler> logger)
+        public DeleteUsuarioCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<DeleteUsuarioCommandHandler> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -37,7 +37,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         /// <param name="request">Comando de eliminación de servicio de prueba.</param>
         /// <param name="cancellationToken">Token de cancelación.</param>
         /// <returns>El identificador del servicio eliminado.</returns>
-        public async Task<Guid> Handle(DeleteServicioPruebaCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(DeleteUsuarioCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -61,28 +61,23 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
-        private async Task<Guid> HandleAsync(DeleteServicioPruebaCommand request)
+        private async Task<string> HandleAsync(DeleteUsuarioCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
             {
                 _logger.LogInformation("EliminarServicioPruebaCommandHandler.HandleAsync {Request}", request);
-                var entity = ServicioMapper.MapRequestDeleteEntity(request,_dbContext);
-                ServicioValidator ServicioValidator = new ServicioValidator();
-                ValidationResult result = await ServicioValidator.ValidateAsync(entity);
-                if (!result.IsValid)
-                {
-                    throw new ValidationException(result.Errors);
-                }
-
-                _dbContext.Servicio.Update(entity);
+                var entity = UsuariosMapper.MapRequestDeleteEntity(request,_dbContext);
+                if (entity == null)
+                    throw new CustomException(404, "Usuario no envontrado");
+                _dbContext.Usuarios.Update(entity);
                 _dbContext.DbContext.SaveChanges();
 
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
                 _logger.LogInformation("EliminarServicioPruebaCommandHandler.HandleAsync {Response}", id);
-                return id;
+                return "Eliminacion exitosa";
             }
             catch (ValidationException ex)
             {

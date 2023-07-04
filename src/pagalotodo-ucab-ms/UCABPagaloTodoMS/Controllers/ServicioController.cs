@@ -75,19 +75,16 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna Mensaje de aceptado.</returns>
-        [HttpPatch("servicio")]
-        //[Authorize(Roles = "AdminEntity")]
+        [HttpPatch("/servicio/{idServicio}/update")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> ModificarServicio(UpdateServicioRequest servicio)
+        public async Task<ActionResult<Guid>> ModificarServicio(UpdateServicioRequest servicio, Guid idServicio)
         {
             _logger.LogInformation("Entrando al método que registra los Admins");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
-                var query = new UpdateServicioPruebaCommand(servicio);
+                var query = new UpdateServicioPruebaCommand(idServicio,servicio);
                 var response = await _mediator.Send(query);
                 return Ok("Actualizacion Realizada Exitosamente");
             }
@@ -120,7 +117,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna la lista de CamposConciliacionResponse.</returns>
         [HttpPost("/servicio/{servicioId}/campo")]
-        //[Authorize(Roles = "AdminEntity")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> CreacionYAsignacionDeServicio(Guid servicioId,[FromBody] CamposAsigRequest servicioRequests)
@@ -128,9 +125,6 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que envia cambia la contrasena");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new AsignarCamposCommand(servicioId,servicioRequests);
                 var response = await _mediator.Send(query);
 
@@ -166,19 +160,16 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna Mensaje de aceptado.</returns>
-        [HttpDelete("servicio")]
-        //[Authorize(Roles = "AdminEntity")]
+        [HttpDelete("servicio/{idServicio}/delete")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> EliminarServicio(DeleteServicioRequest Servicio)
+        public async Task<ActionResult<Guid>> EliminarServicio(Guid idServicio)
         {
             _logger.LogInformation("Entrando al método que Elimina");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
-                var query = new DeleteServicioPruebaCommand(Servicio);
+                var query = new DeleteServicioPruebaCommand(idServicio);
                 var response = await _mediator.Send(query);
                 return Ok("Eliminacion Exitosa");
             }
