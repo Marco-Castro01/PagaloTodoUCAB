@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
@@ -35,6 +37,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna la lista de valores ejemplo.</returns>
         [HttpGet("admins")]
+        //[Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<AdminResponse>>> ConsultaAdmins()
@@ -42,6 +45,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los admins");
             try
             {
+                string id = User.FindFirstValue("Id");
+            //    if (string.IsNullOrEmpty(id))
+            //        return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new ConsultarAdminPruebaQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -64,6 +70,7 @@ namespace UCABPagaloTodoMS.Controllers
         
         
         [HttpGet("prestador_servicio/{idPrestadorServicio}/cierreContable")]
+        //[Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<CierreContableResponse>>> cierreContable(Guid idPrestadorServicio)
@@ -86,7 +93,5 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }

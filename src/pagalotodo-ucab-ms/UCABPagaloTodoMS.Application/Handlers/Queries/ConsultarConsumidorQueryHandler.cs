@@ -53,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarConsumidorQueryHandler.HandleAsync");
 
                 // Consulta los registros de la tabla Consumidor y los mapea a objetos ConsumidorResponse
-                var result = _dbContext.Consumidor.Select(c => new ConsumidorResponse()
+                var result = _dbContext.Consumidor.Where(x=>x.deleted==false).Select(c => new ConsumidorResponse()
                 {
                     Id = c.Id,
                     cedula = c.cedula,

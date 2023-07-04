@@ -28,8 +28,8 @@ namespace UCABPagaloTodoMS.Application.Mappers
             {
                 Id = new Guid(),
                 valor = request.DirectoRequest.Valor,
-                consumidor = DbContext.Consumidor.Find(request._idConsumidor),
-                servicio = DbContext.Servicio.Find(request._idServicio),
+                consumidor = DbContext.Consumidor.FirstOrDefault(c => c.deleted == false && c.Id == request._idConsumidor),
+                servicio =DbContext.Servicio.FirstOrDefault(c => c.deleted == false && c.Id==request._idServicio) 
                 
 
             };
@@ -41,7 +41,7 @@ namespace UCABPagaloTodoMS.Application.Mappers
             var entity = new PagoEntity()
             {
                 valor = deuda.deuda,
-                consumidor = DbContext.Consumidor.Find(consumidorId),
+                consumidor = DbContext.Consumidor.FirstOrDefault(x=>x.Id==consumidorId && x.deleted==false),
                 servicio = deuda.servicio
                 
 

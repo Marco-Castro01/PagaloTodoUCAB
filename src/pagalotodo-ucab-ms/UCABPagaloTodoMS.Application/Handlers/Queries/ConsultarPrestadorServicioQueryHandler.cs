@@ -53,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarPrestadorServicioQueryHandler.HandleAsync");
 
                 // Consulta todos los registros de la tabla PrestadorServicio
-                var result = _dbContext.PrestadorServicio.Select(c => new PrestadorServicioResponse()
+                var result = _dbContext.PrestadorServicio.Where(x=>x.deleted==false).Select(c => new PrestadorServicioResponse()
                 {
                     Id = c.Id,
                     rif = c.rif,

@@ -72,7 +72,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogInformation("ActualizarContrasenaCommand.HandleAsync {Request}", request);
 
-                var user = _dbContext.Usuarios.Where(u => u.email == request._request.email).FirstOrDefault();
+                var user = _dbContext.Usuarios.Where(u => u.email == request._request.email && u.deleted==false).FirstOrDefault();
                 if (user == null)
                 {
                     throw new CustomException("No existe el usuario");

@@ -53,7 +53,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarServicioQueryHandler.HandleAsync");
 
                 // Consulta todos los registros de la tabla Servicio donde deleted es falso
-                var result = _dbContext.Servicio.Where(c => c.deleted == false).Select(c => new ServicioResponse()
+                var result = _dbContext.Servicio
+                    .Where(c => c.deleted == false).Select(c => new ServicioResponse()
                 {
                     Id = c.Id,
                     name = c.name,

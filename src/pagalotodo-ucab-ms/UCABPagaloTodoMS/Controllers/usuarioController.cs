@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Security.Claims;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using UCABPagaloTodoMS.Application.Commands;
@@ -37,7 +38,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los usuarios");
             try
             {
-           
+                string id = User.FindFirstValue("Id");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse"); 
                 var query = new ConsultarUsuariosQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -58,6 +61,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que edita los usuarios");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new EditarUsuarioCommand(user);
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -77,6 +83,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que registra los usuarios");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new AgregarAdminCommand(usuario);
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -126,6 +135,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que registra los usuarios");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new AgregarPrestadorCommand(usuario);
                 var response = await _mediator.Send(query);
                 return Ok(response);

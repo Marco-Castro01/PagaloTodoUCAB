@@ -57,7 +57,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarUsuariosQueryHandler.HandleAsync");
 
                 // Consulta todos los registros de la tabla Usuarios
-                var result = _dbContext.Usuarios.Select(c => new UsuariosAllResponse()
+                var result = _dbContext.Usuarios.Where(x=>x.deleted==false).Select(c => new UsuariosAllResponse()
                 {
                     Id = c.Id,
                     email = c.email,

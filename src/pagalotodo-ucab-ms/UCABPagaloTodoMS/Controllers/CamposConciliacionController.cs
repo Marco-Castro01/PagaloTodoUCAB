@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.CustomExceptions;
@@ -42,6 +44,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los CamposConciliacion");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new ConsultarCamposConciliacionPruebaQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -72,6 +77,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna el id del nuevo registro.</returns>
         [HttpPost("CamposConciliacion")]
+        //[Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> AgregarCamposConciliacion(CamposConciliacionRequest campo)
@@ -79,6 +85,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new AgregarCamposConciliacionCommand(campo);
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -93,5 +102,89 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        
+         /// <summary>
+         ///     Endpoint que registra un valor.
+         /// </summary>
+         /// <remarks>
+         ///     ## Description
+         ///     ### Post registra valor de prueba.
+         ///     ## Url
+         ///     POST /CamposConciliacion/CamposConciliacion
+         /// </remarks>
+         /// <response code="200">
+         ///     Accepted:
+         ///     - Operation successful.
+         /// </response>
+         /// <returns>Retorna el id del nuevo registro.</returns>
+         [HttpPatch("/CamposConciliacion/{idCampo}/update")]
+         //[Authorize(Roles = "AdminEntity")]
+         [ProducesResponseType(StatusCodes.Status200OK)]
+         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+         public async Task<ActionResult<Guid>> UpdateCamposConciliacion(CamposConciliacionRequest campo,Guid idCampo)
+         {
+             _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
+             try
+             {
+                 string id = User.FindFirstValue("Id");
+                 //if (string.IsNullOrEmpty(id))
+                     //return StatusCode(422,"Error con Usuario: Debe loguearse");
+                 var query = new UpdateCampoCommand(campo,idCampo);
+                 var response = await _mediator.Send(query);
+                 return Ok(response);
+             }
+             catch (CustomException ex)
+             {
+                 return BadRequest(ex.Message);
+             }
+             catch (Exception ex)
+             {
+                 _logger.LogError("Ocurrio un error al intentar registrar un admin. Exception: " + ex);
+                 return BadRequest(ex.Message);
+             }
+         }
+         
+         
+         /// <summary>
+         ///     Endpoint que registra un valor.
+         /// </summary>
+         /// <remarks>
+         ///     ## Description
+         ///     ### Post registra valor de prueba.
+         ///     ## Url
+         ///     POST /CamposConciliacion/CamposConciliacion
+         /// </remarks>
+         /// <response code="200">
+         ///     Accepted:
+         ///     - Operation successful.
+         /// </response>
+         /// <returns>Retorna el id del nuevo registro.</returns>
+         [HttpPatch("/CamposConciliacion/{idCampo}/delete")]
+         //[Authorize(Roles = "AdminEntity")]
+         [ProducesResponseType(StatusCodes.Status200OK)]
+         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+         public async Task<ActionResult<Guid>> DeleteCampoConciliacion(Guid idCampo)
+         {
+             _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
+             try
+             {
+                 string id = User.FindFirstValue("Id");
+                 //if (string.IsNullOrEmpty(id))
+                 //return StatusCode(422,"Error con Usuario: Debe loguearse");
+                 var query = new DeleteCampoCommand(idCampo);
+                 var response = await _mediator.Send(query);
+                 return Ok(response);
+             }
+             catch (CustomException ex)
+             {
+                 return BadRequest(ex.Message);
+             }
+             catch (Exception ex)
+             {
+                 _logger.LogError("Ocurrio un error al intentar registrar un admin. Exception: " + ex);
+                 return BadRequest(ex.Message);
+             }
+         }
     }
 }

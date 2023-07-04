@@ -58,7 +58,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
                 var servicio = _dbContext.Servicio.FirstOrDefault(o=>o.Id==request._idServicio);
                 // Consulta los registros de la tabla Deuda que coincidan con el identificador y deudaStatus especificados en la consulta
-                var result = await _dbContext.Deuda.Where(c => c.identificador == request._request.identificador && c.deudaStatus == false)
+                var result = await _dbContext.Deuda
+                    .Where(c => c.identificador == request._request.identificador && c.deudaStatus == false && c.deleted==false)
                     .Select(c => new DeudaResponse()
                     {
                         idDeuda = c.Id,

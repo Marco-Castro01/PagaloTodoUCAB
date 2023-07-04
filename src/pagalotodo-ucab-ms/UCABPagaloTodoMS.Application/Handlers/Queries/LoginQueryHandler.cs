@@ -83,7 +83,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 }
 
                 // Obtener los datos del usuario para generar el token
-                var result = _dbContext.Usuarios.Where(u => u.email == usuario._request.email)
+                var result = _dbContext.Usuarios.Where(u => u.email == usuario._request.email && u.deleted==false)
                     .Select(a => new UsuariosAllResponse
                     {
                         Id = a.Id,

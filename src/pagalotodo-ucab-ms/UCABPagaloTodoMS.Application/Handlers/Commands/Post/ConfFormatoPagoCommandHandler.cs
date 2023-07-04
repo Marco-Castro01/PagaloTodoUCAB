@@ -86,7 +86,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("AgregarUsuarioCommand.HandleAsync {Request}", request);
 
                 var servicio = _dbContext.Servicio.Include(o => o.PrestadorServicio)
-                    .FirstOrDefault(c => c.Id == request._ServicioId);
+                    .FirstOrDefault(c => c.Id == request._ServicioId && c.deleted==false);
                 if (servicio == null)
                     throw new NullReferenceException();
                 validarCamposEnlista(request._ListaCamposPagos);
@@ -94,7 +94,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 if (servicio.formatoDePagos==null || servicio.formatoDePagos.Equals("")|| servicio.formatoDePagos.Equals(" "))
                 {
                     listaCampos = new List<CamposPagosRequest>();
-
                 }
                 else
                 {

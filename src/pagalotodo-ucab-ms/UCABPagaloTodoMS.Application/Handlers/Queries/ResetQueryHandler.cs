@@ -61,7 +61,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("PasswordResetQuery.HandleAsync");
 
                 // Buscar el usuario en la base de datos por su correo electrónico
-                var usuariocreated = _dbContext.Usuarios.Where(c => c.email == usuario._request.email).FirstOrDefault();
+                var usuariocreated = _dbContext.Usuarios.Where(c => c.email == usuario._request.email && c.deleted==false).FirstOrDefault();
                 if (usuariocreated == null)
                 {
                     _logger.LogWarning("Ha ocurrido un error: el Usuario no existe");

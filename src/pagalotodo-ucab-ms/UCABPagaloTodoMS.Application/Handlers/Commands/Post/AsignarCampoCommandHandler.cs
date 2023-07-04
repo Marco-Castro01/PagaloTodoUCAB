@@ -77,7 +77,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 if (servicio == null)
                     throw new CustomException(422, "Error al buscar servicio");
 
-                List<CamposConciliacionEntity> campos=await _dbContext.CamposConciliacion.Where(c => request._request.Id.Contains(c.Id))
+                List<CamposConciliacionEntity> campos=await _dbContext
+                    .CamposConciliacion
+                    .Where(c => request._request.Id.Contains(c.Id) && c.deleted==false)
                     .ToListAsync();
                 List<ServicioCampoEntity> servicioCampo = new List<ServicioCampoEntity>();
                 foreach (var campo in campos)

@@ -52,7 +52,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             {
                 _logger.LogInformation("ConsultarValoresQueryHandler.HandleAsync");
 
-                var result = _dbContext.Valores.Select(c => new ValoresResponse()
+                var result = _dbContext.Valores
+                    .Where(x=>x.deleted==false)
+                    .Select(c => new ValoresResponse()
                 {
                     Id = c.Id,
                     Nombre = c.Nombre + " " + c.Apellido,

@@ -40,7 +40,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 IFormFile csvContent = request._file;
                 PrestadorServicioEntity prestador = _dbContext.PrestadorServicio.Include(o=>o.Servicio).FirstOrDefault(o=>o.Id==request._IdPrestador) ?? throw new InvalidOperationException();
-                bool algunObjetoTieneId = prestador.Servicio.Any(objeto => objeto.Id == request._idServicio);
+                bool algunObjetoTieneId = prestador.Servicio != null && prestador.Servicio.Any(objeto => objeto.Id == request._idServicio && objeto.deleted==false);
                 if (!algunObjetoTieneId)
                     throw new CustomException(403, "Error al conectar con servicio proporcionado");
                 

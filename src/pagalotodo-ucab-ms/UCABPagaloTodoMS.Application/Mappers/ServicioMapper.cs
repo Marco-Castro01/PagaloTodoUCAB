@@ -26,7 +26,7 @@ namespace UCABPagaloTodoMS.Application.Mappers
             {
                name = request.name,
                accountNumber = request.accountNumber,
-               PrestadorServicio = DbContext.PrestadorServicio.Find(prestadorServicioId),
+               PrestadorServicio = DbContext.PrestadorServicio.FirstOrDefault(x=>x.Id==prestadorServicioId && x.deleted==false),
                tipoServicio = request.tipoServicio,
                statusServicio = request.statusServicio,
                
@@ -37,7 +37,7 @@ namespace UCABPagaloTodoMS.Application.Mappers
         public static ServicioEntity MapRequestUpdateEntity(UpdateServicioRequest request, IUCABPagaloTodoDbContext DbContext)
         {
             
-            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio).FirstOrDefault();
+            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio && u.deleted==false).FirstOrDefault();
             entity.name = request.name;
             entity.accountNumber = request.accountNumber;
             entity.tipoServicio = request.tipoServicio;
@@ -50,7 +50,7 @@ namespace UCABPagaloTodoMS.Application.Mappers
         public static ServicioEntity MapRequestDeleteEntity(DeleteServicioRequest request, IUCABPagaloTodoDbContext DbContext)
         {
             
-            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio).FirstOrDefault();
+            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio && u.deleted==false).FirstOrDefault();
             entity.deleted = request.delete;
             
             return entity;
