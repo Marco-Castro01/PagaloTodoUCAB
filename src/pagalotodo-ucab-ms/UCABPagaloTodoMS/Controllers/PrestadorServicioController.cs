@@ -234,5 +234,49 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        
+        
+        /// <summary>
+        ///     Endpoint para la consulta de prueba
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Get admins
+        ///     ## Url
+        ///     GET /Consumidores/consumidores
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de PrestadoresServicios.</returns>
+        [HttpGet("prestador_servicio/info")]
+        [Authorize(Roles = "PrestadorServicioEntity")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<ConsumidorResponse>>> getInfoPrestador()
+        {
+            _logger.LogInformation("Entrando al método que consulta los Consumidores");
+            try
+            {
+                string id = User.FindFirstValue("Id");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
+                Guid idPrestador = new Guid(id);
+                var query = new GetInfoPrestadorServicioQuery(idPrestador);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo,ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
+                return BadRequest("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
+            }
+        }
     }
 }

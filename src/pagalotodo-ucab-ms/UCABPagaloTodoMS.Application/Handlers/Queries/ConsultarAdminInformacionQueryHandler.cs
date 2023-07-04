@@ -8,7 +8,7 @@ using UCABPagaloTodoMS.Application.CustomExceptions;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
-    public class ConsultarAdminInformacionQueryHandler : IRequestHandler<ConsultarAdminInformacionQuery, AdminResponse>
+    public class ConsultarAdminInformacionQueryHandler : IRequestHandler<GetInfoAdminQuery, AdminResponse>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<ConsultarAdminInformacionQueryHandler> _logger;
@@ -19,7 +19,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             _logger = logger;
         }
 
-        public Task<AdminResponse> Handle(ConsultarAdminInformacionQuery request, CancellationToken cancellationToken)
+        public Task<AdminResponse> Handle(GetInfoAdminQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
         }
 
-        private async Task<AdminResponse> HandleAsync(ConsultarAdminInformacionQuery request)
+        private async Task<AdminResponse> HandleAsync(GetInfoAdminQuery request)
         {
             try
             {

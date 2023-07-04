@@ -36,7 +36,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de valores ejemplo.</returns>
-        [HttpGet("admins")]
+        [HttpGet("admins/lista")]
         [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -67,7 +67,7 @@ namespace UCABPagaloTodoMS.Controllers
         
         
         
-        [HttpGet("prestador_servicio/{idPrestadorServicio}/cierreContable")]
+        [HttpGet("/admin/prestador_servicio/{idPrestadorServicio}/cierreContable")]
         [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -106,7 +106,7 @@ namespace UCABPagaloTodoMS.Controllers
                 if (string.IsNullOrEmpty(id))
                     return StatusCode(422,"Error con Usuario: Debe loguearse");
                 Guid idAdmin = new Guid(id);
-                var query = new ConsultarAdminInformacionQuery(idAdmin);
+                var query = new GetInfoAdminQuery(idAdmin);
                 var response = await _mediator.Send(query);
                
                 return Ok(response);
