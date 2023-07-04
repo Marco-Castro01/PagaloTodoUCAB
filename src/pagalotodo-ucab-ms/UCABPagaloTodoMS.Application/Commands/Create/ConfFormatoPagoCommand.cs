@@ -11,9 +11,11 @@ namespace UCABPagaloTodoMS.Application.Commands
     public class ConfFormatoPagoCommand : IRequest<Guid>
     {
         public Guid _ServicioId { get; set; }
+        public Guid _prestadorId { get; set; }
         public List<CamposPagosRequest> _ListaCamposPagos { get; set; }
-        public ConfFormatoPagoCommand(Guid servicioId, List<CamposPagosRequest> camposPagos)
+        public ConfFormatoPagoCommand(Guid prestadorId, Guid servicioId, List<CamposPagosRequest> camposPagos)
         {
+            _prestadorId = prestadorId;
             _ServicioId = servicioId;
             _ListaCamposPagos = camposPagos;
         }

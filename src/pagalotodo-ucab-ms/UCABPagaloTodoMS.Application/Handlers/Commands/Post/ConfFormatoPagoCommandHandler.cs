@@ -86,9 +86,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("AgregarUsuarioCommand.HandleAsync {Request}", request);
 
                 var servicio = _dbContext.Servicio.Include(o => o.PrestadorServicio)
-                    .FirstOrDefault(c => c.Id == request._ServicioId && c.deleted==false);
+                    .FirstOrDefault(c => c.Id == request._ServicioId 
+                                         && c.PrestadorServicio.Id==request._prestadorId 
+                                         && c.deleted==false);
                 if (servicio == null)
-                    throw new NullReferenceException();
+                    throw new CustomException(404,"Servicio no existente");
                 validarCamposEnlista(request._ListaCamposPagos);
                 List<CamposPagosRequest> listaCampos;
                 if (servicio.formatoDePagos==null || servicio.formatoDePagos.Equals("")|| servicio.formatoDePagos.Equals(" "))
@@ -120,9 +122,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 throw CustomException.CrearDesdeListaException(422,
                     "Se produjeron los siguientes errores de validación", ex);
             }
-            catch (NullReferenceException ex)
+            catch (CustomException ex)
             {
-                throw new CustomException("Servicio no existente");
+                throw;
             }
             catch (Exception ex)
             {

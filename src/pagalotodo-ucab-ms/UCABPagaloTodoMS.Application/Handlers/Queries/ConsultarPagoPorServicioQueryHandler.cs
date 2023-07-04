@@ -54,7 +54,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
 
                 // Consulta los registros de la tabla Pago que correspondan al servicio especificado en la consulta
                 var result = _dbContext.Pago
-                    .Where(c => c.servicio.Id == request.IdPrestador && c.deleted==false)
+                    .Where(c => c.servicio.Id == request._idServicio && c.servicio.PrestadorServicio.Id==request._idPrestador && c.deleted==false)
                     .Select(c => new PagoResponse()
                     {
                         Id = c.Id,

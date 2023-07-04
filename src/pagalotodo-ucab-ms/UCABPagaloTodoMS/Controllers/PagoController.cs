@@ -38,7 +38,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna la lista de Pagos.</returns>
         [HttpGet("pagos")]
-        //[Authorize(Roles = "AdminEntity")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<PagoResponse>>> ConsultaPago()
@@ -52,6 +52,10 @@ namespace UCABPagaloTodoMS.Controllers
                 var query = new ConsultarPagoPruebaQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -75,25 +79,26 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de Pagos.</returns>
-        [HttpGet("pagosPorConsumidor/{IdConsumidor}")]
-        //[Authorize(Roles = "ConsumidorEntity")]
+        [HttpGet("pagosPorConsumidor/pagosHechos")]
+        [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdConsumidor(Guid IdConsumidor)
+        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdConsumidor()
         {
             _logger.LogInformation("Entrando al método que Lista los pagos realizados por El consumidor");
             try
             {
                 string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
+                Guid IdConsumidor = new Guid(id);
                 var query = new ConsultarPagoPorConsumidorQuery(IdConsumidor);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
             catch (CustomException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -117,25 +122,26 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de Pagos.</returns>
-        [HttpGet("pagosPorServicio/{IdServicio}")]
-        //[Authorize(Roles = "PrestadorServicioEntity")]
+        [HttpGet("pagosPorServicio/pagos_recibidos")]
+        [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdPrestador(Guid IdServicio)
+        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdServicior(Guid IdServicio)
         {
             _logger.LogInformation("Entrando al método que Lista los pagos realizados por El consumidor");
             try
             {
                 string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
-                var query = new ConsultarPagoPorServicioQuery(IdServicio);
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
+                Guid idPrestador = new Guid(id);
+                var query = new ConsultarPagoPorServicioQuery(idPrestador,IdServicio);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
             catch (CustomException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -164,7 +170,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna mensaje de confirmacion o de error.</returns>
         [HttpPost("servicio/{idServicio}/pagoDirecto")]
-        //[Authorize(Roles = "ConsumidorEntity")]
+        [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> AgregarPagoDirecto(PagoDirectoRequest pagoDirecto,Guid idServicio)
@@ -173,15 +179,19 @@ namespace UCABPagaloTodoMS.Controllers
             try
             {
                 string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con consumidor");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con consumidor: Debe loguearse");
+                Guid idConsumidor = new Guid(id);
 
-                
-                var query = new AgregarPagoDirectoCommand(pagoDirecto,idServicio,new Guid(id));
+                var query = new AgregarPagoDirectoCommand(pagoDirecto,idServicio,idConsumidor);
                 var response = await _mediator.Send(query);
 
 
                 return Ok("Pago Exitoso");
+            } 
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -213,7 +223,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna mensaje de confirmacion o de error.</returns>
         [HttpPost("/Consumidor/pago/{idDeuda}/pagar")]
-        //Authorize(Roles = "ConsumidorEntity")]
+        [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> AgregarPagoPorValidacion(PagoVerificacionRequest pagoVerif,Guid idDeuda)
@@ -222,12 +232,16 @@ namespace UCABPagaloTodoMS.Controllers
             try
             {
                 string id =User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var idConsumidor= new Guid(id);
                 var query = new AgregarPagoPorverificacionCommand(pagoVerif, idConsumidor,idDeuda);
                 var response = await _mediator.Send(query);
                 return Ok("Pago exitoso");
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {

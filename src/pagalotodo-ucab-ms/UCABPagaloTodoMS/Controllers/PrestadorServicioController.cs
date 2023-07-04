@@ -38,7 +38,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna la lista de PrestadoresServicios.</returns>
         [HttpGet("prestadores_servicios")]
-        //[Authorize(Roles = "AdminEntity")]
+        [Authorize(Roles = "AdminEntity, ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<PrestadorServicioResponse>>> ConsultaPrestadorServicio()
@@ -46,9 +46,6 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los Prestadores de Servicios");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new ConsultarPrestadorServicioPruebaQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -80,7 +77,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna la lista de valores ejemplo.</returns>
         [HttpPost("/prestador/{prestadorServicioId}/servicio")]
-        //[Authorize(Roles = "AdminEntity")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Guid>> CreacionYAsignacionDeServicio(Guid prestadorServicioId, [FromBody] ServicioRequest servicioRequest)
@@ -88,9 +85,6 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método para la creación y asignación de servicio");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var command = new AsignarServicioComand(prestadorServicioId, servicioRequest);
                 var response = await _mediator.Send(command);
                 return Ok(response);
@@ -120,20 +114,21 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de valores ejemplo.</returns>
-        [HttpPost("/prestador/{prestadorId}/enviarArchivo")]
-        //[Authorize(Roles = "PrestadorServicioEntity")]
+        [HttpPost("/prestador/Archivo_conciliacion/enviar_Archivo")]
+        [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> ArchivoDeConciliacion(IFormFile file, Guid prestadorId)
+        public async Task<ActionResult> ArchivoDeConciliacion(IFormFile file)
         {
             _logger.LogInformation("Entrando al método que envia el archivo de conciliacion de respuesta");
             try
             {
                 string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
                 if (file == null || file.Length == 0)
                     return BadRequest("Debe seleccionar un archivo para cargar.");
+                Guid prestadorId = new Guid(id);
 
                 var command = new RecibirArchivoConciliacionCommand(file, prestadorId);
                 var response = await _mediator.Send(command);
@@ -141,8 +136,7 @@ namespace UCABPagaloTodoMS.Controllers
             }
             catch (CustomException ex)
             {
-                _logger.LogError(ex, "Error al intentar enviar archivo");
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -166,7 +160,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna la lista de valores ejemplo.</returns>
         [HttpPost("/prestador/archivoVerificacion/{servicioId}/enviarArchivo")]
-        //[Authorize(Roles = "PrestadorServicioEntity")]
+        [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> ArchivoDeVerificacion(IFormFile file, Guid servicioId)
@@ -175,19 +169,18 @@ namespace UCABPagaloTodoMS.Controllers
             try
             {
                 string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
                 if (file == null || file.Length == 0)
                     return BadRequest("Debe seleccionar un archivo para cargar.");
-
-                var command = new RecibirArchivoVerificacionCommand(file, servicioId,new Guid("5516f619-498f-4132-7621-08db743ec357"));
+                Guid prestadorId = new Guid(id);
+                var command = new RecibirArchivoVerificacionCommand(file, servicioId,prestadorId);
                 var response = await _mediator.Send(command);
                 return Ok("Envio Exitoso");
             }
             catch (CustomException ex)
             {
-                _logger.LogError(ex, "Error al intentar enviar archivo");
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo,ex.Message);
             }
             catch (Exception ex)
             {
@@ -214,7 +207,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// <returns>Retorna mensaje de confirmarcion.</returns>
 
         [HttpPatch("servicio/{servicioId}/formatoPago")]
-        //[Authorize(Roles = "PrestadorServicioEntity")]
+        [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> ConfFormtatoPago(Guid servicioId, List<CamposPagosRequest> listaCampos)
@@ -223,9 +216,10 @@ namespace UCABPagaloTodoMS.Controllers
             try
             {
                 string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
-                var command = new ConfFormatoPagoCommand(servicioId, listaCampos);
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
+                Guid prestadorId = new Guid(id);
+                var command = new ConfFormatoPagoCommand(prestadorId,servicioId, listaCampos);
                 var response = await _mediator.Send(command);
                 return Ok("Asignación exitosa");
             }

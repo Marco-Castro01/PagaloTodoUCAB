@@ -4,12 +4,13 @@ using UCABPagaloTodoMS.Application.Responses;
 
 namespace UCABPagaloTodoMS.Application.Commands
 {
-    public class UpdateServicioPruebaCommand : IRequest<Guid>
+    public class UpdateServicioPruebaCommand : IRequest<string>
     {
         public UpdateServicioRequest _request { get; set; }
-
-        public UpdateServicioPruebaCommand(UpdateServicioRequest request)
+        public Guid _idServicio { get; set; }
+        public UpdateServicioPruebaCommand(Guid idServicio,UpdateServicioRequest request)
         {
+            _idServicio = idServicio;
             _request = request;
         }
     }

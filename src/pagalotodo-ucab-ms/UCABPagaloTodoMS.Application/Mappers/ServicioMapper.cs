@@ -1,4 +1,5 @@
-﻿using UCABPagaloTodoMS.Application.Requests;
+﻿using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
@@ -34,25 +35,23 @@ namespace UCABPagaloTodoMS.Application.Mappers
             };
             return entity;
         }
-        public static ServicioEntity MapRequestUpdateEntity(UpdateServicioRequest request, IUCABPagaloTodoDbContext DbContext)
+        public static ServicioEntity MapRequestUpdateEntity(UpdateServicioPruebaCommand request, IUCABPagaloTodoDbContext DbContext)
         {
             
-            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio && u.deleted==false).FirstOrDefault();
-            entity.name = request.name;
-            entity.accountNumber = request.accountNumber;
-            entity.tipoServicio = request.tipoServicio;
-            entity.statusServicio = request.statusServicio;
+            var entity=DbContext.Servicio.FirstOrDefault(u => u.Id == request._idServicio && u.deleted==false);
+            entity.name = request._request.name;
+            entity.accountNumber = request._request.accountNumber;
+            entity.tipoServicio = request._request.tipoServicio;
+            entity.statusServicio = request._request.statusServicio;
             entity.UpdatedAt=DateTime.Now;
             entity.UpdatedBy = "APP";
             
             return entity;
         }
-        public static ServicioEntity MapRequestDeleteEntity(DeleteServicioRequest request, IUCABPagaloTodoDbContext DbContext)
+        public static ServicioEntity MapRequestDeleteEntity(DeleteServicioPruebaCommand request, IUCABPagaloTodoDbContext DbContext)
         {
             
-            var entity=DbContext.Servicio.Where(u => u.Id == request.idServicio && u.deleted==false).FirstOrDefault();
-            entity.deleted = request.delete;
-            
+            var entity=DbContext.Servicio.FirstOrDefault(u => u.Id == request._idServicio && u.deleted==false);
             return entity;
         }
     }

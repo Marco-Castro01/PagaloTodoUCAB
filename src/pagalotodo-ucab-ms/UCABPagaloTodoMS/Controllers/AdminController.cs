@@ -37,7 +37,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna la lista de valores ejemplo.</returns>
         [HttpGet("admins")]
-        //[Authorize(Roles = "AdminEntity")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<AdminResponse>>> ConsultaAdmins()
@@ -45,9 +45,7 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los admins");
             try
             {
-                string id = User.FindFirstValue("Id");
-            //    if (string.IsNullOrEmpty(id))
-            //        return StatusCode(422,"Error con Usuario: Debe loguearse");
+           
                 var query = new ConsultarAdminPruebaQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -70,7 +68,7 @@ namespace UCABPagaloTodoMS.Controllers
         
         
         [HttpGet("prestador_servicio/{idPrestadorServicio}/cierreContable")]
-        //[Authorize(Roles = "AdminEntity")]
+        [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<CierreContableResponse>>> cierreContable(Guid idPrestadorServicio)
@@ -79,6 +77,36 @@ namespace UCABPagaloTodoMS.Controllers
             try
             {
                 var query = new CierreContableCommand(idPrestadorServicio);
+                var response = await _mediator.Send(query);
+               
+                return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo,ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la consulta de los Admins. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        
+        [HttpGet("/admin/info")]
+        [Authorize(Roles = "AdminEntity")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<CierreContableResponse>>> getInfoAdmin()
+        {
+            _logger.LogInformation("Entrando al método que genera el archivo de conciliacion");
+            try
+            {
+                string id = User.FindFirstValue("Id");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse");
+                Guid idAdmin = new Guid(id);
+                var query = new ConsultarAdminInformacionQuery(idAdmin);
                 var response = await _mediator.Send(query);
                
                 return Ok(response);
