@@ -11,10 +11,12 @@ namespace UCABPagaloTodoMS.Application.Commands
     public class ActualizarContrasenaCommand : IRequest<Guid>
     {
         public UpdatePasswordRequest _request { get; set; }
+        public Guid _id { get; set; }
 
-        public ActualizarContrasenaCommand(UpdatePasswordRequest request)
+        public ActualizarContrasenaCommand(UpdatePasswordRequest request, Guid id)
         {
             _request = request;
+            _id = id;
         }
     }
 }

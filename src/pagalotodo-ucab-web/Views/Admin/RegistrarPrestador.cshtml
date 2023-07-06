@@ -1,0 +1,44 @@
+﻿@model UCABPagaloTodoWeb.Models.PrestadorModel
+
+<div class="container">
+    <div class="frame">
+
+        @using (Html.BeginForm("RegistrarPrestador", "Login", FormMethod.Post))
+        {
+            @Html.ValidationSummary()
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.email)
+                @Html.TextBoxFor(model => model.email, new { @class = "form-styling" })
+                @Html.ValidationMessageFor(model => model.email)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.password)
+                @Html.PasswordFor(model => model.password, new { @class = "form-styling" })
+                @Html.ValidationMessageFor(model => model.password)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.name)
+                @Html.TextBoxFor(model => model.name, new { @class = "form-styling" })
+                @Html.ValidationMessageFor(model => model.name)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.nickName)
+                @Html.TextBoxFor(model => model.nickName, new { @class = "form-styling" })
+                @Html.ValidationMessageFor(model => model.nickName)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.rif)
+                @Html.TextBoxFor(model => model.rif, new { @class = "form-styling" })
+                @Html.ValidationMessageFor(model => model.rif)
+            </div>
+
+            <button type="submit" class="btn" asp-area="" asp-controller="Admin" asp-action="RegistrarPrestador">Registrar</button>
+        }
+
+    </div>
+</div>

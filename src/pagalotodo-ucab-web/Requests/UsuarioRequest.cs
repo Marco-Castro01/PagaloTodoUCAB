@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UCABPagaloTodoMS.Application.Responses
+namespace UCABPagaloTodoMS.Application.Requests
 {
-    public class UsuariosAllResponse
+    public class UsuarioRequest
     {
-        public Guid Id { get; set; }
-        public string? email { get; set; }
+
+       public string email { get; set; }
+
+        public string Password { get; set; }
+
         public string? name { get; set; }
         public string? cedula { get; set; }
-        public string? rif { get; set; }
         public string nickName { get; set; }
         public bool status { get; set; }
-        public string? Discriminator { get; set; }
+        public int tipou { get; set; }
     }
 }

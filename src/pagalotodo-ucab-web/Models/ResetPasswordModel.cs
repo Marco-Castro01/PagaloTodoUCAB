@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UCABPagaloTodoMS.Application.Requests
+namespace UCABPagaloTodoWeb.Models
 {
-    public class UpdatePasswordRequest
+    public class ResetPasswordModel
     {
-        public string Password { get; set; }
+        public string email { get; set; }
     }
 }

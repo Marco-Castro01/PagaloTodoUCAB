@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UCABPagaloTodoMS.Application.Requests
+﻿namespace UCABPagaloTodoWeb.Models
 {
-    public class EditarUsuarioRequest
+    public class UpdateUserModel
     {
         public string name { get; set; }
         public string? cedula { get; set; }
@@ -15,3 +9,4 @@ namespace UCABPagaloTodoMS.Application.Requests
         public bool status { get; set; }
     }
 }
+

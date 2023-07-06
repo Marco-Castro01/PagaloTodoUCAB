@@ -11,10 +11,12 @@ namespace UCABPagaloTodoMS.Application.Commands
     public class EditarUsuarioCommand : IRequest<Guid>
     {
         public EditarUsuarioRequest _request { get; set; }
+        public Guid _id { get; set; }
 
-        public EditarUsuarioCommand(EditarUsuarioRequest request)
+        public EditarUsuarioCommand(EditarUsuarioRequest request, Guid id)
         {
             _request = request;
+            _id = id;
         }
     }
 }

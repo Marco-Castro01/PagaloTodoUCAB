@@ -1,0 +1,20 @@
+﻿@model ResetPasswordModel
+
+
+    <div class="frame">
+    <div class="container">
+<p class="p-login">Ingrese su correo electrónico para recibir un token para restablecer su contraseña:</p>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.email)
+        @Html.TextBoxFor(model => model.email, new { @class = "form-styling" })
+        @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+    </div>
+
+            <button type="submit" class="btn-signup ">Enviar correo electrónico</button>
+   
+}
+    </div>
+</div>

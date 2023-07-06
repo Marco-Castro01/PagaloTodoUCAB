@@ -38,9 +38,11 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que consulta los usuarios");
             try
             {
+
                 string id = User.FindFirstValue("Id");
                 if (string.IsNullOrEmpty(id))
                     return StatusCode(422,"Error con Usuario: Debe loguearse"); 
+
                 var query = new ConsultarUsuariosQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -51,20 +53,22 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPut()]
+        [HttpPut("{id}")]
         [Authorize(Roles = ("AdminEntity"))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> EditarUsuario(EditarUsuarioRequest user)
+        public async Task<ActionResult<Guid>> EditarUsuario(Guid id, [FromBody] EditarUsuarioRequest usuario)
         {
             _logger.LogInformation("Entrando al método que edita los usuarios");
             try
             {
-                string id = User.FindFirstValue("Id");
-                //if (string.IsNullOrEmpty(id))
-                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
-                var query = new EditarUsuarioCommand(user);
+
+                if (usuario == null || id == null)
+                {
+                    throw new Exception("El usuario o el ID son nulos.");
+                }
+
+                var query = new EditarUsuarioCommand(usuario, id);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
@@ -225,16 +229,16 @@ namespace UCABPagaloTodoMS.Controllers
             }
         }
 
-        [HttpPut("Password")]
+        [HttpPut("Password/{id}")]
         [Authorize(Roles = "AdminEntity, ConsumidorEntity,PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> updatepassword(UpdatePasswordRequest usuario)
+        public async Task<ActionResult<Guid>> updatepassword(Guid id, [FromBody] UpdatePasswordRequest usuario)
         {
             _logger.LogInformation("Entrando al método que actualiza la contrasena");
             try
             {
-                var query = new ActualizarContrasenaCommand(usuario);
+                var query = new ActualizarContrasenaCommand(usuario,id);
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
@@ -249,6 +253,7 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
         /// <summary>
         ///     Endpoint que registra un valor.
         /// </summary>
@@ -286,6 +291,7 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
 
     }

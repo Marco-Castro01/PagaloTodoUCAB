@@ -1,0 +1,79 @@
+﻿@model LoginModel
+
+<div class="container">
+    <div class="frame">
+        <div class="nav">
+            <ul class="links">
+                <li class="signin active"><a class="btn">Ingresar</a></li>
+                <li class="signup"><a class="btn">Registrarse </a></li>
+            </ul>
+        </div>
+        <div class="form-signin active-form">
+            @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+            {
+                @Html.ValidationSummary()
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Login.email)
+                    @Html.TextBoxFor(model => model.Login.email, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Login.email)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Login.password)
+                    @Html.PasswordFor(model => model.Login.password, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Login.password)
+                </div>
+
+                <button type="submit" class="btn btn-signup" asp-area="" asp-controller="Login" asp-action="Index">Iniciar Sesión</button>
+            }
+            <a class="btn btn-link" asp-area="" asp-controller="Login" asp-action="OlvidoContrasena">Olvido su contraseña?</a>
+
+        </div>
+
+        <div class="form-signup deactivate">
+            @using (Html.BeginForm("RegistrarConsumidor", "Login", FormMethod.Post))
+            {
+                @Html.ValidationSummary()
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Consumidor.email)
+                    @Html.TextBoxFor(model => model.Consumidor.email, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Consumidor.email)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Consumidor.password)
+                    @Html.PasswordFor(model => model.Consumidor.password, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Consumidor.password)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Consumidor.name)
+                    @Html.TextBoxFor(model => model.Consumidor.name, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Consumidor.name)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Consumidor.cedula)
+                    @Html.TextBoxFor(model => model.Consumidor.cedula, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Consumidor.cedula)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Consumidor.nickName)
+                    @Html.TextBoxFor(model => model.Consumidor.nickName, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Consumidor.nickName)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Consumidor.lastName)
+                    @Html.TextBoxFor(model => model.Consumidor.lastName, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.Consumidor.lastName)
+                </div>
+
+                <button type="submit" class="btn-signup " asp-area="" asp-controller="Login" asp-action="RegistrarConsumidor">Registrarse</button>
+            }
+        </div>
+    </div>
+</div>
