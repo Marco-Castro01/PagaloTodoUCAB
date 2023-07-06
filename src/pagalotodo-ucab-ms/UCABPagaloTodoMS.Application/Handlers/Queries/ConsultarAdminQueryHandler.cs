@@ -28,10 +28,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("ConsultarAdminQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync();
-                }
+
+                return HandleAsync();
+            }
+            catch (ArgumentException ex)
+            {
+                throw new CustomException("Request nulo", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -47,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarAdminQueryHandler.HandleAsync");
 
                 // Consulta los registros de la tabla Admin y los mapea a objetos AdminResponse
-                var result = _dbContext.Admin.Select(c => new AdminResponse()
+                var result = _dbContext.Admin.Where(x=>x.deleted==false).Select(c => new AdminResponse()
                 {
                     Id = c.Id,
                     cedula = c.cedula,

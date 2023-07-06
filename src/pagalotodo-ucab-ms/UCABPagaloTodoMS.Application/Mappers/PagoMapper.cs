@@ -1,4 +1,6 @@
-﻿using UCABPagaloTodoMS.Application.Requests;
+﻿using Newtonsoft.Json;
+using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
@@ -19,27 +21,28 @@ namespace UCABPagaloTodoMS.Application.Mappers
             return response;    
         }
 
-        public static PagoEntity MapRequestDirectoEntity(PagoDirectoRequest directoRequest, IUCABPagaloTodoDbContext DbContext)
+        public static PagoEntity MapRequestDirectoEntity(AgregarPagoDirectoCommand request, IUCABPagaloTodoDbContext DbContext)
         {
             
             var entity = new PagoEntity()
             {
-                valor = directoRequest.Valor,
-                consumidor = DbContext.Consumidor.Find(directoRequest.ConsumidorId),
-                servicio = DbContext.Servicio.Find(directoRequest.ServicioId),
+                Id = new Guid(),
+                valor = request.DirectoRequest.Valor,
+                consumidor = DbContext.Consumidor.FirstOrDefault(c => c.deleted == false && c.Id == request._idConsumidor),
+                servicio =DbContext.Servicio.FirstOrDefault(c => c.deleted == false && c.Id==request._idServicio) 
                 
 
             };
             return entity;
         }
-        public static PagoEntity MapRequestPorValidacionEntity(PagoPorValidacionRequest Request, IUCABPagaloTodoDbContext DbContext)
+        public static PagoEntity MapRequestPorValidacionEntity(DeudaEntity deuda,Guid consumidorId, IUCABPagaloTodoDbContext DbContext)
         {
             
             var entity = new PagoEntity()
             {
-                valor = DbContext.Deuda.Find(Request.IdDeuda)?.deuda,
-                consumidor = DbContext.Consumidor.Find(Request.ConsumidorId),
-                servicio = DbContext.Servicio.Find(Request.ServicioId),
+                valor = deuda.deuda,
+                consumidor = DbContext.Consumidor.FirstOrDefault(x=>x.Id==consumidorId && x.deleted==false),
+                servicio = deuda.servicio
                 
 
             };

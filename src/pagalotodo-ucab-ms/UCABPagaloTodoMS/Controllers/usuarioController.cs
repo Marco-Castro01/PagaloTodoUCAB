@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Security.Claims;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using UCABPagaloTodoMS.Application.Commands;
@@ -38,6 +39,10 @@ namespace UCABPagaloTodoMS.Controllers
             try
             {
 
+                string id = User.FindFirstValue("Id");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422,"Error con Usuario: Debe loguearse"); 
+
                 var query = new ConsultarUsuariosQuery();
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -57,6 +62,7 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que edita los usuarios");
             try
             {
+
                 if (usuario == null || id == null)
                 {
                     throw new Exception("El usuario o el ID son nulos.");
@@ -81,6 +87,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que registra los usuarios");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new AgregarAdminCommand(usuario);
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -130,6 +139,9 @@ namespace UCABPagaloTodoMS.Controllers
             _logger.LogInformation("Entrando al método que registra los usuarios");
             try
             {
+                string id = User.FindFirstValue("Id");
+                //if (string.IsNullOrEmpty(id))
+                    //return StatusCode(422,"Error con Usuario: Debe loguearse");
                 var query = new AgregarPrestadorCommand(usuario);
                 var response = await _mediator.Send(query);
                 return Ok(response);
@@ -179,6 +191,11 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message); 
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
@@ -200,6 +217,11 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message); 
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar cambiar la contrasena. Exception: " + ex);
@@ -220,16 +242,55 @@ namespace UCABPagaloTodoMS.Controllers
                 var response = await _mediator.Send(query);
                 return Ok(response);
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
+                return BadRequest(ex.Message); 
+            }
             catch (Exception ex)
             {
                 _logger.LogError("Ocurrio un error al intentar actualizar la contrasena. Exception: " + ex);
                 return BadRequest(ex.Message);
             }
         }
-     
-
-
-
+        
+        /// <summary>
+        ///     Endpoint que registra un valor.
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Post registra valor de prueba.
+        ///     ## Url
+        ///     POST /CamposConciliacion/CamposConciliacion
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna el id del nuevo registro.</returns>
+        [HttpDelete("/usuario/{idUsuario}/delete")]
+        [Authorize(Roles = "AdminEntity")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Guid>> DeleteUsuario(Guid idUsuario)
+        {
+            _logger.LogInformation("Entrando al método que registra los CamposConciliacion");
+            try
+            {
+                var query = new DeleteUsuarioCommand(idUsuario);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo,ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error al intentar registrar un admin. Exception: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

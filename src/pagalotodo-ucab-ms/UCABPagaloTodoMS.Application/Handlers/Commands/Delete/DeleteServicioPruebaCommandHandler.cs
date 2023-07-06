@@ -41,7 +41,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         {
             try
             {
-                if (request._request == null)
+                if (request == null)
                 {
                     _logger.LogWarning("EliminarServicioPruebaCommandHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
@@ -50,6 +50,10 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 {
                     return await HandleAsync(request);
                 }
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch(Exception)
             {
@@ -63,7 +67,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             try
             {
                 _logger.LogInformation("EliminarServicioPruebaCommandHandler.HandleAsync {Request}", request);
-                var entity = ServicioMapper.MapRequestDeleteEntity(request._request,_dbContext);
+                var entity = ServicioMapper.MapRequestDeleteEntity(request,_dbContext);
                 ServicioValidator ServicioValidator = new ServicioValidator();
                 ValidationResult result = await ServicioValidator.ValidateAsync(entity);
                 if (!result.IsValid)
@@ -79,6 +83,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Commit();
                 _logger.LogInformation("EliminarServicioPruebaCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error EliminarServicioPruebaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al eliminar Servicio", ex);
+
             }
             catch (Exception ex)
             {

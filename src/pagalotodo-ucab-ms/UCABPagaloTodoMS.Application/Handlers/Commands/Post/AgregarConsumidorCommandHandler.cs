@@ -49,10 +49,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch (Exception ex)
             {
@@ -73,7 +76,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("AgregarUsuarioCommand.HandleAsync {Request}", request);
                 var entity = UsuariosMapper.MapRequestConsumidorEntity(request._request);
                 ConsumidorValidator usuarioValidator = new ConsumidorValidator();
-                ValidationResult result = usuarioValidator.Validate(entity);
+                ValidationResult result = await usuarioValidator.ValidateAsync(entity);
                 if (!result.IsValid)
                 {
                     throw new ValidationException(result.Errors);
@@ -84,6 +87,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Commit();
                 _logger.LogInformation("AgregarAdminHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error AgregarAdminHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al agregar un consumidor", ex);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,10 +35,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("EditarUsuarioCommand.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch (Exception)
             {
@@ -54,8 +57,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 {
                     _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Request}", request);
 
-                    // Buscar el usuario que se va a editar
-                    var user = _dbContext.Usuarios.SingleOrDefault(u => u.Id == request._id);
+
+                // Buscar el usuario que se va a editar
+                var user = _dbContext.Usuarios.FirstOrDefault(u => u.email == request._request.email && u.deleted==false);
 
                     if (user == null)
                     {
@@ -96,12 +100,19 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Response}", id);
                     return id;
                 }
+                catch (CustomException ex)
+                {
+                  _logger.LogError(ex, "Error AEditarUsuarioCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                  transaccion.Rollback();
+                  throw;
+                }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error EditarUsuarioCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                     transaccion.Rollback();
                     throw new CustomException(ex.Message);
                 }
+
             }
         }
     }

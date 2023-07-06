@@ -28,10 +28,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("ConsultarServicioQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync();
-                }
+
+                return HandleAsync();
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request Nulo", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -47,7 +53,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarServicioQueryHandler.HandleAsync");
 
                 // Consulta todos los registros de la tabla Servicio donde deleted es falso
-                var result = _dbContext.Servicio.Where(c => c.deleted == false).Select(c => new ServicioResponse()
+                var result = _dbContext.Servicio
+                    .Where(c => c.deleted == false).Select(c => new ServicioResponse()
                 {
                     Id = c.Id,
                     name = c.name,
@@ -62,7 +69,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarServicioQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error en consulta", ex);
             }
         }
     }

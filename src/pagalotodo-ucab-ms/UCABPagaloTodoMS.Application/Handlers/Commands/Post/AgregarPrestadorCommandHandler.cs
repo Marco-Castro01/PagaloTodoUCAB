@@ -52,6 +52,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     return await HandleAsync(request);
                 }
             }
+            catch (CustomException)
+            {
+                throw;
+
+            }
             catch (Exception ex)
             {
                 throw;
@@ -68,7 +73,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             var transaccion = _dbContext.BeginTransaction();
             try
             {
-                _logger.LogInformation("AgregarUsuarioCommand.HandleAsync {Request}", request);
+                _logger.LogInformation("AgregarPrestadorCommandHandler.HandleAsync {Request}", request);
                 var entity = UsuariosMapper.MapRequestPrestadorEntity(request._request);
                 PrestadorValidator usuarioValidator = new PrestadorValidator();
                 ValidationResult result = usuarioValidator.Validate(entity);
@@ -80,12 +85,18 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 var id = entity.Id;
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
-                _logger.LogInformation("AgregarAdminHandler.HandleAsync {Response}", id);
+                _logger.LogInformation("AgregarPrestadorCommandHandler.HandleAsync {Response}", id);
                 return id;
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogError(ex, "Error AgregarPrestadorCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al agregar un prestador de servicio", ex);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error AgregarAdminHandler.HandleAsync. {Mensaje}", ex.Message);
+                _logger.LogError(ex, "Error AgregarPrestadorCommandHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
                 throw new CustomException(ex.Message);
             }
