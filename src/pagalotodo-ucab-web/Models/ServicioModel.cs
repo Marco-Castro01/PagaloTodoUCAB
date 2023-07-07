@@ -1,9 +1,9 @@
-﻿using UCABPagaloTodoMS.Core.Entities;
+﻿
 using UCABPagaloTodoMS.Core.Enums;
 
-namespace UCABPagaloTodoMS.Application.Responses
+namespace UCABPagaloTodoWeb.Models
 {
-    public class ServicioResponse
+    public class ServicioModel
     {
         public Guid Id { get; set; }
         public string? name { get; set; }

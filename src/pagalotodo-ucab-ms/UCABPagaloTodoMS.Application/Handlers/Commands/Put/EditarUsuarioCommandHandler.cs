@@ -59,7 +59,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
 
                 // Buscar el usuario que se va a editar
-                var user = _dbContext.Usuarios.FirstOrDefault(u => u.email == request._request.email && u.deleted==false);
+                var user = _dbContext.Usuarios.FirstOrDefault(u => u.Id == request._id && u.deleted==false);
 
                     if (user == null)
                     {

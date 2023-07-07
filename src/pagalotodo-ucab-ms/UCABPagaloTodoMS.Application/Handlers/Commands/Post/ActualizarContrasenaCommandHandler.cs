@@ -73,7 +73,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("ActualizarContrasenaCommand.HandleAsync {Request}", request);
 
 
-                var user = _dbContext.Usuarios.Where(u => u.email == request._request.email && u.deleted==false).FirstOrDefault();
+                var user = _dbContext.Usuarios.FirstOrDefault(u => u.Id == request._id && u.deleted==false);
 
                 if (user == null)
                 {

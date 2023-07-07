@@ -60,7 +60,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     name = c.name,
                     accountNumber = c.accountNumber,
                     prestadorServicioId = c.PrestadorServicio.Id,
-                    prestadorServicioName = c.PrestadorServicio.name
+                    prestadorServicioName = c.PrestadorServicio.name,
+                    statusServicio = c.statusServicio,
+                    tipoServicio = c.tipoServicio
                 });
 
                 // Ejecuta la consulta y devuelve los resultados como una lista

@@ -22,7 +22,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
     /// <summary>
     /// Clase que maneja el comando para agregar un administrador.
     /// </summary>
-    public class AsignarServicioCommandHandler : IRequestHandler<AsignarServicioComand, Guid>
+    public class AsignarServicioCommandHandler : IRequestHandler<AsignarServicioComand, string>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<AsignarServicioCommandHandler> _logger;
@@ -44,7 +44,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         /// <param name="request">Comando para agregar un administrador</param>
         /// <param name="cancellationToken">Token de cancelación</param>
         /// <returns>Identificador del administrador agregado</returns>
-        public async Task<Guid> Handle(AsignarServicioComand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(AsignarServicioComand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         /// </summary>
         /// <param name="request">Comando para agregar un administrador</param>
         /// <returns>Identificador del administrador agregado</returns>
-        private async Task<Guid> HandleAsync(AsignarServicioComand request)
+        private async Task<string> HandleAsync(AsignarServicioComand request)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
@@ -94,7 +94,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
                 _logger.LogInformation("AsignarServicioComandHandle.HandleAsync {Response}", id);
-                return id;
+                return "Creacion y asignacion de servicio exitoso";
             }catch (ValidationException ex)
             {
                 _logger.LogError(ex, "Error AgregarAdminHandler.HandleAsync. {Mensaje}", ex.Message);
