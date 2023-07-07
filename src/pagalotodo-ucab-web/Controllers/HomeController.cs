@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Newtonsoft.Json;
 using UCABPagaloTodoWeb.Models;
 
 namespace UCABPagaloTodoWeb.Controllers
@@ -7,15 +8,46 @@ namespace UCABPagaloTodoWeb.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly string endpoint = "https://localhost:5001/";
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+
+            var token = HttpContext.Session.GetString("token");
+            if (string.IsNullOrEmpty(token))
+            {
+                return View("401");
+            }
+            var userRole = HttpContext.Session.GetString("userrole");
+            if(userRole.Equals("AdminEntity"))
+            {
+                return View("Privacy");
+
+            }
+            else if (userRole.Equals("PrestadorServicioEntity"))
+            {
+                
+                return View("HomePrestador"); 
+            }
+            return View("HomeConsumidor");
+            List<ServicioModel>? servicios = new List<ServicioModel>();
+            using (var httpClient = new HttpClient())
+            {
+
+                using (var response = await httpClient.GetAsync(endpoint+"servicios"))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    servicios = JsonConvert.DeserializeObject<List<ServicioModel>>(responseContent);
+                    return View(servicios);
+                }
+            }
         }
 
         public IActionResult Privacy()

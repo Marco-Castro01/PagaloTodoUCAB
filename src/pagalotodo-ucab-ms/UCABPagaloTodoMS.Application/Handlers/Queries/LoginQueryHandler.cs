@@ -79,7 +79,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                         usuariocreated.passwordSalt))
                 {
                     _logger.LogWarning("Ha ocurrido un error: Contraseña incorrecta");
-                    throw new ArgumentNullException(nameof(usuariocreated));
+                    throw new CustomException(404,"Correo o contraseña incorrecta");
                 }
 
                 // Obtener los datos del usuario para generar el token
@@ -96,7 +96,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
 
                 return Generate(result);
             }
-            catch (ArgumentNullException)
+            catch (CustomException)
             {
                 throw;
             }

@@ -37,7 +37,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de Servicios.</returns>
-        [HttpGet("servicio")]
+        [HttpGet("/servicios")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<PagoResponse>>> ConsultaServicio()
@@ -120,7 +120,7 @@ namespace UCABPagaloTodoMS.Controllers
         [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<string>> CreacionYAsignacionDeServicio(Guid servicioId,[FromBody] CamposAsigRequest servicioRequests)
+        public async Task<ActionResult<string>> CreacionYAsignacionDeCampos(Guid servicioId,[FromBody] CamposAsigRequest servicioRequests)
         {
             _logger.LogInformation("Entrando al método que envia cambia la contrasena");
             try

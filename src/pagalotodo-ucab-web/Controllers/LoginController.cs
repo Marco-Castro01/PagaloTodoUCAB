@@ -27,11 +27,7 @@ namespace UCABPagaloTodoWeb.Controllers
 
       
 
-        public ViewResult Modificar(UsuariosModel usuario) {
-            var token = HttpContext.Session.GetString("token");
-         return  View(usuario);
-        }
-
+       
 
 
 

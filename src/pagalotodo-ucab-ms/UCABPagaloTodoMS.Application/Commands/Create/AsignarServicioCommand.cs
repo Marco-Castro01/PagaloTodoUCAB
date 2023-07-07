@@ -8,7 +8,7 @@ using UCABPagaloTodoMS.Application.Requests;
 
 namespace UCABPagaloTodoMS.Application.Commands
 {
-    public class AsignarServicioComand : IRequest<Guid>
+    public class AsignarServicioComand : IRequest<string>
     {
         public Guid _prestadorServicioId { get; set; }
         public ServicioRequest _request { get; set; }
