@@ -1,30 +1,35 @@
-﻿@model UsuariosModel
+﻿@model UCABPagaloTodoWeb.Models.ServicioModel
 
-<h1>Modificar Usuario</h1>
+<h1>Modificar Servicio</h1>
+<h2>Nombre Del Prestador de Servicio: @Model.prestadorServicioName</h2>
+<h2>Id Del Prestador de Servicio: @Model.prestadorServicioId</h2>
 
-<form asp-action="Modificar" method="post" class="frame">
-    <input type="hidden" name="id" value="@Model.Id" />
+<form asp-action="Modificar_Servicio" method="post" class="frame">
+    @Html.HiddenFor(model => model.Id)
+
     <div class="form-group">
-        <label for="name">Nombre:</label>
-        <input type="text" class="form-styling" id="name" name="name" value="@Model.name" required>
+        <label asp-for="name">Nombre:</label>
+        <input asp-for="name" class="form-control" required>
     </div>
     <div class="form-group">
-        <label for="cedula">Cédula:</label>
-        <input type="text" class="form-styling" id="cedula" name="cedula" value="@Model.cedula" >
+        <label asp-for="accountNumber">Número de cuenta:</label>
+        <input asp-for="accountNumber" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label asp-for="tipoServicio">Tipo de servicio:</label>
+        <select asp-for="tipoServicio" class="form-control">
+            <option value="directo">De pago directo</option>
+            <option value="validacion">Pago por deuda</option>
+        </select>
     </div>
     <div class="form-group">
-        <label for="rif">RIF:</label>
-        <input type="text" class="form-styling" id="rif" name="rif" value="@Model.rif" >
-    </div>
-    <div class="form-group">
-        <label for="nickName">NickName:</label>
-        <input type="text" class="form-styling" id="nickName" name="nickName" value="@Model.nickName" required>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.status , new {@class = "labelcehck"})
-        @Html.CheckBoxFor(model => model.status)
-        @Html.ValidationMessageFor(model => model.status)
-       
+        <label asp-for="statusServicio">Estado del servicio:</label>
+        <select asp-for="statusServicio" class="form-control">
+            <option value="activa">Activo</option>
+            <option value="inactiva">Inactivo</option>
+            <option value="proximamente">Próximamente</option>
+        </select>
     </div>
     <button type="submit" class="btn btn-primary">Guardar cambios</button>
 </form>

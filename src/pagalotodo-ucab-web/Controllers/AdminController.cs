@@ -128,6 +128,72 @@ namespace UCABPagaloTodoWeb.Controllers
         }
 
 
+
+
+        public ViewResult Modificar_Servicio(ServicioModel servicio)
+        {
+            var token = HttpContext.Session.GetString("token");
+
+            return View(servicio);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Modificar_Servicio(Guid id, ServicioModel servicio)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(servicio), Encoding.UTF8, "application/json");
+
+
+                    using (var response = await httpClient.PatchAsync("https://localhost:5001/servicio/"+servicio.Id.ToString()+"/update", content))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        return RedirectToAction("InformacionServicioAsync", "Admin", new { id = servicio.Id });
+                    }
+
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+
+            ServicioModel servicioModel = new ServicioModel
+            {
+                Id = servicio.Id,
+                name = servicio.name,
+                accountNumber=servicio.accountNumber,
+                tipoServicio = servicio.tipoServicio,
+                statusServicio = servicio.statusServicio
+            };
+
+            // Pasar el modelo a la vista
+            return View(servicioModel);
+        }
+
+
+
         [Route("Admin/InformacionPrestadorAsync/{id}")]
 
         public async Task<IActionResult> InformacionPrestadorAsync(Guid Id)
