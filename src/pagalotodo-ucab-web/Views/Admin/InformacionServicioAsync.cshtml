@@ -2,20 +2,19 @@
 
 <h1>Información del Servicio</h1>
 
-<div class="prestador-info">
+<div class="servicio-info">
     <h3>ID: @Model.Id</h3>
     <h3>Nombre: @Model.name</h3>
-    <h3>Id del prestador de Servicio: @Model.prestadorServicioId</h3>
-    <h3>Nombre de prestador de servicio: @Model.prestadorServicioName</h3>
-    <h3>Numero de Cuenta: @Model.accountNumber</h3>
-    <h3>Tipo de Servicio: <span class="badge @(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "badge-success" : "badge-info")">@(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "De pago Directo" : "Pago por deuda")</span></h3>
-
-
+    <h3>ID del prestador de servicio: @Model.prestadorServicioId</h3>
+    <h3>Nombre del prestador de servicio: @Model.prestadorServicioName</h3>
+    <h3>Número de Cuenta: @Model.accountNumber</h3>
+    <h3>Tipo de Servicio: <span class="badge @(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "badge-success" : "badge-info")">@(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "De pago directo" : "Pago por deuda")</span></h3>
     <h3>Estado: <span class="badge @(Model.statusServicio switch { UCABPagaloTodoWeb.enums.StatusServicio.activa => "badge-success", UCABPagaloTodoWeb.enums.StatusServicio.inactiva => "badge-danger", _ => "badge-info" })">@(Model.statusServicio switch { UCABPagaloTodoWeb.enums.StatusServicio.activa => "Activo", UCABPagaloTodoWeb.enums.StatusServicio.inactiva => "Inactivo", _ => "Próximamente" })</span></h3>
 </div>
+<a href="@Url.Action("Modificar_Servicio", "Admin", new { id = Model.Id, name = Model.name, accountNumber = Model.accountNumber, prestadorServicioId = Model.prestadorServicioId, prestadorServicioName = Model.prestadorServicioName, tipoServicio = Model.tipoServicio, statusServicio = Model.statusServicio })" class="btn btn-primary">Modificar</a>
 
 <div>
-    <h2>Servicios <a href="#" class="btn btn-primary">Agregar Servicio</a></h2>
+    <h2>Campos de los Pagos <a href="#" class="btn btn-primary">Agregar Campo</a></h2>
     @if (Model.CamposDeLosPagos.Count == 0)
     {
         <div class="alert alert-info" role="alert">
@@ -28,7 +27,7 @@
             @foreach (var campo in Model.CamposDeLosPagos)
             {
                 <div class="col-md-4">
-                    <div class="card servicio-card">
+                    <div class="card campo-card">
                         <div class="card-body">
                             <h5 class="card-title">@campo.Nombre</h5>
                             <h5 class="card-title">Tipo de dato: @campo.TipoDato</h5>
@@ -47,7 +46,7 @@
                                 <p class="card-text">Separador de Decimales: @campo.separadorDeDecimales</p>
                             }
 
-                            <p class="card-text">Archivo Conciliacion: <span class="badge @(campo.inCOnciliacion == true ? "badge-success" : "badge-danger")">@(campo.inCOnciliacion == true ? "En archivo" : "No en archivo")</span></p>
+                            <p class="card-text">Archivo de Conciliación: <span class="badge @(campo.inCOnciliacion == true ? "badge-success" : "badge-danger")">@(campo.inCOnciliacion == true ? "En archivo" : "No en archivo")</span></p>
                         </div>
                     </div>
                 </div>
@@ -59,27 +58,26 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('.servicio-card').hover(function () {
+            $('.campo-card').hover(function () {
                 $(this).toggleClass('card-hover');
             });
 
-            $('#servicioDropdown').change(function () {
-                var servicioId = $(this).val();
+            $('#campoDropdown').change(function () {
+                var campoId = $(this).val();
 
-                // Obtener información del servicio seleccionado mediante una llamada AJAX
+                // Obtener información del campo seleccionado mediante una llamada AJAX
                 $.ajax({
-                    url: '/Prestador/ObtenerServicioInfo',
+                    url: '/Servicio/ObtenerCampoInfo',
                     type: 'GET',
-                    data: { servicioId: servicioId },
+                    data: { campoId: campoId },
                     success: function (result) {
-                        $('#serviceName').text('Nombre: ' + result.name);
-                        $('#accountNumber').text('Número de cuenta: ' + result.accountNumber);
-                        $('#prestadorServicioName').text('Prestador de servicio: ' + result.prestadorServicioName);
-                        $('#tipoServicio').text('Tipo de servicio: ' + result.tipoServicio);
-                        $('#statusServicio').html('Estado de servicio: <span class="badge ' + (result.statusServicio === 'Activo' ? 'badge-success' : result.statusServicio === 'Inactivo' ? 'badge-danger' : 'badge-info') + '">' + result.statusServicio + '</span>');
+                        $('#campoName').text('Nombre: ' + result.Nombre);
+                        $('#campoTipoDato').text('Tipo de dato: ' + result.TipoDato);
+                        $('#campoLongitud').text('Longitud del campo: ' + result.Longitud);
+                        // Agregar más atributos del campo según necesidad
                     },
                     error: function (xhr, status, error) {
-                        console.log('Error al obtener información del servicio:', error);
+                        console.log('Error al obtener información del campo:', error);
                     }
                 });
             });
@@ -87,11 +85,11 @@
     </script>
 
     <style>
-        .prestador-info {
+        .servicio-info {
             margin-bottom: 20px;
         }
 
-        .servicio-card {
+        .campo-card {
             margin-bottom: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
