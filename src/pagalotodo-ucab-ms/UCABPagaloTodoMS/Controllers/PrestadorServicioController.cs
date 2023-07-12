@@ -62,6 +62,12 @@ namespace UCABPagaloTodoMS.Controllers
             }
         }
 
+
+
+        
+
+
+
         /// <summary>
         ///     Endpoint para la creacion y asignacion de servicio
         /// </summary>
@@ -255,7 +261,7 @@ namespace UCABPagaloTodoMS.Controllers
         [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<ConsumidorResponse>>> getInfoPrestador()
+        public async Task<ActionResult<PrestadorServicioResponse>> getInfoPrestador()
         {
             _logger.LogInformation("Entrando al método que consulta los Consumidores");
             try
@@ -276,6 +282,45 @@ namespace UCABPagaloTodoMS.Controllers
             {
                 _logger.LogError("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
                 return BadRequest("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
+            }
+        }
+
+
+        /// <summary>
+        ///     Endpoint para la consulta de prueba
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Get admins
+        ///     ## Url
+        ///     GET /Consumidores/consumidores
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de PrestadoresServicios.</returns>
+        [HttpGet("/prestador_servicio/{idPrestador}/info")]
+        //[Authorize(Roles = "AdminEntity")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> getInfoPrestadorByAdmin(Guid idPrestador)
+        {
+            _logger.LogInformation("Entrando al método que consulta De la info de prestador");
+            try
+            {
+                var query = new GetInfoPrestadorServicioQuery(idPrestador);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
+                return BadRequest("Ocurrio un error en la consulta del prestador. Exception: " + ex);
             }
         }
     }

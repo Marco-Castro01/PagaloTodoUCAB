@@ -40,7 +40,7 @@ namespace UCABPagaloTodoMS.Controllers
         [HttpGet("/servicios")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<PagoResponse>>> ConsultaServicio()
+        public async Task<ActionResult<List<ServicioResponse>>> ConsultaServicio()
         {
             _logger.LogInformation("Entrando al método que consulta los Servicios");
             try

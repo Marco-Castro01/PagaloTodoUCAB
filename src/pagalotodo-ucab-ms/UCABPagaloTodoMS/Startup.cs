@@ -40,7 +40,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        
+
         //RabbitMQ
         services.AddTransient<IRabbitMQService, RabbitMQService>();
         services.AddTransient<IRabbitMQProducer, RabbitMQProducer>();
