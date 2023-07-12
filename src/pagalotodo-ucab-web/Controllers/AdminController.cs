@@ -67,6 +67,7 @@ namespace UCABPagaloTodoWeb.Controllers
 
         public ViewResult Modificar(UsuariosModel usuario) {
             var token = HttpContext.Session.GetString("token");
+
          return  View(usuario);
         }
 
@@ -86,10 +87,6 @@ namespace UCABPagaloTodoWeb.Controllers
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-
-
-
 
 
                         StringContent content = new StringContent(JsonConvert.SerializeObject(usuario), Encoding.UTF8, "application/json");
@@ -128,6 +125,115 @@ namespace UCABPagaloTodoWeb.Controllers
 
             // Pasar el modelo a la vista
             return View(usuarioModel);
+        }
+
+
+        [Route("Admin/InformacionPrestadorAsync/{id}")]
+
+        public async Task<IActionResult> InformacionPrestadorAsync(Guid Id)
+        {
+            var token = HttpContext.Session.GetString("token");
+            if (string.IsNullOrEmpty(token))
+            {
+                // Si no se encuentra el token en la sesión, lanzar una excepción
+                throw new Exception("No se encontró el token en la sesión.");
+            }
+
+
+            try
+            {
+                //var token = HttpContext.Session.GetString("token");
+               
+                PrestadorModel Prestador = new PrestadorModel();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    using (var response = await httpClient.GetAsync("https://localhost:5001/prestador_servicio/" + Id.ToString() + "/info"))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        Prestador = JsonConvert.DeserializeObject<PrestadorModel>(responseContent);
+                        
+                    }
+                    List<ServicioModel> servicios=new List<ServicioModel>();   
+                    using (var ResponseS = await httpClient.GetAsync("https://localhost:5001/servicios"))
+                    {
+                        ResponseS.EnsureSuccessStatusCode();
+
+                        var responseContent = await ResponseS.Content.ReadAsStringAsync();
+                        servicios = JsonConvert.DeserializeObject<List<ServicioModel>>(responseContent);
+
+                    }
+                    Prestador.servicios = servicios.Where(s => s.prestadorServicioId == Prestador.Id).ToList();
+
+                    return View("InformacionPrestadorAsync",Prestador);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+
+            // Agregar una instrucción de retorno por defecto, puede ser una vista específica o null según tus necesidades
+            return View("../Home/401"); // Por ejemplo, devuelve una vista de error
+        }
+
+
+        [Route("Admin/InformacionServicioAsync/{id}")]
+
+        public async Task<IActionResult> InformacionServicioAsync(Guid Id)
+        {
+            var token = HttpContext.Session.GetString("token");
+            if (string.IsNullOrEmpty(token))
+            {
+                // Si no se encuentra el token en la sesión, lanzar una excepción
+                return View("../Home/401"); // Por ejemplo, devuelve una vista de error
+            }
+
+
+            try
+            {
+                ServicioModel servicio = new ServicioModel();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    List<ServicioModel> servicios = new List<ServicioModel>();
+                    using (var ResponseS = await httpClient.GetAsync("https://localhost:5001/servicios"))
+                    {
+                        ResponseS.EnsureSuccessStatusCode();
+
+                        var responseContent = await ResponseS.Content.ReadAsStringAsync();
+                        servicios = JsonConvert.DeserializeObject<List<ServicioModel>>(responseContent);
+
+                    }
+                    servicio = servicios.FirstOrDefault(s => s.Id == Id);
+
+
+                    return View("InformacionServicioAsync", servicio);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+
+            // Agregar una instrucción de retorno por defecto, puede ser una vista específica o null según tus necesidades
+            return View("../Home/401"); // Por ejemplo, devuelve una vista de error
         }
 
         public ViewResult CambiarContrasena(Guid id)
@@ -182,7 +288,7 @@ namespace UCABPagaloTodoWeb.Controllers
 
         public ViewResult RegistrarPrestador() => View();
         [HttpPost]
-        public async Task<IActionResult> RegistrarPrestador(PrestadorModel usuario)
+        public async Task<IActionResult> RegistrarPrestador(NewPrestadorModel usuario)
         {
             try
             {
@@ -267,5 +373,56 @@ namespace UCABPagaloTodoWeb.Controllers
 
             return View("RegistrarAdmin", usuario);
         }
+
+
+
+
+
+
+        //TODO: TERMINAR
+        public ViewResult RegistrarServicioAPrestador() => View();
+        [HttpPost]
+        public async Task<IActionResult> RegistrarServicioAPrestador(AdminModel usuario)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    if (!ModelState.IsValid)
+                    {
+                        return View("RegistrarAdmin", usuario);
+                    }
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(usuario), Encoding.UTF8, "application/json");
+
+                    using (var response = await httpClient.PostAsync(endpoint + "/admin", content))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        return RedirectToAction("GestionUsuarios", "Admin");
+                        // Procesar la respuesta del servicio si es necesario
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Log the exception or handle it appropriately
+                ModelState.AddModelError("", "Error al realizar la solicitud HTTP");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                ModelState.AddModelError("", "Ocurrió un error en el servidor");
+            }
+
+            return View("RegistrarAdmin", usuario);
+        }
+
     }
 }

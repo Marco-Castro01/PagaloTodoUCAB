@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -57,9 +58,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 {
                     _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Request}", request);
 
-
-                // Buscar el usuario que se va a editar
-                var user = _dbContext.Usuarios.FirstOrDefault(u => u.Id == request._id && u.deleted==false);
+                    // Buscar el usuario que se va a editar
+                    var user = await _dbContext.Usuarios.FirstOrDefaultAsync(u => u.Id == request._id && !u.deleted);
 
                     if (user == null)
                     {
@@ -75,9 +75,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                         prestador.name = request._request.name;
                         prestador.nickName = request._request.nickName;
 
-                        _dbContext.Usuarios.Update(prestador);
-                        await _dbContext.SaveEfContextChanges("APP");
+                        List<ServicioEntity> serviciosBD = await _dbContext.Servicio.Where(s => s.PrestadorServicio.Id == prestador.Id).ToListAsync();
+                        if (!prestador.status && serviciosBD.Any())
+                        {
+                            List<ServicioEntity> serviciosUpdate = ModificarStatusServicio(serviciosBD);
+                            _dbContext.Servicio.UpdateRange(serviciosUpdate);
+                        }
 
+                        _dbContext.Usuarios.Update(prestador);
                     }
                     else
                     {
@@ -88,12 +93,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                         user.cedula = request._request.cedula;
 
                         _dbContext.Usuarios.Update(user);
-                        await _dbContext.SaveEfContextChanges("APP");
-
                     }
 
-
-
+                    await _dbContext.SaveEfContextChanges("APP");
 
                     var id = user.Id;
                     transaccion.Commit();
@@ -102,9 +104,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 }
                 catch (CustomException ex)
                 {
-                  _logger.LogError(ex, "Error AEditarUsuarioCommandHandler.HandleAsync. {Mensaje}", ex.Message);
-                  transaccion.Rollback();
-                  throw;
+                    _logger.LogError(ex, "Error EditarUsuarioCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                    transaccion.Rollback();
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -112,8 +114,17 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     transaccion.Rollback();
                     throw new CustomException(ex.Message);
                 }
-
             }
         }
+
+        public List<ServicioEntity> ModificarStatusServicio(List<ServicioEntity> servicios)
+        {
+            foreach (var servicio in servicios)
+            {
+                servicio.statusServicio = Core.Enums.StatusServicio.inactiva;
+            }
+            return servicios;
+        }
+
     }
 }

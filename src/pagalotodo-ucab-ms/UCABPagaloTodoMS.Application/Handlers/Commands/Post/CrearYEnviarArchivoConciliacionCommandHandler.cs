@@ -38,10 +38,6 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<CrearYEnviarArchivoConciliacionCommandHandler> _logger;
-        private readonly string api_key="tZJQqp4hTDWoAP67m8o1NCxaSGgaTEg8w4JdiehS";
-        private readonly string Bucket = "pagalotodoucab-db427.appspot.com/";
-        private readonly string authEmail="castroo8a2@gmail.com";
-        private readonly string authPassword="123456";
         /// <summary>
         /// Constructor de la clase AgregarPrestadorCommandHandler.
         /// </summary>
@@ -234,12 +230,5 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             return listaObjetos;
         }
         
-    }
-    
-    
-
-
-
-    
-    
+    } 
 }

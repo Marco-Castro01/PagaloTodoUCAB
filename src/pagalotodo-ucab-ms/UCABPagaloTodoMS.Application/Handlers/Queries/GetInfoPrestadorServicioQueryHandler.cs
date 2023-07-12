@@ -5,6 +5,7 @@ using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
 using UCABPagaloTodoMS.Application.CustomExceptions;
+using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -22,6 +23,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
         public Task<PrestadorServicioResponse> Handle(GetInfoPrestadorServicioQuery request, CancellationToken cancellationToken)
         {
             try
+
             {
                 if (request is null)
                 {
@@ -54,8 +56,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
 
                 // Consulta todos los registros de la tabla PrestadorServicio
 
-                var result = _dbContext.PrestadorServicio
-                    .FirstOrDefault(x => x.deleted == false && x.Id == request._idPrestador);
+                var result = _dbContext.PrestadorServicio.Include(x=>x.Servicio)
+                   .FirstOrDefault(x => x.deleted == false && x.Id == request._idPrestador);
+                
                 if (result == null)
                     throw new CustomException(404, "Consumidor no existente");
 
@@ -64,6 +67,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     Id = result.Id,
                     rif = result.rif,
                     nickName = result.nickName,
+                    
                     status = result.status,
                     email = result.email,
 

@@ -5,6 +5,8 @@ using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.EntityFrameworkCore;
 using UCABPagaloTodoMS.Application.CustomExceptions;
+using Newtonsoft.Json;
+using UCABPagaloTodoMS.Application.Requests;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
@@ -61,6 +63,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     accountNumber = c.accountNumber,
                     prestadorServicioId = c.PrestadorServicio.Id,
                     prestadorServicioName = c.PrestadorServicio.name,
+                    CamposDeLosPagos= JsonConvert.DeserializeObject<List<CamposPagosRequest>>(c.formatoDePagos),
                     statusServicio = c.statusServicio,
                     tipoServicio = c.tipoServicio
                 });

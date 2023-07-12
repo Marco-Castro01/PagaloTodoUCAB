@@ -1,4 +1,4 @@
-﻿namespace UCABPagaloTodoMS.Core.Enums;
+﻿namespace UCABPagaloTodoWeb.enums;
 
 public enum StatusServicio
 {

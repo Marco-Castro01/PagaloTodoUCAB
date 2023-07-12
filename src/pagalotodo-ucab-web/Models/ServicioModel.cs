@@ -1,5 +1,5 @@
 ﻿
-using UCABPagaloTodoMS.Core.Enums;
+using UCABPagaloTodoWeb.enums;
 
 namespace UCABPagaloTodoWeb.Models
 {
@@ -8,7 +8,8 @@ namespace UCABPagaloTodoWeb.Models
         public Guid Id { get; set; }
         public string? name { get; set; }
         public string? accountNumber { get; set; }
-        
+        public List<CamposPagosModel>? CamposDeLosPagos { get; set; }
+
         public Guid prestadorServicioId { get; set; }
         public string? prestadorServicioName { get; set; }
         public TipoServicio tipoServicio  { get; set; }

@@ -1,13 +1,13 @@
 ﻿namespace UCABPagaloTodoWeb.Models
 {
-    public class PrestadorModel
-    {
-        public string email { get; set; }
+    public class PrestadorModel {
 
-        public string password { get; set; }
-
+        public Guid Id { get; set; }
+        public string? email { get; set; }
         public string? name { get; set; }
-        public string nickName { get; set; }
         public string? rif { get; set; }
+        public List<ServicioModel>? servicios { get; set; }
+        public string nickName { get; set; }
+        public bool status { get; set; }
     }
 }
