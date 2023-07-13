@@ -132,7 +132,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     csvContent.AppendLine(campos);
                     List<PagoEntity> listPagos = _dbContext.Pago.Where(c => c.servicio != null && c.servicio.Id == servicio.Id && c.CreatedAt>=fechaUltimoCierre).Include(o => o.consumidor).ToList();
 
-                    if (listPagos == null || listPagos.Count == 0)
+                    if (listPagos != null && listPagos.Count > 0)
                     {
                         foreach (var pago in listPagos)
                         { 

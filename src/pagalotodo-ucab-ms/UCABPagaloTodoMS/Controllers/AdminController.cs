@@ -67,7 +67,7 @@ namespace UCABPagaloTodoMS.Controllers
         
         
         
-        [HttpGet("/admin/prestador_servicio/{idPrestadorServicio}/cierreContable")]
+        [HttpGet("/prestador_servicio/{idPrestadorServicio}/cierreContable")]
         [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

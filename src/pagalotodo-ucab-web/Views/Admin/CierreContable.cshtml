@@ -9,14 +9,13 @@
     <h3>RIF: @Model.rif</h3>
     <h3>Nickname: @Model.nickName</h3>
     <h3>Estado: <span class="badge @(Model.status ? "badge-success" : "badge-danger")">@(Model.status ? "Activo" : "Inactivo")</span></h3>
-    <a href="@Url.Action("CierreContable", "Admin", new { id = Model.Id })" class="btn btn-success">Hacer Cierre</a>
 
 
 </div>
 
 <div>
-    <h2>Servicios <a href="#" class="btn btn-primary">Agregar Servicio</a></h2>
-    @if (Model.servicios.Count == 0)
+    <h2>Cierre por servicio </h2>
+    @if (Model.cierres.Count == 0 )
     {
             <div class="alert alert-info" role="alert">
                 Sin servicios asociados.
@@ -25,20 +24,29 @@
     else
     {
             <div class="row">
-            @foreach (var servicio in Model.servicios)
+            @foreach (var cierre in Model.cierres)
             {
-                        <div class="col-md-4">
-                            <div class="card servicio-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">@servicio.name</h5>
-                                    <p class="card-text">Número de cuenta: @servicio.accountNumber</p>
-                                    <p class="card-text">Prestador de servicio: @servicio.prestadorServicioName</p>
-                                    <p class="card-text">Tipo de servicio: @servicio.tipoServicio</p>
-                                    <p class="card-text">Estado de servicio: <span class="badge @(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "badge-success" : "badge-danger")">@(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "Activo" : "Inactivo")</span></p>
-                                    <a href="@Url.Action("InformacionServicioAsync", "Admin", new { id = servicio.Id })" class="btn btn-success">Ver detalles</a>
-                        </div>
+               
+                    <div class="col-md-4">
+                        <div class="card servicio-card">
+                            <div class="card-body">
+                                <h5 class="card-title">@cierre.servicioName (@cierre.idServicio)</h5>
+                            @if (cierre.total > 0)
+                            {
+                                <p class="card-text">Total pagos recibidos: @cierre.total</p>
+                            }
+                            else
+                            {
+                                <p class="card-text">Total pagos recibidos: Sin pagos recibidos</p>
+
+                            }
+                            <a href="@cierre.archivoURL" class="btn btn-primary" target="_blank">Descargar archivo</a>
+
                             </div>
                         </div>
+                    </div>
+                
+               
             }
             </div>
     }

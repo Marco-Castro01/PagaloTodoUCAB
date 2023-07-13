@@ -9,5 +9,6 @@
         public List<ServicioModel>? servicios { get; set; }
         public string nickName { get; set; }
         public bool status { get; set; }
+        public List<CierreContableModel>? cierres { get; set; }
     }
 }
