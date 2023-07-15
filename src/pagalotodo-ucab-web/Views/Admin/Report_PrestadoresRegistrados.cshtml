@@ -1,6 +1,8 @@
 ﻿@model List<PrestadorModel>
 
-<h1>Usuarios</h1>
+<h1>Prestadores de Servicio</h1>
+<h2>Reporte 1 y 2</h2>
+
 
 @if (ViewBag.Error != null)
 {
@@ -8,9 +10,20 @@
 }
 else
 {
-    
-    <div >
-        <table class="table table-striped table-bordered">
+    <style>
+        .service-details {
+            display: none;
+        }
+
+        .no-services-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            font-weight: bold;
+        }
+    </style>
+    <div>
+        <table id="tabla-usuarios" class="table table-striped table-bordered">
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
@@ -19,23 +32,115 @@ else
                     <th>Nickname</th>
                     <th>Rif</th>
                     <th>Estado</th>
-                    
                 </tr>
             </thead>
             <tbody>
                 @foreach (var prestador in Model)
                 {
-                    <tr>
+                    <tr class="fila-usuario">
                         <td>@prestador.Id</td>
                         <td>@prestador.email</td>
                         <td>@prestador.name</td>
                         <td>@prestador.nickName</td>
                         <td>@prestador.rif</td>
                         <td>@(prestador.status ? "Activo" : "Inactivo")</td>
-       
                     </tr>
+                    @if (prestador.servicios != null && prestador.servicios.Count > 0)
+                    {
+                        <tr class="service-details">
+                            <td colspan="6">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Nombre Servicio</th>
+                                            <th>Tipo Servicio</th>
+                                            <th>Status Servicio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var servicio in prestador.servicios)
+                                        {
+                                            <tr>
+                                                <td>@servicio.name</td>
+                                                <td>
+                                                    <span class="badge @(servicio.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "badge-success" : "badge-info")">@(servicio.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "De pago directo" : "Pago por deuda")</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge @(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "badge-success" : "badge-danger")">@(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "Activo" : "Inactivo")</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="service-details">
+                            <td colspan="6">
+                                <div class="no-services-message">
+                                    Este prestador no tiene servicios asociados.
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
     </div>
+
+   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.10.2/jspdf.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var filasUsuarios = document.querySelectorAll('.fila-usuario');
+
+            filasUsuarios.forEach(function(fila) {
+                fila.addEventListener('click', function() {
+                    var filaSiguiente = this.nextElementSibling;
+
+                    if (filaSiguiente.classList.contains('service-details')) {
+                        filaSiguiente.style.display = (filaSiguiente.style.display === 'none') ? 'table-row' : 'none';
+                    }
+                });
+            });
+
+            var btnDescargarTabla = document.getElementById('btn-descargar-tabla');
+            btnDescargarTabla.addEventListener('click', function() {
+                var doc = new jsPDF();
+                var tabla = document.getElementById('tabla-usuarios');
+                doc.autoTable({ html: tabla });
+                doc.save('tabla_usuarios.pdf');
+            });
+
+            var btnDescargarCompleto = document.getElementById('btn-descargar-completo');
+            btnDescargarCompleto.addEventListener('click', function() {
+                var doc = new jsPDF();
+                var tabla = document.getElementById('tabla-usuarios');
+                var tablaData = doc.autoTableHtmlToJson(tabla);
+
+                tablaData.columns.splice(-1); // Remover la última columna para evitar duplicados
+
+                tablaData.rows.forEach(function(row, rowIndex) {
+                    var filaUsuario = filasUsuarios[rowIndex];
+                    var filaSiguiente = filaUsuario.nextElementSibling;
+
+                    if (filaSiguiente.classList.contains('service-details')) {
+                        var detallesServicio = filaSiguiente.innerHTML;
+                        var detallesServicioCell = {
+                            content: detallesServicio,
+                            colSpan: tablaData.columns.length
+                        };
+
+                        row.cells.push(detallesServicioCell);
+                    }
+                });
+
+                doc.autoTable(tablaData);
+                doc.save('usuarios_completo.pdf');
+            });
+        });
+    </script>
 }

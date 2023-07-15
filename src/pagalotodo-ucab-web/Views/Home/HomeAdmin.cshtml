@@ -130,8 +130,9 @@ else
             </div>
             <div class="description">
                 <h2>Prestadores de servicio Registrados</h2>
-                <p>Reporte 1</p>
-                <button class="nav-link" onclick="location.href='@Url.Action("Report_PrestadoresRegistrados", "Admin")'">Ver</button>
+                <p>Prestadores registrados con sus servicios e informacion de sus servicios</p>
+                <input type="button" onclick="location.href='@Url.Action("Report_PrestadoresRegistrados", "Admin")'"  value="Leer Más">
+
             </div>
         </div>
 
@@ -143,8 +144,8 @@ else
             <div class="description">
                 <h2>Pagos Recibidos</h2>
                 <p>Pagos recibidos por servicios</p>
-                <input type="button" onclick="location.href='@Url.Action("Report_PrestadoresRegistrados", "Admin")'"  value="Leer Más">
-            </div>
+                    <input type="button" onclick="location.href='@Url.Action("Report_PrestadoresRegistrados", "Admin")'"  value="Leer Más">
+                </div>
         </div>
     </div>
 }

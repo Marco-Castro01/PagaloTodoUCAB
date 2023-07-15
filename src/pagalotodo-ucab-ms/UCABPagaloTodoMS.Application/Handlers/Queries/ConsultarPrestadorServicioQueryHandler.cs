@@ -53,11 +53,15 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarPrestadorServicioQueryHandler.HandleAsync");
 
                 // Consulta todos los registros de la tabla PrestadorServicio
-                var result = _dbContext.PrestadorServicio.Where(x=>x.deleted==false).Select(c => new PrestadorServicioResponse()
+                var result = _dbContext.PrestadorServicio
+                    .Include(x => x.Servicio)
+                    .Where(x=>x.deleted==false)
+                    .Select(c => new PrestadorServicioResponse()
                 {
                     Id = c.Id,
                     rif = c.rif,
-                    nickName = c.nickName,
+                        servicios = c.Servicio,
+                        nickName = c.nickName,
                     status = c.status,
                     email = c.email,
                 });
