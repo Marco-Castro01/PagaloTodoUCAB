@@ -570,9 +570,11 @@ namespace UCABPagaloTodoWeb.Controllers
 
                         var responseContent = await response.Content.ReadAsStringAsync();
                         prestador = JsonConvert.DeserializeObject<List<PrestadorModel>>(responseContent);
-                        return View(prestador);
                     }
+                    
                 }
+                return View(prestador);
+
 
             }
             catch (HttpRequestException ex)
