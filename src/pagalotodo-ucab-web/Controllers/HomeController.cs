@@ -26,7 +26,7 @@ namespace UCABPagaloTodoWeb.Controllers
             var userRole = HttpContext.Session.GetString("userrole");
             if(userRole.Equals("AdminEntity"))
             {
-                return View("Privacy");
+                return View("HomeAdmin");
 
             }
             else if (userRole.Equals("PrestadorServicioEntity"))

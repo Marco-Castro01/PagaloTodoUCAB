@@ -502,10 +502,6 @@ namespace UCABPagaloTodoWeb.Controllers
         }
 
 
-
-
-
-
         //TODO: TERMINAR
         public ViewResult RegistrarServicioAPrestador() => View();
         [HttpPost]
@@ -550,6 +546,48 @@ namespace UCABPagaloTodoWeb.Controllers
 
             return View("RegistrarAdmin", usuario);
         }
+
+
+        public async Task<IActionResult> Report_PrestadoresRegistrados()
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+
+                List<PrestadorModel> prestador = new List<PrestadorModel>();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    using (var response = await httpClient.GetAsync("https://localhost:5001/prestadores_servicios"))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        prestador = JsonConvert.DeserializeObject<List<PrestadorModel>>(responseContent);
+                        return View(prestador);
+                    }
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+            return View();
+        }
+
 
     }
 }
