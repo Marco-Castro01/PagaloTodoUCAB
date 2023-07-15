@@ -121,5 +121,13 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+
+
+
+
+
+
     }
 }

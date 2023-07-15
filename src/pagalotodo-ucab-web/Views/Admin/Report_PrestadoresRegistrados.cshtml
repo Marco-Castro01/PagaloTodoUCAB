@@ -1,0 +1,41 @@
+﻿@model List<PrestadorModel>
+
+<h1>Usuarios</h1>
+
+@if (ViewBag.Error != null)
+{
+    <p>Error: @ViewBag.Error</p>
+}
+else
+{
+    
+    <div >
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Nombre</th>
+                    <th>Nickname</th>
+                    <th>Rif</th>
+                    <th>Estado</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prestador in Model)
+                {
+                    <tr>
+                        <td>@prestador.Id</td>
+                        <td>@prestador.email</td>
+                        <td>@prestador.name</td>
+                        <td>@prestador.nickName</td>
+                        <td>@prestador.rif</td>
+                        <td>@(prestador.status ? "Activo" : "Inactivo")</td>
+       
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

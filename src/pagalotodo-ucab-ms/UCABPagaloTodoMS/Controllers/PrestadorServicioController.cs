@@ -37,7 +37,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de PrestadoresServicios.</returns>
-        [HttpGet("prestadores_servicios")]
+        [HttpGet("/prestadores_servicios")]
         [Authorize(Roles = "AdminEntity, ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
