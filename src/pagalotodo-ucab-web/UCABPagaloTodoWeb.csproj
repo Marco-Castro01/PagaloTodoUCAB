@@ -8,13 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="JStreamAsyncNet" Version="4.7.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.14" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Prestador\" />
   </ItemGroup>
 
 </Project>

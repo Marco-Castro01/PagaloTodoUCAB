@@ -3,6 +3,6 @@
 public enum StatusServicio
 {
     activa,
-    próximamente,
+    proximamente,
     inactiva
 }
