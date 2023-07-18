@@ -1,5 +1,4 @@
 ﻿@using UCABPagaloTodoWeb.enums
-@model List<ServicioModel>
 
 @if (TempData["ErrorMessage"] != null)
 {
@@ -144,7 +143,9 @@ else
             <div class="description">
                 <h2>Mis Servicios</h2>
                 <p>Servicios asociados</p>
-                <input type="button" value="Leer Más">
+                <a href="@Url.Action("Mis_Servicios", "Prestador")">
+                    <button type="button" class="btn btn-success">Agregar Administrador</button>
+                </a>
             </div>
         </div>
 
