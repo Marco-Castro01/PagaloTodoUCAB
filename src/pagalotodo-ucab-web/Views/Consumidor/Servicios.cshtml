@@ -14,6 +14,7 @@
 
 @if (ViewBag.Error != null)
 {
+    <H1>HABLALO</H1>
     <p>Error: @ViewBag.Error</p>
 }
 else
@@ -89,6 +90,13 @@ else
 /*Fin-Cards*/
 </style>
     <div >
+        
+        
+
+        @if (!Model.Any(c => c.statusServicio == StatusServicio.activa) && !Model.Any(c => c.statusServicio == StatusServicio.próximamente)){
+            <div class="alert alert-danger">NO HAY SERVICIOS DISPONIBLES</div>
+
+        }
         @if(Model.Any(c=>c.statusServicio==StatusServicio.activa))
         {
             <div >
