@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Upload CSV Verification";
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<h1>Enviar archivo de Deudas para el servicio @ViewBag.servicioName</h1>
+
+@using (Html.BeginForm("EnviarArchivoVerificacion", "Prestador", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+        <input type="hidden" name="idServicio" value="@ViewBag.Id" /> <!-- Campo oculto con el valor de ViewBag.Id -->
+        <input type="hidden" name="servicioName" value="@ViewBag.servicioName" /> <!-- Campo oculto con el valor de ViewBag.servicioName -->
+        <input type="file" name="file" id="file" />
+        <input type="submit" value="Enviar archivo" />
+}

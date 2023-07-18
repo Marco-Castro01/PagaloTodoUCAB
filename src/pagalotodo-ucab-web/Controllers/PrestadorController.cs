@@ -188,5 +188,82 @@ namespace UCABPagaloTodoWeb.Controllers
         }
 
 
+
+
+
+        public ViewResult EnviarArchivoVerificacionView(Guid idServicio, string servicioName)
+        {
+            ViewBag.Id = idServicio;
+            ViewBag.servicioName = servicioName;
+            return View("EnviarArchivoVerificacionView");
+        }
+
+       
+
+        [HttpPost]
+
+        public async Task<IActionResult> EnviarArchivoVerificacion(IFormFile file,Guid idServicio, string servicioName)
+        {
+            var token = HttpContext.Session.GetString("token");
+
+            try
+            {
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+                Guid userId = new Guid(HttpContext.Session.GetString("userid"));
+                Guid servicioId = idServicio;
+                string nombreS = servicioName;
+                using (var httpClient = new HttpClient())
+                {
+                    using (var formData = new MultipartFormDataContent())
+                    {
+                        // Agregar el archivo al formulario
+                        var fileContent = new StreamContent(file.OpenReadStream());
+                        formData.Add(fileContent, "file", file.FileName);
+
+                        // Enviar la solicitud HTTP al endpoint                    
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                        using (var response = await httpClient.PostAsync(endpoint + "prestador/archivoVerificacion/"+idServicio+"/enviarArchivo", formData))
+                        {
+                            var responseContent = await response.Content.ReadAsStringAsync();
+
+                            // Verificar el resultado de la solicitud
+                            if (response.IsSuccessStatusCode)
+                            {
+                                TempData["SuccessMessage"] = responseContent; // Guardar el mensaje de éxito en TempData
+                                return EnviarArchivoVerificacionView(idServicio, servicioName);
+                            }
+                            else
+                            {
+                                // Manejar el error o mostrar una alerta con el mensaje de error
+                                TempData["ErrorMessage"] = responseContent; // Guardar el mensaje de error en TempData
+                                return EnviarArchivoVerificacionView(idServicio, servicioName);
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+            return EnviarArchivoVerificacionView(idServicio, servicioName);
+
+
+        }
+
+
+
     }
 }

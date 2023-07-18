@@ -115,6 +115,13 @@ else
                                 <a href="@Url.Action("PagosRecibidos", "Prestador",new{serviDatos=servicio.Id+";"+servicio.name})">
                                     <button type="button" class="btn btn-success">ver pagos Recibidos</button>
                                 </a>
+                                @if (servicio.tipoServicio == TipoServicio.validacion)
+                                {
+                                    <a href="@Url.Action("EnviarArchivoVerificacionView", "Prestador",new { idServicio=servicio.Id, servicioName = servicio.name })">
+                                        <button type="button" class="btn btn-success">Enviar Archivo De Deudas</button>
+                                    </a>
+                                    
+                                }
                             </div>
                         </div>
                     }
@@ -134,6 +141,13 @@ else
                                 <a href="@Url.Action("PagosRecibidos", "Prestador",new{serviDatos=servicio.Id+";"+servicio.name})">
                                     <button type="button" class="btn btn-success">ver pagos Recibidos</button>
                                 </a>
+                                @if (servicio.tipoServicio == TipoServicio.validacion)
+                                {
+                                    <a href="@Url.Action("EnviarArchivoVerificacionView", "Prestador",new { idServicio=servicio.Id, servicioName = servicio.name })">
+                                        <button type="button" class="btn btn-success">Enviar Archivo De Deudas</button>
+                                    </a>
+
+                                }
                             </div>
                         </div>
 
@@ -155,6 +169,14 @@ else
                                 <a href="@Url.Action("PagosRecibidos", "Prestador",new{serviDatos=servicio.Id+";"+servicio.name})">
                                     <button type="button" class="btn btn-success">ver pagos Recibidos</button>
                                 </a>
+                                @if (servicio.tipoServicio == TipoServicio.validacion)
+                                {
+                                    <a href="@Url.Action("EnviarArchivoVerificacionView", "Prestador",new { idServicio=servicio.Id, servicioName = servicio.name })">
+                                        <button type="button" class="btn btn-success">Enviar Archivo De Deudas</button>
+                                    </a>
+
+                                }
+
                             </div>
                         </div>
 
