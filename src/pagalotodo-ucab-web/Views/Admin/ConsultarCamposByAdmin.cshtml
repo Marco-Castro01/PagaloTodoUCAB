@@ -1,0 +1,142 @@
+﻿@model ServicioCamposModel
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+
+<h1>Asignación de Campos</h1>
+
+<h2>Campos de Conciliación Asignados a @Model.servicio.name</h2>
+
+<div>
+    <h2>Campos actuales <a href="#" class="btn btn-primary">Agregar Campo</a></h2>
+    @if (Model.servicio.CamposConciliacion.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            Sin campos asignados.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var campo in Model.servicio.CamposConciliacion)
+            {
+                <div class="col-md-4">
+                    <div class="card campo-card">
+                        <div class="card-body">
+                            <h5 class="card-title">@campo.Nombre</h5>
+                            <h5 class="card-title">Longitud: @campo.Longitud</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div>
+    <h2>Campos Disponibles <a href="#" class="btn btn-primary">Agregar Campo</a></h2>
+    @if (Model.camposConciliacion.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            Sin campos Disponibles.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var campo in Model.camposConciliacion)
+            {
+                <div class="col-md-4">
+                    <div class="card campo-card">
+                        <div class="card-body">
+                            <h5 class="card-title">@campo.Nombre</h5>
+                            <h5 class="card-title">Longitud: @campo.Longitud</h5>
+                            <a href="@Url.Action("AddCamposAsync", "Admin", new { id = campo.Id + ";" + Model.servicio.Id })" class="btn btn-success">Asignar Campo</a>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.campo-card').hover(function () {
+                $(this).toggleClass('card-hover');
+            });
+
+            $('#campoDropdown').change(function () {
+                var campoId = $(this).val();
+
+                // Obtener información del campo seleccionado mediante una llamada AJAX
+                $.ajax({
+                    url: '/Servicio/ObtenerCampoInfo',
+                    type: 'GET',
+                    data: { campoId: campoId },
+                    success: function (result) {
+                        $('#campoName').text('Nombre: ' + result.Nombre);
+                        $('#campoTipoDato').text('Tipo de dato: ' + result.TipoDato);
+                        $('#campoLongitud').text('Longitud del campo: ' + result.Longitud);
+                        // Agregar más atributos del campo según necesidad
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error al obtener información del campo:', error);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .servicio-info {
+            margin-bottom: 20px;
+        }
+
+        .campo-card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .badge {
+            padding: 0.4em 0.75em;
+            font-size: 85%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .badge-success {
+            color: #ffffff;
+            background-color: #28a745;
+        }
+
+        .badge-danger {
+            color: #ffffff;
+            background-color: #dc3545;
+        }
+
+        .card-hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+}
