@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NuGet.Common;
 using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using UCABPagaloTodoMS.Application.Requests;
@@ -548,6 +550,145 @@ namespace UCABPagaloTodoWeb.Controllers
         }
 
 
+        [Route("Admin/ConsultarCamposByAdmin/{id}")]
+
+        public async Task<IActionResult> ConsultarCamposByAdmin(Guid Id)
+        {
+            var token = HttpContext.Session.GetString("token");
+            if (string.IsNullOrEmpty(token))
+            {
+                // Si no se encuentra el token en la sesión, lanzar una excepción
+                throw new Exception("No se encontró el token en la sesión.");
+            }
+
+
+            try
+            {
+                //var token = HttpContext.Session.GetString("token");
+
+                ServicioModel servicio = new ServicioModel();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    List<ServicioModel> servicios = new List<ServicioModel>();
+                    using (var ResponseS = await httpClient.GetAsync("https://localhost:5001/servicios"))
+                    {
+                        ResponseS.EnsureSuccessStatusCode();
+
+                        var responseContent = await ResponseS.Content.ReadAsStringAsync();
+                        servicios = JsonConvert.DeserializeObject<List<ServicioModel>>(responseContent);
+
+                    }
+                    servicio = servicios.FirstOrDefault(s => s.Id == Id);
+
+                    List<CamposConciliacionModel> campos = new List<CamposConciliacionModel>();
+                    using (var ResponseS = await httpClient.GetAsync("https://localhost:5001/CamposConciliacion/Consultar"))
+                    {
+                        ResponseS.EnsureSuccessStatusCode();
+
+                        var responseContent = await ResponseS.Content.ReadAsStringAsync();
+                        campos = JsonConvert.DeserializeObject<List<CamposConciliacionModel>>(responseContent);
+
+                    }
+                    ServicioCamposModel servicioCampo=new ServicioCamposModel();
+                    servicioCampo.servicio = servicio;
+                    servicioCampo.camposConciliacion = campos;
+
+                    servicioCampo = servicioCampo;
+
+                    return View("ConsultarCamposByAdmin", servicioCampo);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+
+            // Agregar una instrucción de retorno por defecto, puede ser una vista específica o null según tus necesidades
+            return View("../Home/401"); // Por ejemplo, devuelve una vista de error
+        }
+
+
+
+        //[HttpPost]
+        [Route("Admin/AddCamposAsync/{id}")]
+        public async Task<IActionResult> AsignarCamposAsync(string id)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+                Guid campoSeleccionadoId = new Guid(id.Split(";")[0]);
+                Guid servicioId = new Guid(id.Split(";")[1]);
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    if (!ModelState.IsValid)
+                    {
+                        TempData["ErrorMessage"] = "Modelo Invalido"; // Guardar el mensaje de error en TempData
+
+                        return RedirectToAction("ConsultarCamposByAdmin", "Admin", new { id = servicioId });
+                    }
+                    CamposAsigModel campo = new CamposAsigModel();
+                    campo.Id = new List<Guid> { campoSeleccionadoId };
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(campo), Encoding.UTF8, "application/json");
+
+                    using (var response = await httpClient.PostAsync("https://localhost:5001/servicio/" + servicioId + "/campo", content))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseContent = await response.Content.ReadAsStringAsync();
+
+                            // Procesar la respuesta del servicio si es necesario
+
+                            TempData["SuccessMessage"] = responseContent; // Guardar el mensaje de éxito en TempData
+
+                            return RedirectToAction("ConsultarCamposByAdmin", "Admin", new { id = servicioId });
+                        }
+                        else
+                        {
+                            var responseContent = await response.Content.ReadAsStringAsync();
+
+                            // Manejar el error o mostrar una alerta con el mensaje del response
+                            TempData["ErrorMessage"] = responseContent; // Guardar el mensaje de error en TempData
+
+                            return RedirectToAction("ConsultarCamposByAdmin", "Admin", new { id = servicioId });
+                        }
+                    }
+
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Log the exception or handle it appropriately
+                ModelState.AddModelError("", "Error al realizar la solicitud HTTP");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                ModelState.AddModelError("", "Ocurrió un error en el servidor");
+            }
+
+            return View("../Home/401"); // Por ejemplo, devuelve una vista de error
+
+        }
+
+
+
+
+        //Reportes
         public async Task<IActionResult> Report_PrestadoresRegistrados()
         {
             try

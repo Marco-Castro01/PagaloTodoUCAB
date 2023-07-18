@@ -36,7 +36,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de CamposConciliacion.</returns>
-        [HttpGet("CamposConciliacion/Consultar")]
+        [HttpGet("/CamposConciliacion/Consultar")]
         [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -74,7 +74,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna el id del nuevo registro.</returns>
-        [HttpPost("CamposConciliacion/Agregar")]
+        [HttpPost("/CamposConciliacion/Agregar")]
         [Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -1,5 +1,15 @@
 ﻿@using UCABPagaloTodoWeb.enums
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+
 <h1>Reportes</h1>
 
 @if (ViewBag.Error != null)
@@ -131,7 +141,7 @@ else
             <div class="description">
                 <h2>Prestadores de servicio Registrados</h2>
                 <p>Prestadores registrados con sus servicios e informacion de sus servicios</p>
-                <input type="button" onclick="location.href='@Url.Action("Report_PrestadoresRegistrados", "Admin")'"  value="Leer Más">
+                <input type="button" onclick="location.href='@Url.Action("Report_PrestadoresRegistrados", "Admin")'"  value="Ver reporte">
 
             </div>
         </div>
