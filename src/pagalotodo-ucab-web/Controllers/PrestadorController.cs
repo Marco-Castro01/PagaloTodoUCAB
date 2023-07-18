@@ -24,46 +24,50 @@ namespace UCABPagaloTodoWeb.Controllers
             _logger = logger;
         }
 
+        [Route("Prestador/pagosRecibidosServ/{serviDatos}")]
 
-        //public async Task<IActionResult> PagosRecibidos()
-        //{
-        //    try
-        //    {
-        //        var token = HttpContext.Session.GetString("token");
-        //        if (string.IsNullOrEmpty(token))
-        //        {
-        //            // Si no se encuentra el token en la sesión, lanzar una excepción
-        //            throw new Exception("No se encontró el token en la sesión.");
-        //        }
+        public async Task<IActionResult> PagosRecibidos(string serviDatos)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+                Guid id = new Guid(serviDatos.Split(";")[0]);
+                string servicioName = serviDatos.Split(";")[1];
+                List<PagoModel> pagos = new List<PagoModel>();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        //        List<PagoModel> usuarios = new List<PagoModel>();
-        //        using (var httpClient = new HttpClient())
-        //        {
-        //            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    using (var response = await httpClient.GetAsync(endpoint + "pagosPorServicio/" + id + "/pagos_recibidos"))
+                    {
+                        response.EnsureSuccessStatusCode();
 
-        //            using (var response = await httpClient.GetAsync(endpoint + "pagosPorServicio/pagos_recibidos"))
-        //            {
-        //                response.EnsureSuccessStatusCode();
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        pagos = JsonConvert.DeserializeObject<List<PagoModel>>(responseContent);
+                        ViewBag.Message = servicioName;
 
-        //                var responseContent = await response.Content.ReadAsStringAsync();
-        //                usuarios = JsonConvert.DeserializeObject<List<PagoModel>>(responseContent);
-        //                return View(usuarios);
-        //            }
-        //        }
+                        return View(pagos);
+                    }
+                }
 
-        //    }
-        //    catch (HttpRequestException ex)
-        //    {
-        //        // Capturar excepciones de solicitud HTTP
-        //        ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Capturar excepciones generales
-        //        ViewBag.Error = $"Error general: {ex.Message}";
-        //    }
-        //    return View();
-        //}
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+            return View();
+        }
 
 
         public async Task<IActionResult> Mis_Servicios()

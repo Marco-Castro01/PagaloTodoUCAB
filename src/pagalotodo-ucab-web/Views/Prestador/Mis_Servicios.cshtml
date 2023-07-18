@@ -111,9 +111,10 @@ else
 
                             <div class="contenido-card">
                                 <h3>@servicio.name</h3>
-                                <p>Prestador servicio: @servicio.prestadorServicioName</p>
 
-                                <a href="#">Acceder</a>
+                                <a href="@Url.Action("PagosRecibidos", "Prestador",new{serviDatos=servicio.Id+";"+servicio.name})">
+                                    <button type="button" class="btn btn-success">ver pagos Recibidos</button>
+                                </a>
                             </div>
                         </div>
                     }
@@ -130,8 +131,9 @@ else
                         <div class="card">
                             <div class="contenido-card">
                                 <h3>@servicio.name</h3>
-                                <p>Prestador servicio: @servicio.prestadorServicioName</p>
-                                <a href="#">Acceder</a>
+                                <a href="@Url.Action("PagosRecibidos", "Prestador",new{serviDatos=servicio.Id+";"+servicio.name})">
+                                    <button type="button" class="btn btn-success">ver pagos Recibidos</button>
+                                </a>
                             </div>
                         </div>
 
@@ -150,8 +152,9 @@ else
                         <div class="card">
                             <div class="contenido-card">
                                 <h3>@servicio.name</h3>
-                                <p>Prestador servicio: @servicio.prestadorServicioName</p>
-                                <a href="#">Acceder</a>
+                                <a href="@Url.Action("PagosRecibidos", "Prestador",new{serviDatos=servicio.Id+";"+servicio.name})">
+                                    <button type="button" class="btn btn-success">ver pagos Recibidos</button>
+                                </a>
                             </div>
                         </div>
 
