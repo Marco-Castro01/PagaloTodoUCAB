@@ -24,13 +24,6 @@ namespace UCABPagaloTodoWeb.Controllers
             _logger = logger;
         }
 
-
-      
-
-       
-
-
-
         public ViewResult Index() => View();
         [HttpPost]
         public async Task<IActionResult> Index(LoginModel usuario)
@@ -107,9 +100,6 @@ namespace UCABPagaloTodoWeb.Controllers
 
             return View("Index", new LoginModel { Consumidor = usuario.Consumidor });
         }
-
-
-
 
         public ViewResult Olvidocontrasena() => View();
 

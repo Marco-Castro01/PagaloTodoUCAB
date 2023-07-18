@@ -41,6 +41,12 @@
                                     <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="GestionUsuarios">Gestion de usuarios</a>
                                 </li>
                             }
+                            @if (Context.Session.GetString("userrole") == "ConsumidorEntity")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Consumidor" asp-action="HistoricoPagos">Historico de pagos Realizados</a>
+                                </li>
+                            }
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Configuracion</a>
                                 <div class="dropdown-menu dropdown-menu-end">

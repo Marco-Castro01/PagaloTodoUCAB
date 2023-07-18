@@ -79,7 +79,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de Pagos.</returns>
-        [HttpGet("pagosPorConsumidor/pagosHechos")]
+        [HttpGet("/pagosPorConsumidor/pagosHechos")]
         [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
