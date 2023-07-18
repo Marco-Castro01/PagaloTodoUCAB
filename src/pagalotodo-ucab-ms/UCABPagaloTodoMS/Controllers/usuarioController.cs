@@ -106,6 +106,7 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("Consumidor")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,7 +123,7 @@ namespace UCABPagaloTodoMS.Controllers
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
 
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo, ex.Message);
             }
             catch (Exception ex)
             {
