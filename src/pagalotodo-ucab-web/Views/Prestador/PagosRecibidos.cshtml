@@ -10,7 +10,7 @@
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
 
-<h1>Historico de Pagos</h1>
+<
 
 @if (ViewBag.Error != null)
 {
@@ -18,6 +18,10 @@
 }
 else
 {
+    <h1>Historico de Pagos Recibidos</h1>
+
+    <h2>Servicio: @ViewBag.Message</h2>
+
     <div>
         <table class="table table-striped table-bordered">
             <thead class="thead-dark">
@@ -25,7 +29,7 @@ else
                     <th>ID</th>
                     <th>Valor</th>
                     <th>Nombre del Servicio</th>
-                    <th>Nombre del Prestador</th>
+                    <th>Nombre del Consumidor</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,7 +39,7 @@ else
                         <td>@pago.Id</td>
                         <td>@pago.valor</td>
                         <td>@pago.NombreServicio</td>
-                        <td>@pago.PrestadorServicioNombre</td>
+                        <td>@pago.NombreConsumidor</td>
                        
                     </tr>
                 }

@@ -1,8 +1,9 @@
-﻿namespace UCABPagaloTodoWeb.enums;
-
-public enum StatusServicio
+﻿namespace UCABPagaloTodoWeb.enums
 {
-    activa,
-    proximamente,
-    inactiva
+    public enum StatusServicio
+    {
+        activa,
+        proximamente,
+        inactiva
+    }
 }
