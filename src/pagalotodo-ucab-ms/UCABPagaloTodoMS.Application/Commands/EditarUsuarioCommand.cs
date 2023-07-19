@@ -8,7 +8,7 @@ using UCABPagaloTodoMS.Application.Requests;
 
 namespace UCABPagaloTodoMS.Application.Commands
 {
-    public class EditarUsuarioCommand : IRequest<Guid>
+    public class EditarUsuarioCommand : IRequest<string>
     {
         public EditarUsuarioRequest _request { get; set; }
         public Guid _id { get; set; }

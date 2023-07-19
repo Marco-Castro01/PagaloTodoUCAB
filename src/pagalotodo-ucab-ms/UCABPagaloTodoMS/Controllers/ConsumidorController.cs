@@ -106,5 +106,52 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest("Ocurrio un error en la consulta de los Consumidores. Exception: " + ex);
             }
         }
+
+
+
+        /// <summary>
+        ///     Endpoint para la consulta de prueba
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Get admins
+        ///     ## Url
+        ///     GET /Consumidores/consumidores
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de PrestadoresServicios.</returns>
+        [HttpPut("modificar/consumidor")]
+        [Authorize(Roles = ("ConsumidorEntity"))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> EditarConsumidor([FromBody] EditarUsuarioRequest usuario)
+        {
+            _logger.LogInformation("Entrando al método que edita los usuarios");
+            try
+            {
+                string id = User.FindFirstValue("Id");
+                if (string.IsNullOrEmpty(id))
+                    return StatusCode(422, "Error con Usuario: Debe loguearse");
+                
+                if (usuario == null || id == null)
+                {
+                    StatusCode(400,"El usuario o el ID son nulos.");
+                }
+                Guid consumidorId = new Guid(id);
+                var query = new EditarUsuarioCommand(usuario, consumidorId);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la edicion de usuarios: " + ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }

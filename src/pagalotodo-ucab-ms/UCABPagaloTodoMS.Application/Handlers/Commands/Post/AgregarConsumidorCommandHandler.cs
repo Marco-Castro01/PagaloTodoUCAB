@@ -130,9 +130,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
             if (consumidores.Any(x => x.email.ToLower() == consumidor.email.ToLower()))
                 mensaje += "El Email '" + consumidor.email + "' ya está en uso.\n";
-            if (consumidores.Any(x => x.cedula == consumidor.cedula))
+            if (consumidores.Any(x => x.cedula.ToLower() == consumidor.cedula.ToLower()))
                 mensaje += "La cedula '" + consumidor.cedula + "' ya está en uso.\n";            
-            if (consumidores.Any(x => x.nickName == consumidor.nickName))
+            if (consumidores.Any(x => x.nickName.ToLower() == consumidor.nickName.ToLower()))
                 mensaje += "El nickName '" + consumidor.nickName + "' ya está en uso.\n";
 
             return mensaje;
