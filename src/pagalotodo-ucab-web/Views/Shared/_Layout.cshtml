@@ -53,6 +53,12 @@
                                     <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Cerrar">Cerrar sesión</a>
                                     <a class="dropdown-item"  href="@Url.Action("CambiarContrasena", "User", new { id = (Context.Session.GetString("userid")) })">Cambiar contraseña</a>
 
+                                    @if (Context.Session.GetString("userrole") == "ConsumidorEntity")
+                                    {
+                                        <a class="dropdown-item" href="@Url.Action("Modificar_PerfilView", "Consumidor")">Perfil</a>
+
+                                    }
+                               
                                 </div>
                             </li>
                         </ul>
