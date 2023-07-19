@@ -21,12 +21,10 @@ namespace UCABPagaloTodoMS.Controllers
     public class usuarioController : BaseController<usuarioController>
     {
         private readonly IMediator _mediator;
-        private readonly IEmailSender _emailSender;
 
-        public usuarioController(ILogger<usuarioController> logger, IMediator mediator, IEmailSender emailSender) : base(logger)
+        public usuarioController(ILogger<usuarioController> logger, IMediator mediator) : base(logger)
         {
             _mediator = mediator;
-            _emailSender = emailSender;
         }
 
         [HttpGet()]
@@ -184,7 +182,7 @@ namespace UCABPagaloTodoMS.Controllers
         [HttpPost("ResetToken")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<PasswordResetResponse>> reset(ResetPasswordRequest usuario)
+        public async Task<ActionResult<PasswordResetResponse>> resetToken(ResetPasswordRequest usuario)
         {
             _logger.LogInformation("Entrando al método que envia token de reset");
             try

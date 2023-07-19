@@ -10,6 +10,7 @@ using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Mailing;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
+using UCABPagaloTodoMS.Application.Services;
 using UCABPagaloTodoMS.Core.Database;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
@@ -18,13 +19,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<ResetQueryHandler> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IMailService _mailService;
 
-        public ResetQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ResetQueryHandler> logger, IEmailSender emailSender)
+
+        public ResetQueryHandler(IUCABPagaloTodoDbContext dbContext, ILogger<ResetQueryHandler> logger, IMailService mailService)
         {
             _dbContext = dbContext;
             _logger = logger;
-            _emailSender = emailSender;
+            _mailService = mailService;
         }
 
         public Task<PasswordResetResponse> Handle(PasswordResetQuery request, CancellationToken cancellationToken)
@@ -74,7 +76,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 // Enviar un correo electrónico al usuario con el token de restablecimiento de contraseña
                 var message = new Message(new string[] {usuariocreated.email}, "Código de reseteo de clave",
                     usuariocreated.PasswordResetToken);
-                _emailSender.SendEmail(message);
+                EnviarCorreo(usuario._request.email, message);
+
 
                 // Establecer la fecha de vencimiento del token de restablecimiento de contraseña
                 usuariocreated.ResetTokenExpires = DateTime.Now.AddDays(1);
@@ -99,5 +102,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 throw new CustomException("Error en Reset: ",ex);
             }
         }
+
+
+        public void EnviarCorreo(string destinatario, Message mensaje)
+        {
+            _mailService.EnviarCorreoElectronicoAsync(destinatario, mensaje.Content).GetAwaiter().GetResult();
+
+            // Resto del código del controlador
+        }
+
+
+
     }
 }
