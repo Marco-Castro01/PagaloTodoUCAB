@@ -63,12 +63,29 @@ namespace UCABPagaloTodoMS.Application.Services
                 UseDefaultCredentials = false,
                 Credentials = new NetworkCredential(smtpUsername, smtpPassword),
             };
+            string contenidoHtml = @"
+                                    <!DOCTYPE html>
+                                    <html>
+                                    <head>
+                                        <title>Correo de Conciliación</title>
+                                    </head>
+                                    <body>
+                                        <p>Haga click en el siguiente enlace para descargar su archivo de conciliación:</p>
+                                        <a href='" + urlConciliacion + @"'>Descargar Archivo de Conciliación</a>
+                                        <p>Atentamente,</p>
+                                        <p>PagaloTodoUCAB</p>
+                                    </body>
+                                    </html>
+                                ";
 
             var message = new MailMessage
             {
                 From = new MailAddress(smtpUsername),
                 Subject = "Cierre Contable de su servicio. PagalotodoUCAB",
-                Body = $"Haga click en este link para descargar su archivo de conciliacion es:  {urlConciliacion}   Att:PagaloTodoUCAB."
+                //Body = $"Haga click en este link para descargar su archivo de conciliacion es:  {urlConciliacion}   Att:PagaloTodoUCAB.",
+                Body= contenidoHtml,
+                IsBodyHtml = true
+                
             };
 
             message.To.Add(email);
