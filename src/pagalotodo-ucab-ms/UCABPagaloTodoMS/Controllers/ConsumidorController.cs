@@ -123,7 +123,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de PrestadoresServicios.</returns>
-        [HttpPut("modificar")]
+        [HttpPut("/consumidor/modificar")]
         [Authorize(Roles = ("ConsumidorEntity"))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

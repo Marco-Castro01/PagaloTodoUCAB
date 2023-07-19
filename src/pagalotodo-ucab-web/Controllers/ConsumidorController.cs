@@ -181,7 +181,7 @@ namespace UCABPagaloTodoWeb.Controllers
                     StringContent content = new StringContent(JsonConvert.SerializeObject(usuario), Encoding.UTF8, "application/json");
 
 
-                    using (var response = await httpClient.PutAsync(endpoint + "/" + id, content))
+                    using (var response = await httpClient.PutAsync(endpoint +"consumidor/modificar", content))
                     {
                         response.EnsureSuccessStatusCode();
 
