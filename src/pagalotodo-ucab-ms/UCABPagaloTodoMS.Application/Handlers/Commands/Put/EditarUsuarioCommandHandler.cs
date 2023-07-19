@@ -16,7 +16,7 @@ using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
-    public class EditarUsuarioCommandHandler : IRequestHandler<EditarUsuarioCommand, Guid>
+    public class EditarUsuarioCommandHandler : IRequestHandler<EditarUsuarioCommand, string>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<EditarUsuarioCommandHandler> _logger;
@@ -27,7 +27,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             _logger = logger;
         }
 
-        public async Task<Guid> Handle(EditarUsuarioCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(EditarUsuarioCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             }
         }
 
-        private async Task<Guid> HandleAsync(EditarUsuarioCommand request)
+        private async Task<string> HandleAsync(EditarUsuarioCommand request)
         {
             using (var transaccion = _dbContext.BeginTransaction())
             {
@@ -70,6 +70,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     {
                         // El usuario es un prestador de servicio
                         prestador.rif = request._request.rif;
+                        prestador.email = request._request.email;
                         // Actualizar los datos del usuario con los valores del comando
                         prestador.status = request._request.status;
                         prestador.name = request._request.name;
@@ -100,7 +101,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     var id = user.Id;
                     transaccion.Commit();
                     _logger.LogInformation("EditarUsuarioCommand.HandleAsync {Response}", id);
-                    return id;
+                    return "Modifiacion Exitosa";
                 }
                 catch (CustomException ex)
                 {

@@ -57,7 +57,7 @@ else
                                 <a href="@Url.Action("InformacionPrestadorAsync", "Admin", new { id = usuario.Id })" class="btn btn-success">Información Prestador</a>
                             }
 
-                            <a href="@Url.Action("Modificar", "Admin", new { cedula = usuario.cedula, name = usuario.name, rif = usuario.rif, id = usuario.Id, nickname = usuario.nickName, usuario.status })" class="btn btn-primary">Modificar</a>
+                            <a href="@Url.Action("Modificar", "Admin", new { cedula = usuario.cedula, email=usuario.email, name = usuario.name, rif = usuario.rif, id = usuario.Id, nickname = usuario.nickName, usuario.status })" class="btn btn-primary">Modificar</a>
 
                             <a href="@Url.Action("CambiarContrasena", "Admin", new { id = usuario.Id })" class="btn btn-warning">Cambiar contraseña</a>
 

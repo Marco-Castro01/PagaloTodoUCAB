@@ -53,11 +53,12 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut("{id}")]
         [Authorize(Roles = ("AdminEntity"))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> EditarUsuario(Guid id, [FromBody] EditarUsuarioRequest usuario)
+        public async Task<ActionResult<string>> EditarUsuario(Guid id, [FromBody] EditarUsuarioRequest usuario)
         {
             _logger.LogInformation("Entrando al método que edita los usuarios");
             try
