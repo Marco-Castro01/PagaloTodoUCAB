@@ -28,6 +28,8 @@ using UCABPagaloTodoMS.Core.Entities;
 using UCABPagaloTodoMS.Core.Enums;
 using UCABPagaloTodoMS.Infrastructure.Migrations;
 using ValidationException = FluentValidation.ValidationException;
+using UCABPagaloTodoMS.Application.Mailing;
+using UCABPagaloTodoMS.Application.Services;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
@@ -38,16 +40,20 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<CrearYEnviarArchivoConciliacionCommandHandler> _logger;
+        private readonly IMailService _mailService;
+
         /// <summary>
         /// Constructor de la clase AgregarPrestadorCommandHandler.
         /// </summary>
         /// <param name="dbContext">Contexto de base de datos</param>
         /// <param name="logger">Instancia de ILogger</param>
-        public CrearYEnviarArchivoConciliacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<CrearYEnviarArchivoConciliacionCommandHandler> logger)
+        public CrearYEnviarArchivoConciliacionCommandHandler(IUCABPagaloTodoDbContext dbContext, ILogger<CrearYEnviarArchivoConciliacionCommandHandler> logger, IMailService mailService)
         {
             _dbContext = dbContext;
             _logger = logger;
-            
+            _mailService = mailService;
+
+
         }
 
         /// <summary>
@@ -87,7 +93,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 
                 _logger.LogInformation("AgregarPrestadorCommandHandler.HandleAsync {Request}", request);
                 StringBuilder csvContent = new StringBuilder();
-                var FirebaseStorage = new FirebaseStorage("pagalotodoucab-927ea.appspot.com");
+                //var FirebaseStorage = new FirebaseStorage("pagalotodoucab-927ea.appspot.com");
+                var FirebaseStorage = new FirebaseStorage("pagalotodoucab-74384.appspot.com");
+
                 var dowloadURL = "";
 
                 PrestadorServicioEntity prestador = await _dbContext.PrestadorServicio.FindAsync(request) ?? throw new InvalidOperationException();
@@ -170,7 +178,11 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
 
                 if (dowloadURL == "")
                     throw new CustomException(500, "Error en guardado de archivo en firebase");
+
                 
+                EnviarCorreo(prestador.email, dowloadURL);
+
+
                 _dbContext.ArchivoFirebase.Add(new ArchivoFirebaseEntity()
                 {
                     Id = new Guid(),
@@ -229,6 +241,14 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             List<CamposPagosRequest> listaObjetos = JsonConvert.DeserializeObject<List<CamposPagosRequest>>(servicio.formatoDePagos);
             return listaObjetos;
         }
-        
-    } 
+
+        public void EnviarCorreo(string destinatario, string mensaje)
+        {
+            _mailService.EnviarCorreoElectronicoConciliacionAsync(destinatario, mensaje).GetAwaiter().GetResult();
+
+            // Resto del código del controlador
+        }
+
+
+    }
 }

@@ -68,7 +68,7 @@ namespace UCABPagaloTodoMS.Controllers
         
         
         [HttpGet("/prestador_servicio/{idPrestadorServicio}/cierreContable")]
-        [Authorize(Roles = "AdminEntity")]
+        //[Authorize(Roles = "AdminEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<CierreContableResponse>>> cierreContable(Guid idPrestadorServicio)
