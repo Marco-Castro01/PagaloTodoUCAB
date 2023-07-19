@@ -79,11 +79,11 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de PrestadoresServicios.</returns>
-        [HttpGet("consumidor/info")]
+        [HttpGet("/consumidor/info")]
         [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<ConsumidorResponse>>> getInfoConsumidor()
+        public async Task<ActionResult<ConsumidorResponse>> getInfoConsumidor()
         {
             _logger.LogInformation("Entrando al método que consulta los Consumidores");
             try
@@ -123,7 +123,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de PrestadoresServicios.</returns>
-        [HttpPut("modificar/consumidor")]
+        [HttpPut("modificar")]
         [Authorize(Roles = ("ConsumidorEntity"))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
