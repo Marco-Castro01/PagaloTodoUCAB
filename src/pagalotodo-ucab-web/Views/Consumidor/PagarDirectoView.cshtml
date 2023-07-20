@@ -1,4 +1,4 @@
-﻿@model UCABPagaloTodoWeb.Models.DeudaModel
+﻿@model UCABPagaloTodoWeb.Models.ServicioModel
 
 <style>
     /* Estilos para el formulario */
@@ -54,33 +54,41 @@
 <div class="formulario-pago">
     <div class="card-deuda">
         <div class="contenido-deuda">
-            <h3>@Model.servicioName</h3>
-            <p>Identificador: @Model.identificador</p>
-            <p>Deuda: @Model.deuda</p>
+            <h3>@Model.name</h3>
+            <p>Identificador: @Model.prestadorServicioName</p>
         </div>
     </div>
 
-    @if (Model.camposPagos.Count > 0)
+    @if (Model.CamposDeLosPagos.Count > 0)
     {
         <h2>Campos Personalizados</h2>
-        <form asp-action="Pagar" method="post" class="frame">
-            @for (int i = 0; i < Model.camposPagos.Count; i++)
+        <form asp-action="PagarDirecto" method="post" class="frame">
+            @for (int i = 0; i < Model.CamposDeLosPagos.Count; i++)
             {
-               <div class="campo-pago">
-                    <label>@Model.camposPagos[i].Nombre</label>
-                    @if (Model.camposPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.fecha)
+                <div class="campo-pago">
+                    <label>@Model.CamposDeLosPagos[i].Nombre</label>
+                    @if (Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.fecha)
                     {
                         <input type="date" name="CamposPagos[@i]" placeholder="Contenido del campo" />
                     }
+                    else if (Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.conDecimal || Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.entero)
+                    {
+                        <input type="number" name="CamposPagos[@i]"  placeholder="Contenido del campo" />
+
+                    }
                     else
                     {
-                        <input type="text" name="CamposPagos[@i]" maxlength="@Model.camposPagos[i].Longitud" placeholder="Contenido del campo" />
+                        <input type="text" name="CamposPagos[@i]" maxlength="@Model.CamposDeLosPagos[i].Longitud" placeholder="Contenido del campo" />
                     }
                 </div>
 
             }
-            <input type="hidden" name="DeudaId" value="@Model.idDeuda" />
-            <input type="hidden" name="ValorDeuda" value="@Model.deuda" />
+            <div class="campo-pago">
+                <label>Valor de la Deuda</label>
+                <input type="number" step="0.01" name="ValorDeuda" placeholder="Monto a pagar" />
+            </div>
+            <input type="hidden" name="DeudaId" value="@Model.Id" />
+
 
             <!-- Botón para enviar el formulario -->
             <button type="submit" class="btn-pagar">Pagar</button>
@@ -93,3 +101,4 @@
         </div>
     }
 </div>
+
