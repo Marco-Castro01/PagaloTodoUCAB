@@ -169,7 +169,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna mensaje de confirmacion o de error.</returns>
-        [HttpPost("servicio/{idServicio}/pagoDirecto")]
+        [HttpPost("/servicio/{idServicio}/pagoDirecto")]
         [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -26,7 +26,6 @@ namespace UCABPagaloTodoWeb.Controllers
             _logger = logger;
         }
 
-
         public async Task<IActionResult> GestionUsuarios()
         {
             try

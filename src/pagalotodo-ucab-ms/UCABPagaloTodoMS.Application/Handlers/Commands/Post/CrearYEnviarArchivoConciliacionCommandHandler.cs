@@ -230,7 +230,17 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 if (campo.inCOnciliacion) // Verifica la condición adicional
                 {
-                    resultado += campo.contenido + ";"; // Agrega el atributo al string
+                    if (campo.TipoDato == TipoDato.fecha)
+                    {
+                        DateTime fecha = DateTime.ParseExact(campo.contenido, "yyyy-mm-dd", null);
+                        string fechaFormateada = fecha.ToString(campo.formatofecha);
+                        resultado += fechaFormateada + ";";
+
+                    }
+                    else {
+                        resultado += campo.contenido + ";";
+
+                    }
                 }
             }
             return resultado;
