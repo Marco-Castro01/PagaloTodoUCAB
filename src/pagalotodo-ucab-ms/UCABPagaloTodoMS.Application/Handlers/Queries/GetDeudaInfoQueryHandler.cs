@@ -11,20 +11,20 @@ using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Queries
 {
-    public class ConsultarDeudaQueryHandler : IRequestHandler<ConsultarDeudaQuery, List<DeudaResponse>>
+    public class GetDeudaInfoQueryHandler : IRequestHandler<GetDeudaInfoQuery, DeudaResponse>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
-        private readonly ILogger<ConsultarDeudaQueryHandler> _logger;
+        private readonly ILogger<GetDeudaInfoQueryHandler> _logger;
         private readonly IMediator _mediator;
 
-        public ConsultarDeudaQueryHandler(IUCABPagaloTodoDbContext dbContext, IMediator mediator, ILogger<ConsultarDeudaQueryHandler> logger)
+        public GetDeudaInfoQueryHandler(IUCABPagaloTodoDbContext dbContext, IMediator mediator, ILogger<GetDeudaInfoQueryHandler> logger)
         {
             _mediator = mediator;
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public Task<List<DeudaResponse>> Handle(ConsultarDeudaQuery request, CancellationToken cancellationToken)
+        public Task<DeudaResponse> Handle(GetDeudaInfoQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -51,28 +51,32 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             }
         }
 
-        private async Task<List<DeudaResponse>> HandleAsync(ConsultarDeudaQuery request)
+        private async Task<DeudaResponse> HandleAsync(GetDeudaInfoQuery request)
         {
             try
             {
                 _logger.LogInformation("ConsultarPagoQueryHandler.HandleAsync");
-                var servicio = _dbContext.Servicio.FirstOrDefault(o => o.Id == request._idServicio);
+
+
+                var deuda = await _dbContext.Deuda.Include(x => x.servicio).FirstOrDefaultAsync(x=>x.Id==request._idDeuda);
+                var deudaResponde = new DeudaResponse()
+                {
+                    idDeuda = deuda.Id,
+                    identificador = deuda.identificador,
+                    servicioId = deuda.servicio.Id,
+                    servicioName = deuda.servicio.name,
+                    deuda = deuda.deuda,
+                    camposPagos = JsonConvert.DeserializeObject<List<CamposPagosRequest>>(deuda.servicio.formatoDePagos)
+
+                };
+                    
+
+
                 // Consulta los registros de la tabla Deuda que coincidan con el identificador y deudaStatus especificados en la consulta
-                var result = await _dbContext.Deuda
-                    .Where(c => c.identificador == request._request.identificador && c.deudaStatus == false && c.deleted == false)
-                    .Select(c => new DeudaResponse()
-                    {
-                        idDeuda = c.Id,
-                        identificador = request._request.identificador,
-                        servicioId = c.servicio.Id,
-                        servicioName = c.servicio.name,
-                        deuda = c.deuda,
-                        camposPagos = JsonConvert.DeserializeObject<List<CamposPagosRequest>>(servicio.formatoDePagos),
-                    }).ToListAsync();
 
 
                 // Ejecuta la consulta y devuelve los resultados como una lista
-                return result;
+                return deudaResponde;
             }
             catch (Exception ex)
             {
