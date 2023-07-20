@@ -1,0 +1,93 @@
+﻿@model UCABPagaloTodoWeb.Models.DeudaModel
+
+<style>
+    /* Estilos para el formulario */
+    .formulario-pago {
+        width: 500px;
+        margin: 20px auto;
+    }
+
+        .formulario-pago .campo-pago {
+            margin-bottom: 20px;
+        }
+
+        .formulario-pago label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1e2a78;
+        }
+
+        .formulario-pago input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .formulario-pago .condicion {
+            font-size: 14px;
+            color: #6a6a6a;
+        }
+
+    /* Estilos para el encabezado */
+    h1 {
+        text-align: center;
+        margin: 20px 0;
+        color: #1e2a78;
+    }
+
+    /* Estilos para el botón Pagar */
+    .btn-pagar {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #1e2a78;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .btn-pagar:hover {
+            background-color: #192667;
+        }
+</style>
+
+<h1>Detalles de la Deuda</h1>
+
+<div class="formulario-pago">
+    <div class="card-deuda">
+        <div class="contenido-deuda">
+            <h3>@Model.servicioName</h3>
+            <p>Identificador: @Model.identificador</p>
+            <p>Deuda: @Model.deuda</p>
+        </div>
+    </div>
+
+    @if (Model.camposPagos.Count > 0)
+    {
+        <h2>Campos Personalizados</h2>
+        <form asp-action="Pagar" method="post" class="frame">
+            @for (int i = 0; i < Model.camposPagos.Count; i++)
+            {
+                <div class="campo-pago">
+                    <label>@Model.camposPagos[i]</label>
+                    <input type="text" name="CamposPagos[@i]" placeholder="Contenido del campo" />
+                </div>
+            }
+            <input type="hidden" name="DeudaId" value="@Model.idDeuda" />
+            <input type="hidden" name="ValorDeuda" value="@Model.deuda" />
+
+            <!-- Botón para enviar el formulario -->
+            <button type="submit" class="btn-pagar">Pagar</button>
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            Sin campos personalizados asociados.
+        </div>
+    }
+</div>
+
+

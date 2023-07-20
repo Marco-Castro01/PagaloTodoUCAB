@@ -216,5 +216,205 @@ namespace UCABPagaloTodoWeb.Controllers
             return View(usuarioModel);
         }
 
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> ConsultarDeuda(Guid servicioId, string identificador)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    GetDeudaModel getDeuda = new GetDeudaModel();
+                    getDeuda.identificador = identificador;
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(getDeuda), Encoding.UTF8, "application/json");
+
+
+                    using (var response = await httpClient.PostAsync(endpoint + "servicio/"+ servicioId + "/ConsultarDeuda", content))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        List<DeudaModel> deudas = JsonConvert.DeserializeObject<List<DeudaModel>>(responseContent);
+                        return View("DeudasView", deudas);
+                    }
+
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+
+           
+            // Pasar el modelo a la vista
+            return View();
+        }
+
+
+
+        public async Task<IActionResult> PagarView(Guid idDeuda)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+
+
+                    using (var response = await httpClient.GetAsync(endpoint + "deudaInf/" + idDeuda))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        DeudaModel deuda = JsonConvert.DeserializeObject<DeudaModel>(responseContent);
+                        return View("PagarView", deuda);
+                    }
+
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+
+
+            // Pasar el modelo a la vista
+            return View();
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Pagar(InfoPagar pago)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+
+
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    DeudaModel deuda = new DeudaModel();
+
+
+                    using (var response = await httpClient.GetAsync(endpoint + "deudaInf/" + pago.DeudaId))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        deuda = JsonConvert.DeserializeObject<DeudaModel>(responseContent);
+                    }
+
+                    for (int i = 0; i < deuda.camposPagos.Count; i++)
+                    {
+                        deuda.camposPagos[i].contenido = pago.CamposPagos[i];
+                    }
+
+                    PagarModel pagar = new PagarModel();
+                    pagar.Valor = deuda.deuda;
+                    pagar.camposPagos = deuda.camposPagos;
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(pagar), Encoding.UTF8, "application/json");
+
+
+                    using (var response = await httpClient.PostAsync(endpoint + "Consumidor/pago/" + pago.DeudaId + "/pagar", content))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                       
+                        
+
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            TempData["SuccessMessage"] = responseContent; // Guardar el mensaje de éxito en TempData
+                            return RedirectToAction("Servicios");
+                        }
+                        else
+                        {
+                            // Manejar el error o mostrar una alerta con el mensaje de error
+                            TempData["ErrorMessage"] = responseContent; // Guardar el mensaje de error en TempData
+                            return RedirectToAction("Servicios");
+                        }
+
+                    }
+
+
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+
+
+            // Pasar el modelo a la vista
+            return View();
+        }
+
+    //    [HttpPost]
+    //    public IActionResult Pagar(InfoPagar pagoModel)
+    //    {
+
+    //        int deudaId = pagoModel.DeudaId;
+    //        decimal valorDeuda = pagoModel.ValorDeuda;
+
+    //        List<string> camposPagos = pagoModel.CamposPagos;
+    //        foreach (var campo in camposPagos)
+    //        {
+
+    //        }
+
+    //        return View("HomeConsumidor");
+    //    }
+
+
+
     }
 }

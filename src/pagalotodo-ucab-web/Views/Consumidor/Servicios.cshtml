@@ -19,105 +19,134 @@
 }
 else
 {
-<style>
-.container-card{
-    width: 100%;
-    display: flex;
-    max-width: 1100px;
-    margin: auto;
-}
-.title-cards{
-    width: 100%;
-    max-width: 1080px;
-    margin: auto;
-    padding: 20px;
-    margin-top: 20px;
-    text-align: center;
-    color: black;
-}
-.card{
-    width: 100%;
-    margin: 20px;
-    border-radius: 6px;
-    overflow: hidden;
-    background:#fff;
-    box-shadow: 0px 1px 10px rgba(0,0,0,0.2);
-    transition: all 400ms ease-out;
-    cursor: default;
-}
-
-
-.card:hover{
-    box-shadow: 5px 5px 20px rgba(0,0,0,0.4);
-    transform: translateY(-3%);
-}
-.card img{
-    width: 100%;
-    height: 210px;
-}
-.card .contenido-card{
-    padding: 15px;
-    text-align: center;
-}
-.card .contenido-card h3{
-    margin-bottom: 15px;
-    color: #7a7a7a;
-}
-.card .contenido-card p{
-    line-height: 1.8;
-    color: #6a6a6a;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-.card .contenido-card a{
-    display: inline-block;
-    padding: 10px;
-    margin-top: 10px;
-    text-decoration: none;
-    color: #2fb4cc;
-    border: 1px solid #2fb4cc;
-    border-radius: 4px;
-    transition: all 400ms ease;
-    margin-bottom: 5px;
-}
-.card .contenido-card a:hover{
-    background: #2fb4cc;
-    color: #fff;
-}
-
-
-
-/*Fin-Cards*/
-</style>
-    <div >
-        
-        
-
-        @if (!Model.Any(c => c.statusServicio == StatusServicio.activa) && !Model.Any(c => c.statusServicio == StatusServicio.proximamente)){
-            <div class="alert alert-danger">NO HAY SERVICIOS DISPONIBLES</div>
-
+    <style>
+        .container-card {
+            width: 100%;
+            display: flex;
+            max-width: 1100px;
+            margin: auto;
         }
-        @if(Model.Any(c=>c.statusServicio==StatusServicio.activa))
-        {
-            <div >
 
+        .title-cards {
+            width: 100%;
+            max-width: 1080px;
+            margin: auto;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            color: black;
+        }
+
+        .card {
+            width: 100%;
+            margin: 20px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.2);
+            transition: all 400ms ease-out;
+            cursor: default;
+        }
+
+            .card:hover {
+                box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.4);
+                transform: translateY(-3%);
+            }
+
+            .card img {
+                width: 100%;
+                height: 210px;
+            }
+
+            .card .contenido-card {
+                padding: 15px;
+                text-align: center;
+            }
+
+                .card .contenido-card h3 {
+                    margin-bottom: 15px;
+                    color: #7a7a7a;
+                }
+
+                .card .contenido-card p {
+                    line-height: 1.8;
+                    color: #6a6a6a;
+                    font-size: 14px;
+                    margin-bottom: 5px;
+                }
+
+                .card .contenido-card a {
+                    display: inline-block;
+                    padding: 10px;
+                    margin-top: 10px;
+                    text-decoration: none;
+                    color: #2fb4cc;
+                    border: 1px solid #2fb4cc;
+                    border-radius: 4px;
+                    transition: all 400ms ease;
+                    margin-bottom: 5px;
+                }
+
+                    .card .contenido-card a:hover {
+                        background: #2fb4cc;
+                        color: #fff;
+                    }
+
+        /* Estilos de tarjetas y otros estilos previos */
+        /* ... */
+
+        /* Estilo para el campo de consulta */
+        .campo-consulta {
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* Estilo para el botón de consulta */
+        .btn-consultar {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+
+    <div>
+        @if (!Model.Any(c => c.statusServicio == StatusServicio.activa) && !Model.Any(c => c.statusServicio == StatusServicio.proximamente))
+        {
+            <div class="alert alert-danger">NO HAY SERVICIOS DISPONIBLES</div>
+        }
+
+        @if (Model.Any(c => c.statusServicio == StatusServicio.activa))
+        {
+            <div>
                 <h2>Activos</h2>
                 <ul>
-
                     @foreach (var servicio in Model.Where(s => s.statusServicio == StatusServicio.activa))
                     {
                         <div class="card">
-
                             <div class="contenido-card">
                                 <h3>@servicio.name</h3>
                                 <p>Prestador servicio: @servicio.prestadorServicioName</p>
-                                <a href="#">Acceder</a>
+                                @if (servicio.tipoServicio == TipoServicio.validacion)
+                                {
+                                    <button class="btn-consultar-deuda">Consultar deuda</button>
+                                    <div class="campo-consulta">
+                                        <form action="@Url.Action("ConsultarDeuda", "Consumidor")" method="post">
+                                            <input type="hidden" name="servicioId" value="@servicio.Id" />
+                                            <input type="text" name="identificador" placeholder="Ingrese el monto a consultar" />
+                                            <button type="submit" class="btn-consultar">Consultar</button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a href="#">Acceder</a>
+                                }
                             </div>
                         </div>
                     }
                 </ul>
             </div>
         }
+
         @if (Model.Any(c => c.statusServicio == StatusServicio.proximamente))
         {
             <div class="column">
@@ -129,14 +158,44 @@ else
                             <div class="contenido-card">
                                 <h3>@servicio.name</h3>
                                 <p>Prestador servicio:</p>
-                                <a href="#">Acceder</a>
+                                @if (servicio.tipoServicio == TipoServicio.validacion)
+                                {
+                                    <button class="btn-consultar-deuda">Consultar deuda</button>
+                                    <div class="campo-consulta">
+                                        <form action="@Url.Action("ConsultarDeuda", "Consumidor")" method="post">
+                                            <input type="hidden" name="servicioId" value="@servicio.Id" />
+
+                                            <input type="text" name="identificador" placeholder="Ingrese el monto a consultar" />
+                                            <button type="submit" class="btn-consultar">Consultar</button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a href="#">Acceder</a>
+                                }
                             </div>
                         </div>
-
                     }
                 </ul>
             </div>
         }
     </div>
-   
 }
+
+<script>
+    // Script para mostrar/ocultar el campo de consulta y el botón de consulta
+    const buttonsConsultarDeuda = document.querySelectorAll(".btn-consultar-deuda");
+    buttonsConsultarDeuda.forEach((button) => {
+        button.addEventListener("click", () => {
+            const campoConsulta = button.nextElementSibling;
+            const btnConsultar = campoConsulta.querySelector(".btn-consultar");
+
+            campoConsulta.style.display = "block";
+            btnConsultar.addEventListener("click", () => {
+                // Aquí puedes realizar la acción de enviar el formulario
+                // El formulario se enviará automáticamente al hacer clic en el botón "Consultar"
+            });
+        });
+    });
+</script>

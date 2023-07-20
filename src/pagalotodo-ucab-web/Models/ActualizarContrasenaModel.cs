@@ -1,7 +1,8 @@
 ﻿namespace UCABPagaloTodoWeb.Models
 {
-    public class ActualizarContrasenaModel
+    public class GetDeudaModel
     {
-        public string password { get; set; }
+        public string identificador { get; set; }
+
     }
 }
