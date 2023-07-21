@@ -1,12 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using FluentValidation;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Core.Enums;
 
 public class CampoEnPagoValidator : AbstractValidator<CamposPagosRequest>
 {
-    [ExcludeFromCodeCoverage]
     public CampoEnPagoValidator()
     {
         RuleFor(x => x.Nombre).NotEmpty().WithMessage("Debe tener un nombre de campo");

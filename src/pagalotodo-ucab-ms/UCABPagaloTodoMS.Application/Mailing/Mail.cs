@@ -6,11 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
-using System.Diagnostics.CodeAnalysis;
-
 namespace UCABPagaloTodoMS.Application.Mailing
 {
-    [ExcludeFromCodeCoverage]
     public class Message
     {
         public List<MailboxAddress> To { get; set; }

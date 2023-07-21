@@ -1,8 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UCABPagaloTodoMS.Core.Enums;
+﻿using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Core.Entities;
-[ExcludeFromCodeCoverage]
+
 public class ArchivoFirebaseEntity : BaseEntity
 {
     public string urlFirebase { get; set; }

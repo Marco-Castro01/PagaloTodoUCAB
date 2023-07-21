@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace UCABPagaloTodoMS.Core.Entities;
 [Index(nameof(email), IsUnique = true)]
 [Index(nameof(cedula), IsUnique = true)]
 [Index(nameof(nickName), IsUnique = true)]
-[ExcludeFromCodeCoverage]
 public abstract class UsuarioEntity : BaseEntity
 {
   

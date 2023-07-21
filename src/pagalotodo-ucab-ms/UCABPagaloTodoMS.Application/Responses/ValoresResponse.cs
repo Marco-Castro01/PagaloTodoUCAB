@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace UCABPagaloTodoMS.Application.Responses
+﻿namespace UCABPagaloTodoMS.Application.Responses
 {
-    [ExcludeFromCodeCoverage]
     public class ValoresResponse
     {
         public Guid Id { get; set; }

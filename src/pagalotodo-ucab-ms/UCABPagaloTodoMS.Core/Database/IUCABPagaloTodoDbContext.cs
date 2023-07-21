@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Core.Database
 {
-    
     public interface IUCABPagaloTodoDbContext
     {
         DbSet<ValoresEntity> Valores { get;}

@@ -35,13 +35,14 @@ namespace UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.Administr
         }
 
         [Fact(DisplayName = "Método Handle para consultar administradores exception")]
-        public void Handle_ConsultarAdministradores_exception()
+        public async Task Handle_ConsultarAdministradores_exception()
         {
+            _contextMock.Setup(x => x.Admin).Throws<Exception>();
 
+            var request = new ConsultarAdminPruebaQuery();
 
-            ConsultarAdminPruebaQuery request = null;
-
-            Assert.ThrowsAsync<ArgumentNullException>(() => _handler.Handle(request, CancellationToken.None));
+            await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
         }
     }
 }
+

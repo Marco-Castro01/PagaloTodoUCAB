@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UCABPagaloTodoMS.Application.Requests;
+﻿using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Mappers
 {
-    [ExcludeFromCodeCoverage]
     public static class CierreContableMapper
     {
         public static CierreContableResponse MapEntityAResponse(PrestadorServicioEntity prestador, ServicioEntity servicio)

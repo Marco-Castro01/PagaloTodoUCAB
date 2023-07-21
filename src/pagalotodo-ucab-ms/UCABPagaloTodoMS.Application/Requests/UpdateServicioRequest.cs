@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UCABPagaloTodoMS.Core.Enums;
+﻿using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Application.Requests
 {
-    [ExcludeFromCodeCoverage]
     public class UpdateServicioRequest
     {
         public string? name { get; set; }

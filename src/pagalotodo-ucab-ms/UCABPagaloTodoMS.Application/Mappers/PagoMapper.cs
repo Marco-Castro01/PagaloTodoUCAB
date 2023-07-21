@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Diagnostics.CodeAnalysis;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
@@ -9,7 +8,6 @@ using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Application.Mappers
 {
-    [ExcludeFromCodeCoverage]
     public static class PagoMapper
     {
         public static PagoResponse MapEntityAResponse(PagoEntity entity)

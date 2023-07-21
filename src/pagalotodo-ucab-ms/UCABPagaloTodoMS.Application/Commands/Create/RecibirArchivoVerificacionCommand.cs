@@ -3,12 +3,10 @@ using MediatR;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using Microsoft.AspNetCore.Http;
-using System.Diagnostics.CodeAnalysis;
-
 namespace UCABPagaloTodoMS.Application.Commands
 {
+    
 
-    [ExcludeFromCodeCoverage]
     public class RecibirArchivoVerificacionCommand : IRequest<string>
     {
         

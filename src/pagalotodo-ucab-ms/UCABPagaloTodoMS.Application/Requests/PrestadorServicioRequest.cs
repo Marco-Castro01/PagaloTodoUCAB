@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace UCABPagaloTodoMS.Application.Requests
+﻿namespace UCABPagaloTodoMS.Application.Requests
 {
-    [ExcludeFromCodeCoverage]
     public class PrestadorServicioRequest
     {
         public string? email { get; set; } 

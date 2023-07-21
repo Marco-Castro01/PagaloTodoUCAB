@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UCABPagaloTodoMS.Application.Requests;
+﻿using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Core.Entities;
 using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Application.Responses
 {
-    [ExcludeFromCodeCoverage]
     public class ServicioResponse
     {
         public Guid Id { get; set; }

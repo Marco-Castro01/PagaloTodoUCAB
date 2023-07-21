@@ -123,6 +123,6 @@ public class AdminsControllerTests
         var result = await _controller.ConsultaAdmins();
 
         // Assert
-        Xunit.Assert.IsType<BadRequestObjectResult>(result.Result);
+        Xunit.Assert.IsType<BadRequestResult>(result.Result);
     }
 }
