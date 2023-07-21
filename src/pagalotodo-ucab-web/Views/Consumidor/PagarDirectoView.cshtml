@@ -73,7 +73,7 @@
                     }
                     else if (Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.conDecimal || Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.entero)
                     {
-                        <input type="number" name="CamposPagos[@i]"  placeholder="Contenido del campo" />
+                        <input type="text" name="CamposPagos[@i]" oninput="validarNumero(event)" placeholder="Contenido del campo" />
 
                     }
                     else
@@ -101,4 +101,24 @@
         </div>
     }
 </div>
+
+<script>
+    function validarNumero(event) {
+        // Obtenemos el valor actual del campo
+        const valorCampo = event.target.value;
+
+        // Reemplazamos cualquier separador decimal por un punto
+        const valorCampoFormateado = valorCampo.replace(",", ".");
+
+        // Verificamos si el valor es numérico
+        if (!isNaN(valorCampoFormateado)) {
+            // Si es numérico, actualizamos el valor del campo
+            event.target.value = valorCampoFormateado;
+        } else {
+            // Si no es numérico, eliminamos el último caracter ingresado
+            event.target.value = valorCampo.slice(0, -1);
+        }
+    }
+</script>
+
 

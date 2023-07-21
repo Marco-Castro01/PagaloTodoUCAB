@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using UCABPagaloTodoMS.Application.Requests;
+using UCABPagaloTodoWeb.enums;
 using UCABPagaloTodoWeb.Models;
 using UCABPagaloTodoWeb.Requests;
 
@@ -324,6 +325,8 @@ namespace UCABPagaloTodoWeb.Controllers
         public async Task<IActionResult> PagarDirecto(InfoPagar pago)
         {
             var token = HttpContext.Session.GetString("token");
+            string responseContent="";
+
 
             try
             {
@@ -344,9 +347,9 @@ namespace UCABPagaloTodoWeb.Controllers
                     {
                         response.EnsureSuccessStatusCode();
 
-                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var responseContent1 = await response.Content.ReadAsStringAsync();
                         servicio = JsonConvert
-                            .DeserializeObject<List<ServicioModel>>(responseContent)
+                            .DeserializeObject<List<ServicioModel>>(responseContent1)
                             .FirstOrDefault(x => x.Id == pago.DeudaId);
                     }
 
@@ -365,7 +368,7 @@ namespace UCABPagaloTodoWeb.Controllers
                     {
                         response.EnsureSuccessStatusCode();
 
-                        var responseContent = await response.Content.ReadAsStringAsync();
+                        responseContent = await response.Content.ReadAsStringAsync();
                         if (response.IsSuccessStatusCode)
                         {
                             TempData["SuccessMessage"] = responseContent; // Guardar el mensaje de éxito en TempData
@@ -386,12 +389,14 @@ namespace UCABPagaloTodoWeb.Controllers
             catch (HttpRequestException ex)
             {
                 // Capturar excepciones de solicitud HTTP
-                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+                TempData["ErrorMessage"] = responseContent; // Guardar el mensaje de error en TempData
+                return RedirectToAction("Servicios");
             }
             catch (Exception ex)
             {
                 // Capturar excepciones generales
-                ViewBag.Error = $"Error general: {ex.Message}";
+                TempData["ErrorMessage"] = responseContent; // Guardar el mensaje de error en TempData
+                return RedirectToAction("Servicios");
             }
 
 
@@ -530,6 +535,9 @@ namespace UCABPagaloTodoWeb.Controllers
         }
 
 
+
+
+       
 
     }
 }
