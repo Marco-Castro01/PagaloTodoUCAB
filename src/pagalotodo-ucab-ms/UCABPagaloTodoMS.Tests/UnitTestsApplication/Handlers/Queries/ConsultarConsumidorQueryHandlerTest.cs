@@ -1,69 +1,108 @@
-﻿/*using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿/*using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
+using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
-using UCABPagaloTodoMS.Tests.DataSeed;
 using Xunit;
-using UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.ConsumidorQueryTests.UCABPagaloTodoMS.Application.Handlers.Queries;
-using UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.ConsumidorQueryTests.UCABPagaloTodoMS.Application.Queries;
-using UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.ConsumidorQueryTests.UCABPagaloTodoMS.Application.Responses;
-using UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.ConsumidorQueryTests.UCABPagaloTodoMS.Core.Database;
-using UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.ConsumidorQueryTests.UCABPagaloTodoMS.Core.Mapping;
-using UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.ConsumidorQueryTests.UCABPagaloTodoMS.Core.Entities;
 
-
-    namespace UCABPagaloTodoMS.Tests.UnitTestsApplication.Handlers.Queries.ConsumidorQueryTests
+namespace UCABPagaloTodoMS.Application.UnitTests.Handlers.Queries
+{
+    public class ConsultarConsumidorQueryHandlerTests
     {
-        public class CrearUsuarioQueryHandlerTests
+        private readonly Mock<IUCABPagaloTodoDbContext> _dbContextMock;
+        private readonly Mock<ILogger<ConsultarConsumidorQueryHandler>> _loggerMock;
+
+        public ConsultarConsumidorQueryHandlerTests()
         {
-            private readonly Mock<IUCABPagaloTodoDbContext> _dbContextMock;
-            private readonly IMapper _mapper;
-            private readonly CrearConsumidorQueryHandler _handler;
+            _dbContextMock = new Mock<IUCABPagaloTodoDbContext>();
+            _loggerMock = new Mock<ILogger<ConsultarConsumidorQueryHandler>>();
+        }
 
-            public CrearUsuarioQueryHandlerTests()
+        [Fact]
+        public async Task Handle_ReturnsListOfConsumidorResponse_WhenRequestIsNotNull()
+        {
+            // Arrange
+            var handler = new ConsultarConsumidorQueryHandler(_dbContextMock.Object, _loggerMock.Object);
+            var query = new ConsultarConsumidorPruebaQuery();
+            var consumidores = new List<ConsumidorEntity>
             {
-                _dbContextMock = new Mock<IUCABPagaloTodoDbContext>();
-                _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()));
-                _handler = new CrearUsuarioQueryHandler(_dbContextMock.Object, _mapper);
-            }
-
-            [Fact]
-            public async Task Handle_ReturnsUsuarioResponse()
+                new ConsumidorEntity
+                {
+                    Id = Guid,
+                    cedula = "12345678",
+                    nickName = "usuario1",
+                    status = true,
+                    email = "usuario1@ucab.edu.ve",
+                },
+                new ConsumidorEntity
+                {
+                    Id = 2,
+                    cedula = "23456789",
+                    nickName = "usuario2",
+                    status = false,
+                    email = "usuario2@ucab.edu.ve",
+                },
+            };
+            var expected = consumidores.Select(c => new ConsumidorResponse()
             {
-                // Arrange
-                var request = new CrearUsuarioPruebaQuery { Nombre = "Juan", Apellido = "Pérez", CorreoElectronico = "juan.perez@example.com", Clave = "password" };
-                _dbContextMock.Setup(m => m.Usuarios.AddAsync(It.IsAny<UsuarioEntity>(), default)).Returns(Task.CompletedTask);
-                _dbContextMock.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(1);
+                Id = c.Id,
+                cedula = c.cedula,
+                nickName = c.nickName,
+                status = c.status,
+                email = c.email,
+            }).ToList();
 
-                // Act
-                var result = await _handler.Handle(request, CancellationToken.None);
+            _dbContextMock.Setup(db => db.Consumidor).Returns(MockHelper.GetDbSetMock(consumidores).Object);
 
-                // Assert
-                Assert.NotNull(result);
-                Assert.IsType<UsuarioResponse>(result);
-                Assert.Equal(request.Nombre, result.Nombre);
-                Assert.Equal(request.Apellido, result.Apellido);
-                Assert.Equal(request.CorreoElectronico, result.CorreoElectronico);
-            }
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
 
-            [Fact]
-            public async Task Handle_ThrowsArgumentException()
-            {
-                // Arrange
-                var request = new CrearUsuarioPruebaQuery { Nombre = "Juan", Apellido = "Pérez", CorreoElectronico = "juan.perez@example.com", Clave = "password" };
-                _dbContextMock.Setup(m => m.Usuarios.AddAsync(It.IsAny<UsuarioEntity>(), default)).Throws(new ArgumentException());
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<List<ConsumidorResponse>>(result);
+            Assert.Equal(expected.Count, result.Count);
+            Assert.Equal(expected.First().Id, result.First().Id);
+            Assert.Equal(expected.First().cedula, result.First().cedula);
+            Assert.Equal(expected.First().nickName, result.First().nickName);
+            Assert.Equal(expected.First().status, result.First().status);
+            Assert.Equal(expected.First().email, result.First().email);
+            Assert.Equal(expected.Last().Id, result.Last().Id);
+            Assert.Equal(expected.Last().cedula, result.Last().cedula);
+            Assert.Equal(expected.Last().nickName, result.Last().nickName);
+            Assert.Equal(expected.Last().status, result.Last().status);
+            Assert.Equal(expected.Last().email, result.Last().email);
+        }
 
-                // Act
-                var ex = await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(request, CancellationToken.None));
+        [Fact]
+        public async Task Handle_ThrowsCustomException_WhenExceptionOccurs()
+        {
+            // Arrange
+            var handler = new ConsultarConsumidorQueryHandler(_dbContextMock.Object, _loggerMock.Object);
+            var query = new ConsultarConsumidorPruebaQuery();
 
-                // Assert
-                Assert.NotNull(ex);
-            }
+            _dbContextMock.Setup(db => db.Consumidor).Throws(new Exception());
+
+            // Act & Assert
+            await Assert.ThrowsAsync<CustomException>(() => handler.Handle(query, CancellationToken.None));
+        }
+
+        [Fact]
+        public async Task Handle_ThrowsArgumentNullException_WhenRequestIsNull()
+        {
+            // Arrange
+            var handler = new ConsultarConsumidorQueryHandler(_dbContextMock.Object, _loggerMock.Object);
+            ConsultarConsumidorPruebaQuery query = null;
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => handler.Handle(query, CancellationToken.None));
         }
     }
-*/
+}*/

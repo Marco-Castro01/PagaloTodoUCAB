@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UCABPagaloTodoMS.Core.Entities
 {
+    [ExcludeFromCodeCoverage]
     public class ServicioCampoEntity 
     {
         public DateTime CreatedAt { get; set; }

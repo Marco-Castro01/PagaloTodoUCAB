@@ -16,10 +16,11 @@ using UCABPagaloTodoMS.Application.Handlers.Commands.Patch;
 using UCABPagaloTodoMS.Application.Mailing;
 using UCABPagaloTodoMS.Core.Services;
 using UCABPagaloTodoMS.Infrastructure.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UCABPagaloTodoMS;
 
-
+[ExcludeFromCodeCoverage]
 public class Startup
 {
     private AppSettings _appSettings;

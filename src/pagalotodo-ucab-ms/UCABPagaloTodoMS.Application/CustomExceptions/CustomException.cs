@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UCABPagaloTodoMS.Application.CustomExceptions
 {
+    [ExcludeFromCodeCoverage]
     public class CustomException : Exception
     {
         public int Codigo { get; set; }

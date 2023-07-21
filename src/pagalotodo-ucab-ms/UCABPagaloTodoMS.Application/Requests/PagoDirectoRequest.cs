@@ -1,7 +1,9 @@
-﻿using UCABPagaloTodoMS.Core.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Requests
 {
+    [ExcludeFromCodeCoverage]
     public class PagoDirectoRequest
     {
         public double? Valor { get; set; }

@@ -1,7 +1,8 @@
-﻿using UCABPagaloTodoMS.Core.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Core.Entities;
-
+[ExcludeFromCodeCoverage]
 public class ServicioEntity : BaseEntity
 {
   
@@ -14,4 +15,5 @@ public class ServicioEntity : BaseEntity
     public TipoServicio tipoServicio  { get; set; }
     public StatusServicio statusServicio { get; set; }
     public string? formatoDePagos { get; set; }
+    public List<CamposConciliacionEntity> CamposConciliacion { get; set; }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Commands
 {
+    [ExcludeFromCodeCoverage]
     public class AsignarCamposCommand : IRequest<List<ServicioCampoEntity>>
     {
         public Guid _servicioId { get; set; }

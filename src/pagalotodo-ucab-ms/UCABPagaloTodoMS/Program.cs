@@ -1,9 +1,12 @@
 ﻿using Destructurama;
 using Serilog;
+using System.Diagnostics.CodeAnalysis;
+
 namespace UCABPagaloTodoMS;
 
 public static class Program
 {
+    [ExcludeFromCodeCoverage]
     public static int Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()

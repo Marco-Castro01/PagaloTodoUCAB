@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Application.Requests
 {
+    [ExcludeFromCodeCoverage]
     public class CamposPagosRequest
     {
         public string? Nombre { get; set; } = null;

@@ -1,5 +1,7 @@
-﻿namespace UCABPagaloTodoMS.Core.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace UCABPagaloTodoMS.Core.Entities;
+[ExcludeFromCodeCoverage]
 public class DeudaEntity : BaseEntity
 {
     public string identificador { get; set; }

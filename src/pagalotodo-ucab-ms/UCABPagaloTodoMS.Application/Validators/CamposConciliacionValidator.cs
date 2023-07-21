@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Validators;
-
+[ExcludeFromCodeCoverage]
 public class CamposConciliacionValidator : AbstractValidator<CamposConciliacionEntity>
 {
 

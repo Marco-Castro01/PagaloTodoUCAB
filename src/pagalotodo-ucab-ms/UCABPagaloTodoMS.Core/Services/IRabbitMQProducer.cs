@@ -1,5 +1,8 @@
-﻿namespace UCABPagaloTodoMS.Core.Services
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace UCABPagaloTodoMS.Core.Services
 {
+    
     public interface IRabbitMQProducer
     {
         void PublishMessageToConciliacion_Queue(string message);
