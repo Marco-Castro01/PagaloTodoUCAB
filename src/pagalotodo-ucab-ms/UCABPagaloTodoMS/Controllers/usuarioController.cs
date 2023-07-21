@@ -292,7 +292,9 @@ namespace UCABPagaloTodoMS.Controllers
             }
         }
 
-
-
+        public Task EditarUsuario(EditarUsuarioRequest request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

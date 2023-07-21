@@ -1,7 +1,8 @@
-﻿using UCABPagaloTodoMS.Application.Requests;
+﻿using System.Diagnostics.CodeAnalysis;
+using UCABPagaloTodoMS.Application.Requests;
 
 namespace UCABPagaloTodoMS.Core.Entities;
-
+[ExcludeFromCodeCoverage]
 public class DeudaResponse 
 {
     

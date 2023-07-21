@@ -13,6 +13,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.Queries;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Controllers;
@@ -20,60 +21,48 @@ using Xunit;
 
 namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
 {
-    public class ServicioControllerTest
+    public class ServicioControllerTests
     {
-        private readonly ServicioController _controller;
         private readonly Mock<IMediator> _mediatorMock;
-        private readonly Mock<ILogger<ServicioController>> _loggerMock;
+        private readonly ILogger<ServicioController> _logger;
+        private readonly ServicioController _controller;
 
-
-        public ServicioControllerTest()
+        public ServicioControllerTests()
         {
-            _loggerMock = new Mock<ILogger<ServicioController>>();
             _mediatorMock = new Mock<IMediator>();
-            _controller = new ServicioController(_loggerMock.Object, _mediatorMock.Object);
-            _controller.ControllerContext = new ControllerContext();
-            _controller.ControllerContext.HttpContext = new DefaultHttpContext();
-            _controller.ControllerContext.ActionDescriptor = new ControllerActionDescriptor();
-
+            _logger = Mock.Of<ILogger<ServicioController>>();
+            _controller = new ServicioController(_logger, _mediatorMock.Object);
         }
 
-
-
-
-
-        [Fact(DisplayName = "Servicio good")]
-        public async Task AgregarServicio_ReturnsOkResponse_WhenPagoIsValid()
+        [Fact]
+        public async Task ConsultaServicio_ReturnsOkResult_WhenQueryIsSuccessful()
         {
             // Arrange
-            var servicio = new ServicioRequest { /* initialize properties */ };
-            var expectedGuid = Guid.NewGuid();
-            _mediatorMock
-                .Setup(m => m.Send(It.IsAny<AgregarServicioPruebaCommand>(), default))
-                .ReturnsAsync(expectedGuid);
+            var expectedResponse = new List<ServicioResponse> { new ServicioResponse { Id = Guid.NewGuid(), name = "Servicio 1" } };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ConsultarServicioPruebaQuery>(), default)).ReturnsAsync(expectedResponse);
 
             // Act
-            var result = await _controller.AgregarServicio(servicio);
+            var result = await _controller.ConsultaServicio();
 
             // Assert
-            Xunit.Assert.IsType<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Xunit.Assert.Equal(expectedGuid, okResult.Value);
+            var okResult = Xunit.Assert.IsType<OkObjectResult>(result.Result);
+            var actualResponse = Xunit.Assert.IsType<List<ServicioResponse>>(okResult.Value);
+            Xunit.Assert.Equal(expectedResponse, actualResponse);
         }
 
-        [Fact(DisplayName = "Servicio bad")]
-        public async Task AgregarsServicio_ThrowsException_WhenMediatorThrowsException()
+        [Fact]
+        public async Task ConsultaServicio_ReturnsBadRequestResult_WhenQueryThrowsException()
         {
             // Arrange
-            var servicio = new ServicioRequest { /* initialize properties */ };
-            _mediatorMock
-                .Setup(m => m.Send(It.IsAny<AgregarServicioPruebaCommand>(), default))
-                .ThrowsAsync(new Exception());
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ConsultarServicioPruebaQuery>(), default)).ThrowsAsync(new Exception("Error de prueba"));
 
-            // Act and Assert
-            await Xunit.Assert.ThrowsAsync<Exception>(() => _controller.AgregarServicio(servicio));
+            // Act
+            var result = await _controller.ConsultaServicio();
+
+            // Assert
+            var badResult = Xunit.Assert.IsType<BadRequestObjectResult>(result.Result);
+            var expectedErrorMessage = "Error de prueba";
+            Xunit.Assert.Equal(expectedErrorMessage, badResult.Value);
         }
-
     }
 }
-

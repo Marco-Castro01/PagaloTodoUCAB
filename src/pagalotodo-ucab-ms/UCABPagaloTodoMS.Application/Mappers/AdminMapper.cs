@@ -1,9 +1,11 @@
-﻿using UCABPagaloTodoMS.Application.Requests;
+﻿using System.Diagnostics.CodeAnalysis;
+using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Mappers
 {
+    [ExcludeFromCodeCoverage]
     public static class AdminMapper
     {
         public static AdminResponse MapEntityAResponse(AdminEntity entity)

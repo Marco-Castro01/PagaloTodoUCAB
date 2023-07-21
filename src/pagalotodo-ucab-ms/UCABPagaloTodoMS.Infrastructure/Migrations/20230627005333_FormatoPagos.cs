@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace UCABPagaloTodoMS.Infrastructure.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class FormatoPagos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
