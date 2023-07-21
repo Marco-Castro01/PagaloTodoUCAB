@@ -65,6 +65,7 @@ else
                                             <th>Nombre Servicio</th>
                                             <th>Tipo Servicio</th>
                                             <th>Status Servicio</th>
+                                            <th>Opciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -77,6 +78,11 @@ else
                                                 </td>
                                                 <td>
                                                     <span class="badge @(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "badge-success" : "badge-danger")">@(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "Activo" : "Inactivo")</span>
+                                                </td>
+                                                <td>
+
+                                                    <a href="@Url.Action("EstadoDeCuenta", "Admin", new { IdPrestador = prestador.Id, IdServicio = servicio.Id, servicioName = servicio.name })">Enlace a EstadoDeCuenta</a>
+
                                                 </td>
                                             </tr>
                                         }

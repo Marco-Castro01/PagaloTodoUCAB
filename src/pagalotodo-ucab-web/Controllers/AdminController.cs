@@ -731,5 +731,54 @@ namespace UCABPagaloTodoWeb.Controllers
         }
 
 
+
+
+
+
+        [Route("Admin/EstadoDeCuenta/{IdPrestador}/{IdServicio}/{servicioName}")]
+
+        public async Task<IActionResult> EstadoDeCuenta(Guid IdPrestador, Guid IdServicio, string servicioName)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Si no se encuentra el token en la sesión, lanzar una excepción
+                    throw new Exception("No se encontró el token en la sesión.");
+                }
+                List<PagoModel> pagos = new List<PagoModel>();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    using (var response = await httpClient.GetAsync("https://localhost:5001/" + "pagosPorServicio/" + IdPrestador + "/" + IdServicio + "/pagos_recibidos"))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        pagos = JsonConvert.DeserializeObject<List<PagoModel>>(responseContent);
+                        ViewBag.Message = servicioName;
+
+                        return View("EstadoDeCuenta",pagos);
+                    }
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepciones de solicitud HTTP
+                ViewBag.Error = $"Error al hacer la solicitud HTTP: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Capturar excepciones generales
+                ViewBag.Error = $"Error general: {ex.Message}";
+            }
+            return View();
+        }
+
+
+
     }
 }
