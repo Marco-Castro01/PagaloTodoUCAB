@@ -104,8 +104,8 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         }
         public void validarPago(PagoEntity pago)
         {
-            PagoDirectoValidator pagoDirectoValidator = new PagoDirectoValidator();
-            ValidationResult resultado = pagoDirectoValidator.Validate(pago);
+            PagoPorValidacionValidator pagoPorValidacionValidator = new PagoPorValidacionValidator();
+            ValidationResult resultado = pagoPorValidacionValidator.Validate(pago);
             if (!resultado.IsValid)
                 throw new ValidationException(resultado.Errors);
         }

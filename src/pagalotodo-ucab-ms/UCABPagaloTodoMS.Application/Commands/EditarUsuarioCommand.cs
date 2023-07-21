@@ -11,6 +11,7 @@ namespace UCABPagaloTodoMS.Application.Commands
 {
     [ExcludeFromCodeCoverage]
     public class EditarUsuarioCommand : IRequest<Guid>
+
     {
         public EditarUsuarioRequest _request { get; set; }
         public Guid _id { get; set; }

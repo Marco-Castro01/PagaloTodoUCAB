@@ -20,7 +20,7 @@ public class ServicioValidator : AbstractValidator<ServicioEntity>
             .NotNull()
             .Must(x =>  (x == StatusServicio.activa) 
                         || (x == StatusServicio.inactiva)
-                        ||(x == StatusServicio.próximamente)
+                        ||(x == StatusServicio.proximamente)
                         
                         );
 

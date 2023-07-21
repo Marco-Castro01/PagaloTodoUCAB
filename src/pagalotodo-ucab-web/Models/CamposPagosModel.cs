@@ -4,6 +4,7 @@ namespace UCABPagaloTodoWeb.Models
 {
     public class CamposPagosModel
     {
+        public Guid? servicioId { get; set; }
         public string? Nombre { get; set; } = null;
         public string? contenido { get; set; } = null;
         public int Longitud { get; set; } = 0;

@@ -16,7 +16,11 @@ using UCABPagaloTodoMS.Application.Handlers.Commands.Patch;
 using UCABPagaloTodoMS.Application.Mailing;
 using UCABPagaloTodoMS.Core.Services;
 using UCABPagaloTodoMS.Infrastructure.Services;
+
 using System.Diagnostics.CodeAnalysis;
+
+using UCABPagaloTodoMS.Application.Services;
+
 
 namespace UCABPagaloTodoMS;
 
@@ -48,6 +52,9 @@ public class Startup
         services.AddHostedService<RabbitMqConsumerConciliacionHS>();
         services.AddHostedService<RabbitMqConsumerVerificacionHS>();
         //---------
+        //send Email
+        services.AddTransient<IMailService, MailService>();
+
         services.AddMediatR(typeof(RecibirArchivoConciliacionCommandHandler));
 
         services.AddCors(options =>
@@ -111,11 +118,11 @@ public class Startup
         _appSettings = appSettingsSection.Get<AppSettings>();
         services.Configure<AppSettings>(appSettingsSection);
         services.AddTransient<IUCABPagaloTodoDbContext, UCABPagaloTodoDbContext>();
-        var emailConfig = Configuration
-            .GetSection("EmailConfiguration")
-            .Get<EmailConfiguration>();
-        services.AddScoped<IEmailSender, EmailSender>();
-        services.AddSingleton(emailConfig);
+        //var emailConfig = Configuration
+        //    .GetSection("EmailConfiguration")
+        //    .Get<EmailConfiguration>();
+        //services.AddScoped<IEmailSender, EmailSender>();
+        //services.AddSingleton(emailConfig);
         services.AddEndpointsApiExplorer();
 
         services.AddProviders(Configuration, Folder, _appSettings, environment);

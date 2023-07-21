@@ -26,7 +26,7 @@ namespace UCABPagaloTodoWeb.Controllers
             var userRole = HttpContext.Session.GetString("userrole");
             if(userRole.Equals("AdminEntity"))
             {
-                return View("Privacy");
+                return View("HomeAdmin");
 
             }
             else if (userRole.Equals("PrestadorServicioEntity"))
@@ -35,19 +35,7 @@ namespace UCABPagaloTodoWeb.Controllers
                 return View("HomePrestador"); 
             }
             return View("HomeConsumidor");
-            List<ServicioModel>? servicios = new List<ServicioModel>();
-            using (var httpClient = new HttpClient())
-            {
-
-                using (var response = await httpClient.GetAsync(endpoint+"servicios"))
-                {
-                    response.EnsureSuccessStatusCode();
-
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    servicios = JsonConvert.DeserializeObject<List<ServicioModel>>(responseContent);
-                    return View(servicios);
-                }
-            }
+            
         }
 
         public IActionResult Privacy()

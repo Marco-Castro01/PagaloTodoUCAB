@@ -9,19 +9,12 @@
     <link rel="stylesheet" href="~/UCABPagaloTodoWeb.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/LoginStyle.css">
 
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-Kr30oX4qQG1qrL4m0z8zv3vjlRl5/JanfHeI57kL6Yb+be5+q4F0P5c9f1VRw5KG" crossorigin="anonymous"></script>
-
 
 </head>
 
@@ -48,12 +41,24 @@
                                     <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="GestionUsuarios">Gestion de usuarios</a>
                                 </li>
                             }
+                            @if (Context.Session.GetString("userrole") == "ConsumidorEntity")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Consumidor" asp-action="HistoricoPagos">Historico de pagos Realizados</a>
+                                </li>
+                            }
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Configuracion</a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Cerrar">Cerrar sesión</a>
                                     <a class="dropdown-item"  href="@Url.Action("CambiarContrasena", "User", new { id = (Context.Session.GetString("userid")) })">Cambiar contraseña</a>
 
+                                    @if (Context.Session.GetString("userrole") == "ConsumidorEntity")
+                                    {
+                                        <a class="dropdown-item" href="@Url.Action("Modificar_PerfilView", "Consumidor")">Perfil</a>
+
+                                    }
+                               
                                 </div>
                             </li>
                         </ul>

@@ -1,0 +1,49 @@
+﻿@model List<PagoModel>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<
+
+@if (ViewBag.Error != null)
+{
+    <p>Error: @ViewBag.Error</p>
+}
+else
+{
+    <h1>Historico de Pagos Recibidos</h1>
+
+    <h2>Servicio: @ViewBag.Message</h2>
+
+    <div>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Valor</th>
+                    <th>Nombre del Servicio</th>
+                    <th>Nombre del Consumidor</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pago in Model)
+                {
+                    <tr>
+                        <td>@pago.Id</td>
+                        <td>@pago.valor</td>
+                        <td>@pago.NombreServicio</td>
+                        <td>@pago.NombreConsumidor</td>
+                       
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

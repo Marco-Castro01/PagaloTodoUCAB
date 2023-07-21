@@ -79,7 +79,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de Pagos.</returns>
-        [HttpGet("pagosPorConsumidor/pagosHechos")]
+        [HttpGet("/pagosPorConsumidor/pagosHechos")]
         [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,7 +122,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de Pagos.</returns>
-        [HttpGet("pagosPorServicio/pagos_recibidos")]
+        [HttpGet("/pagosPorServicio/{IdServicio}/pagos_recibidos")]
         [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -150,11 +150,56 @@ namespace UCABPagaloTodoMS.Controllers
             }
         }
 
+
+
+
+        //-----------------------------------------------------------------------
+        /// <summary>
+        ///     Endpoint para la consulta de pagoDirecto
+        /// </summary>
+        /// <remarks>
+        ///     ## Description
+        ///     ### Get admins
+        ///     ## Url
+        ///     GET /Pagos/PagosPorServicio
+        /// </remarks>
+        /// <response code="200">
+        ///     Accepted:
+        ///     - Operation successful.
+        /// </response>
+        /// <returns>Retorna la lista de Pagos.</returns>
+        [HttpGet("/pagosPorServicio/{IdPrestador}/{IdServicio}/pagos_recibidos")]
+        [Authorize(Roles = "AdminEntity")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<PagoResponse>>> ListarPagosPorIdServicior(Guid IdPrestador, Guid IdServicio)
+        {
+            _logger.LogInformation("Entrando al método que Lista los pagos realizados por El consumidor");
+            try
+            {
+               
+                var query = new ConsultarPagoPorServicioQuery(IdPrestador, IdServicio);
+                var response = await _mediator.Send(query);
+                return Ok(response);
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(ex.Codigo, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocurrio un error en la consulta de los Pagos. Exception: " + ex);
+                return BadRequest("Error en la consulta");
+            }
+        }
+
+
+
         //-----------------------------------------------------------------------
 
-       
-       
-        
+
+
+
         /// <summary>
         ///     Endpoint que registra un pagoDirecto.
         /// </summary>
@@ -169,7 +214,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna mensaje de confirmacion o de error.</returns>
-        [HttpPost("servicio/{idServicio}/pagoDirecto")]
+        [HttpPost("/servicio/{idServicio}/pagoDirecto")]
         [Authorize(Roles = "ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

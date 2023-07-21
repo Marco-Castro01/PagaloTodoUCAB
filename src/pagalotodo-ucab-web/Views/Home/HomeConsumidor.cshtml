@@ -1,6 +1,16 @@
 ﻿@using UCABPagaloTodoWeb.enums
 @model List<ServicioModel>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+
 <h1>Prestador Servicios</h1>
 
 @if (ViewBag.Error != null)
@@ -134,7 +144,7 @@ else
             <div class="description">
                 <h2>Servicios</h2>
                 <p>Servicios segun su estatus</p>
-                <a href="@Url.Action("Servicios","Home")" class="btn btn-primary">Leer Más</a>
+                <a href="@Url.Action("Servicios","Consumidor")" class="btn btn-primary">Leer Más</a>
             </div>
         </div>
 

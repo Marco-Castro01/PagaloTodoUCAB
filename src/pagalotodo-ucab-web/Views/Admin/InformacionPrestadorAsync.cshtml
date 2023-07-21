@@ -9,6 +9,9 @@
     <h3>RIF: @Model.rif</h3>
     <h3>Nickname: @Model.nickName</h3>
     <h3>Estado: <span class="badge @(Model.status ? "badge-success" : "badge-danger")">@(Model.status ? "Activo" : "Inactivo")</span></h3>
+    <a href="@Url.Action("CierreContable", "Admin", new { id = Model.Id })" class="btn btn-success">Hacer Cierre</a>
+
+
 </div>
 
 <div>

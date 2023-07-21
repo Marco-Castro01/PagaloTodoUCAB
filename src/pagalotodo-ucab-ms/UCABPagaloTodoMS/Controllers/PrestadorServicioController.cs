@@ -37,7 +37,7 @@ namespace UCABPagaloTodoMS.Controllers
         ///     - Operation successful.
         /// </response>
         /// <returns>Retorna la lista de PrestadoresServicios.</returns>
-        [HttpGet("prestadores_servicios")]
+        [HttpGet("/prestadores_servicios")]
         [Authorize(Roles = "AdminEntity, ConsumidorEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -212,7 +212,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna mensaje de confirmarcion.</returns>
 
-        [HttpPatch("servicio/{servicioId}/formatoPago")]
+        [HttpPut("/servicio/{servicioId}/formatoPago")]
         [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

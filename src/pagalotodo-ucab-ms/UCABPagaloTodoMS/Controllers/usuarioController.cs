@@ -21,12 +21,10 @@ namespace UCABPagaloTodoMS.Controllers
     public class usuarioController : BaseController<usuarioController>
     {
         private readonly IMediator _mediator;
-        private readonly IEmailSender _emailSender;
 
-        public usuarioController(ILogger<usuarioController> logger, IMediator mediator, IEmailSender emailSender) : base(logger)
+        public usuarioController(ILogger<usuarioController> logger, IMediator mediator) : base(logger)
         {
             _mediator = mediator;
-            _emailSender = emailSender;
         }
 
         [HttpGet()]
@@ -53,11 +51,12 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut("{id}")]
         [Authorize(Roles = ("AdminEntity"))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> EditarUsuario(Guid id, [FromBody] EditarUsuarioRequest usuario)
+        public async Task<ActionResult<string>> EditarUsuario(Guid id, [FromBody] EditarUsuarioRequest usuario)
         {
             _logger.LogInformation("Entrando al método que edita los usuarios");
             try
@@ -106,6 +105,7 @@ namespace UCABPagaloTodoMS.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("Consumidor")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,7 +122,7 @@ namespace UCABPagaloTodoMS.Controllers
             {
                 _logger.LogError("Ocurrio un error al intentar registrar un usuario. Exception: " + ex);
 
-                return BadRequest(ex.Message);
+                return StatusCode(ex.Codigo, ex.Message);
             }
             catch (Exception ex)
             {
@@ -182,7 +182,7 @@ namespace UCABPagaloTodoMS.Controllers
         [HttpPost("ResetToken")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<PasswordResetResponse>> reset(ResetPasswordRequest usuario)
+        public async Task<ActionResult<PasswordResetResponse>> resetToken(ResetPasswordRequest usuario)
         {
             _logger.LogInformation("Entrando al método que envia token de reset");
             try

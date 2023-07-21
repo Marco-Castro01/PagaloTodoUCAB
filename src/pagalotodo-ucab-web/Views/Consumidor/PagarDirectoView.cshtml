@@ -1,0 +1,124 @@
+﻿@model UCABPagaloTodoWeb.Models.ServicioModel
+
+<style>
+    /* Estilos para el formulario */
+    .formulario-pago {
+        width: 500px;
+        margin: 20px auto;
+    }
+
+        .formulario-pago .campo-pago {
+            margin-bottom: 20px;
+        }
+
+        .formulario-pago label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1e2a78;
+        }
+
+        .formulario-pago input[type="text"],
+        .formulario-pago input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+    /* Estilos para el encabezado */
+    h1 {
+        text-align: center;
+        margin: 20px 0;
+        color: #1e2a78;
+    }
+
+    /* Estilos para el botón Pagar */
+    .btn-pagar {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #1e2a78;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .btn-pagar:hover {
+            background-color: #192667;
+        }
+</style>
+
+<h1>Detalles de la Deuda</h1>
+
+<div class="formulario-pago">
+    <div class="card-deuda">
+        <div class="contenido-deuda">
+            <h3>@Model.name</h3>
+            <p>Identificador: @Model.prestadorServicioName</p>
+        </div>
+    </div>
+
+    @if (Model.CamposDeLosPagos.Count > 0)
+    {
+        <h2>Campos Personalizados</h2>
+        <form asp-action="PagarDirecto" method="post" class="frame">
+            @for (int i = 0; i < Model.CamposDeLosPagos.Count; i++)
+            {
+                <div class="campo-pago">
+                    <label>@Model.CamposDeLosPagos[i].Nombre</label>
+                    @if (Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.fecha)
+                    {
+                        <input type="date" name="CamposPagos[@i]" placeholder="Contenido del campo" />
+                    }
+                    else if (Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.conDecimal || Model.CamposDeLosPagos[i].TipoDato == UCABPagaloTodoWeb.enums.TipoDato.entero)
+                    {
+                        <input type="text" name="CamposPagos[@i]" oninput="validarNumero(event)" placeholder="Contenido del campo" />
+
+                    }
+                    else
+                    {
+                        <input type="text" name="CamposPagos[@i]" maxlength="@Model.CamposDeLosPagos[i].Longitud" placeholder="Contenido del campo" />
+                    }
+                </div>
+
+            }
+            <div class="campo-pago">
+                <label>Valor de la Deuda</label>
+                <input type="number" step="0.01" name="ValorDeuda" placeholder="Monto a pagar" />
+            </div>
+            <input type="hidden" name="DeudaId" value="@Model.Id" />
+
+
+            <!-- Botón para enviar el formulario -->
+            <button type="submit" class="btn-pagar">Pagar</button>
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            Sin campos personalizados asociados.
+        </div>
+    }
+</div>
+
+<script>
+    function validarNumero(event) {
+        // Obtenemos el valor actual del campo
+        const valorCampo = event.target.value;
+
+        // Reemplazamos cualquier separador decimal por un punto
+        const valorCampoFormateado = valorCampo.replace(",", ".");
+
+        // Verificamos si el valor es numérico
+        if (!isNaN(valorCampoFormateado)) {
+            // Si es numérico, actualizamos el valor del campo
+            event.target.value = valorCampoFormateado;
+        } else {
+            // Si no es numérico, eliminamos el último caracter ingresado
+            event.target.value = valorCampo.slice(0, -1);
+        }
+    }
+</script>
+
+

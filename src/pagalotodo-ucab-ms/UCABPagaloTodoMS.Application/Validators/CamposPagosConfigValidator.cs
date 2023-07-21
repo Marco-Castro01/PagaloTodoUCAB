@@ -12,13 +12,14 @@ public class CamposPagosValidator : AbstractValidator<CamposPagosRequest>
         RuleFor(x => x.Nombre).NotEmpty().WithMessage("Debe tener un nombre de campo");
         RuleFor(x => x.Longitud).Must((request, longitud) =>
         {
-            if (request.TipoDato == TipoDato.fecha)
+            if (request.TipoDato == TipoDato.hiperTexto)
             {
-                return longitud == 0;
+                return longitud > 0;
+
             }
             else
             {
-                return longitud > 0;
+                return longitud == 0; 
             }
         }).WithMessage(request => request.TipoDato == TipoDato.fecha ? "La longitud debe ser 0 para el TipoDato Fecha." : "La longitud debe ser mayor a 0 para otros tipos de dato.");
 

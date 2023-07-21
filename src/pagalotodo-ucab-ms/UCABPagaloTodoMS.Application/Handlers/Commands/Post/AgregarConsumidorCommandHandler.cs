@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,14 @@ using UCABPagaloTodoMS.Application.CustomExceptions;
 using UCABPagaloTodoMS.Application.Mappers;
 using UCABPagaloTodoMS.Application.Validators;
 using UCABPagaloTodoMS.Core.Database;
+using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Handlers.Commands
 {
     /// <summary>
     /// Clase que maneja el comando para agregar un consumidor.
     /// </summary>
-    public class AgregarConsumidorCommandHandler : IRequestHandler<AgregarConsumidorCommand, Guid>
+    public class AgregarConsumidorCommandHandler : IRequestHandler<AgregarConsumidorCommand, string>
     {
         private readonly IUCABPagaloTodoDbContext _dbContext;
         private readonly ILogger<AgregarConsumidorCommandHandler> _logger;
@@ -40,7 +42,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         /// <param name="request">Comando para agregar un consumidor</param>
         /// <param name="cancellationToken">Token de cancelación</param>
         /// <returns>Identificador del consumidor agregado</returns>
-        public async Task<Guid> Handle(AgregarConsumidorCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(AgregarConsumidorCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -68,13 +70,22 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
         /// </summary>
         /// <param name="request">Comando para agregar un consumidor</param>
         /// <returns>Identificador del consumidor agregado</returns>
-        private async Task<Guid> HandleAsync(AgregarConsumidorCommand request)
+        private async Task<string> HandleAsync(AgregarConsumidorCommand request)
         {
             var transaccion = _dbContext.BeginTransaction();
             try
             {
                 _logger.LogInformation("AgregarUsuarioCommand.HandleAsync {Request}", request);
+
                 var entity = UsuariosMapper.MapRequestConsumidorEntity(request._request);
+                List<UsuarioEntity> consumidores = await _dbContext
+                    .Usuarios
+                    .Where(x => x.email == entity.email || x.cedula == entity.cedula || x.nickName == entity.nickName).ToListAsync();
+
+                if (consumidores != null && consumidores.Any())
+                    throw new CustomException(400, datosyaExistentes(consumidores, entity));
+
+
                 ConsumidorValidator usuarioValidator = new ConsumidorValidator();
                 ValidationResult result = await usuarioValidator.ValidateAsync(entity);
                 if (!result.IsValid)
@@ -86,7 +97,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 await _dbContext.SaveEfContextChanges("APP");
                 transaccion.Commit();
                 _logger.LogInformation("AgregarAdminHandler.HandleAsync {Response}", id);
-                return id;
+                return "Registro exitoso";
             }
             catch (ValidationException ex)
             {
@@ -94,12 +105,38 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 transaccion.Rollback();
                 throw new CustomException("Error al agregar un consumidor", ex);
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError(ex, "Error AgregarAdminHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error AgregarAdminHandler.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
                 throw new CustomException(ex.Message);
             }
+            
+
+
+            
         }
+
+
+        public string datosyaExistentes(List<UsuarioEntity> consumidores, ConsumidorEntity consumidor)
+        {
+            string mensaje = "";
+
+            if (consumidores.Any(x => x.email.ToLower() == consumidor.email.ToLower()))
+                mensaje += "El Email '" + consumidor.email + "' ya está en uso.\n";
+            if (consumidores.Any(x => x.cedula.ToLower() == consumidor.cedula.ToLower()))
+                mensaje += "La cedula '" + consumidor.cedula + "' ya está en uso.\n";            
+            if (consumidores.Any(x => x.nickName.ToLower() == consumidor.nickName.ToLower()))
+                mensaje += "El nickName '" + consumidor.nickName + "' ya está en uso.\n";
+
+            return mensaje;
+        }
+
     }
 }

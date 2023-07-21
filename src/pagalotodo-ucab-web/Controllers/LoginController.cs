@@ -24,13 +24,6 @@ namespace UCABPagaloTodoWeb.Controllers
             _logger = logger;
         }
 
-
-      
-
-       
-
-
-
         public ViewResult Index() => View();
         [HttpPost]
         public async Task<IActionResult> Index(LoginModel usuario)
@@ -75,29 +68,44 @@ namespace UCABPagaloTodoWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> RegistrarConsumidor(LoginModel usuario)
         {
+            HttpResponseMessage responseExtern = null;
             try
             {
                 using (var httpClient = new HttpClient())
                 {
                     if (!ModelState.IsValid)
                     {
-                        return View("Index", new LoginModel { Consumidor= usuario.Consumidor });
+                        return View("Index", new LoginModel { Consumidor = usuario.Consumidor });
                     }
+
                     StringContent content = new StringContent(JsonConvert.SerializeObject(usuario.Consumidor), Encoding.UTF8, "application/json");
 
                     using (var response = await httpClient.PostAsync(endpoint + "/Consumidor", content))
                     {
-                        response.EnsureSuccessStatusCode();
+                        responseExtern = response;
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        JObject json_respuesta = JObject.Parse(responseContent);
-                        // Procesar la respuesta del servicio si es necesario
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            TempData["SuccessMessage"] = responseContent; // Guardar el mensaje de éxito en TempData
+                        }
+                        else
+                        {
+                            // Manejar el error o mostrar una alerta con el mensaje de error
+                            TempData["ErrorMessage"] = responseContent; // Guardar el mensaje de error en TempData
+                        }
+
+                        return View("Index", new LoginModel { Consumidor = usuario.Consumidor });
                     }
                 }
             }
             catch (HttpRequestException ex)
             {
                 // Log the exception or handle it appropriately
-                ModelState.AddModelError("", "Error al realizar la solicitud HTTP");
+                string errorContent = await responseExtern.Content.ReadAsStringAsync();
+                string errorMessage = errorContent.Replace(Environment.NewLine, "\n");
+
+                ViewBag.ListaErrores = errorMessage.Split(".");
             }
             catch (Exception ex)
             {
@@ -107,9 +115,6 @@ namespace UCABPagaloTodoWeb.Controllers
 
             return View("Index", new LoginModel { Consumidor = usuario.Consumidor });
         }
-
-
-
 
         public ViewResult Olvidocontrasena() => View();
 

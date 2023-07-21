@@ -62,6 +62,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 ConsumidorResponse consumidor = new ConsumidorResponse()
                 {
                     Id = result.Id,
+                    name=result.name,
                     cedula = result.cedula,
                     nickName = result.nickName,
                     status = result.status,

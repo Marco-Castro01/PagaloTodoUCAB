@@ -1,5 +1,15 @@
 ﻿@model UCABPagaloTodoWeb.Models.ServicioModel
 
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
 <h1>Información del Servicio</h1>
 
 <div class="servicio-info">
@@ -10,6 +20,8 @@
     <h3>Número de Cuenta: @Model.accountNumber</h3>
     <h3>Tipo de Servicio: <span class="badge @(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "badge-success" : "badge-info")">@(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "De pago directo" : "Pago por deuda")</span></h3>
     <h3>Estado: <span class="badge @(Model.statusServicio switch { UCABPagaloTodoWeb.enums.StatusServicio.activa => "badge-success", UCABPagaloTodoWeb.enums.StatusServicio.inactiva => "badge-danger", _ => "badge-info" })">@(Model.statusServicio switch { UCABPagaloTodoWeb.enums.StatusServicio.activa => "Activo", UCABPagaloTodoWeb.enums.StatusServicio.inactiva => "Inactivo", _ => "Próximamente" })</span></h3>
+    <a href="@Url.Action("ConsultarCamposByAdmin", "Admin", new { id = Model.Id })" class="btn btn-success">Campos de Conciliacion Asignados</a>
+
 </div>
 <a href="@Url.Action("Modificar_Servicio", "Admin", new { id = Model.Id, name = Model.name, accountNumber = Model.accountNumber, prestadorServicioId = Model.prestadorServicioId, prestadorServicioName = Model.prestadorServicioName, tipoServicio = Model.tipoServicio, statusServicio = Model.statusServicio })" class="btn btn-primary">Modificar</a>
 

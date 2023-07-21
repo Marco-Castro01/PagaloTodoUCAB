@@ -1,5 +1,14 @@
 ﻿@using UCABPagaloTodoWeb.enums
-@model List<ServicioModel>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
 
 <h1>Prestador Servicios</h1>
 
@@ -134,7 +143,9 @@ else
             <div class="description">
                 <h2>Mis Servicios</h2>
                 <p>Servicios asociados</p>
-                <input type="button" value="Leer Más">
+                <a href="@Url.Action("Mis_Servicios", "Prestador")">
+                    <button type="button" class="btn btn-success">Agregar Administrador</button>
+                </a>
             </div>
         </div>
 
@@ -144,9 +155,11 @@ else
                 <div class="img__back"></div>
             </div>
             <div class="description">
-                <h2>Pagos Recibidos</h2>
-                <p>Pagos recibidos por servicios</p>
-                <input type="button" value="Leer Más">
+                <h2>Enviar Archivo Conciliado</h2>
+                <p>Envio de Archivo Conciliado</p>
+                <a href="@Url.Action("EnviarArchivoConciliacionView", "Prestador")">
+                    <button type="button" class="btn btn-success">Enviar archivo Conciliado</button>
+                </a>
             </div>
         </div>
     </div> 
