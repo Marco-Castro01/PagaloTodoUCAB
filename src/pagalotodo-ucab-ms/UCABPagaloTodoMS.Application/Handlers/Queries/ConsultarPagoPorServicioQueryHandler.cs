@@ -59,6 +59,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     {
                         Id = c.Id,
                         valor = c.valor,
+                        statusPago=c.status,
                         consumidorId = c.consumidor.Id,
                         servicioId = c.servicio.Id,
                         PrestadorServicioNombre = c.servicio.PrestadorServicio.name,
