@@ -212,7 +212,7 @@ namespace UCABPagaloTodoMS.Controllers
         /// </response>
         /// <returns>Retorna mensaje de confirmarcion.</returns>
 
-        [HttpPut("servicio/{servicioId}/formatoPago")]
+        [HttpPut("/servicio/{servicioId}/formatoPago")]
         [Authorize(Roles = "PrestadorServicioEntity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
