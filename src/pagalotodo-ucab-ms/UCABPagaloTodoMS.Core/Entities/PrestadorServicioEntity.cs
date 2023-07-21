@@ -1,7 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace UCABPagaloTodoMS.Core.Entities;
 
-namespace UCABPagaloTodoMS.Core.Entities;
-[ExcludeFromCodeCoverage]
 public class PrestadorServicioEntity : UsuarioEntity
 {
     public string? rif { get; set; }

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.CodeAnalysis;
 
 namespace UCABPagaloTodoMS.Base
 {
-    [ExcludeFromCodeCoverage]
     public class BaseController<TController> : ControllerBase
     {
         protected readonly ILogger<TController> _logger;

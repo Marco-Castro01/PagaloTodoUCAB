@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace UCABPagaloTodoMS.Core.Entities
+﻿namespace UCABPagaloTodoMS.Core.Entities
 {
-    [ExcludeFromCodeCoverage]
     public class ValoresEntity : BaseEntity
     {
         public string? Nombre { get; set; }

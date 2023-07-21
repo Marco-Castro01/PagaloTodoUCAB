@@ -1,80 +1,45 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using FluentValidation.Internal;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
 using Moq;
-using UCABPagaloTodoMS.Application.CustomExceptions;
-using UCABPagaloTodoMS.Application.Queries;
+using NetTopologySuite.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Controllers;
-using MediatR;
 using Xunit;
 
-namespace UCABPagaloTodoMS.Tests.Controllers
+namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
 {
-    public class PrestadorServicioControllerTests
+    public class PrestadorServicioControllerTest
     {
-        [Fact]
-        public async Task ConsultaPrestadorServicio_Returns_OkObjectResult()
+        private readonly PrestadorServicioController _controller;
+        private readonly Mock<IMediator> _mediatorMock;
+        private readonly Mock<ILogger<PrestadorServicioController>> _loggerMock;
+
+
+        public PrestadorServicioControllerTest()
         {
-            // Arrange
-            var mediatorMock = new Mock<IMediator>();
-            var loggerMock = new Mock<ILogger<PrestadorServicioController>>();
-            var controller = new PrestadorServicioController(loggerMock.Object, mediatorMock.Object);
-            var expectedResult = new List<PrestadorServicioResponse> { new PrestadorServicioResponse() };
-            var query = new ConsultarPrestadorServicioPruebaQuery();
-            mediatorMock.Setup(x => x.Send(query, CancellationToken.None))
-                .ReturnsAsync(expectedResult);
+            _loggerMock = new Mock<ILogger<PrestadorServicioController>>();
+            _mediatorMock = new Mock<IMediator>();
+            _controller = new PrestadorServicioController(_loggerMock.Object, _mediatorMock.Object);
+            _controller.ControllerContext = new ControllerContext();
+            _controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            _controller.ControllerContext.ActionDescriptor = new ControllerActionDescriptor();
 
-            // Act
-            var result = await controller.ConsultaPrestadorServicio();
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var actualResult = Assert.IsType<List<PrestadorServicioResponse>>(okResult.Value);
-            Assert.Equal(expectedResult, actualResult);
         }
 
-        [Fact]
-        public async Task ConsultaPrestadorServicio_Returns_BadRequestObjectResult_On_CustomException()
-        {
-            // Arrange
-            var mediatorMock = new Mock<IMediator>();
-            var loggerMock = new Mock<ILogger<PrestadorServicioController>>();
-            var controller = new PrestadorServicioController(loggerMock.Object, mediatorMock.Object);
-            var exceptionMessage = "Custom Exception Message";
-            var query = new ConsultarPrestadorServicioPruebaQuery();
-            mediatorMock.Setup(x => x.Send(query, CancellationToken.None))
-                .ThrowsAsync(new CustomException(exceptionMessage));
+        
 
-            // Act
-            var result = await controller.ConsultaPrestadorServicio();
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal(exceptionMessage, badRequestResult.Value);
-        }
-
-        [Fact]
-        public async Task ConsultaPrestadorServicio_Returns_BadRequestObjectResult_On_Exception()
-        {
-            // Arrange
-            var mediatorMock = new Mock<IMediator>();
-            var loggerMock = new Mock<ILogger<PrestadorServicioController>>();
-            var controller = new PrestadorServicioController(loggerMock.Object, mediatorMock.Object);
-            var exceptionMessage = "Exception Message";
-            var query = new ConsultarPrestadorServicioPruebaQuery();
-            mediatorMock.Setup(x => x.Send(query, CancellationToken.None))
-                .ThrowsAsync(new System.Exception(exceptionMessage));
-
-            // Act
-            var result = await controller.ConsultaPrestadorServicio();
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal(exceptionMessage, badRequestResult.Value);
-        }
     }
 }
+

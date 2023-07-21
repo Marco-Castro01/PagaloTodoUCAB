@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UCABPagaloTodoMS.Core.Entities;
+﻿using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Responses
 {
-    [ExcludeFromCodeCoverage]
     public class CierreContableResponse
     { 
         public Guid idPrestador { get; set; }

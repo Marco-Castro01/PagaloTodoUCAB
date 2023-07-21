@@ -1,11 +1,10 @@
 ﻿using Azure.Messaging.ServiceBus.Administration;
 using FluentValidation;
-using System.Diagnostics.CodeAnalysis;
 using UCABPagaloTodoMS.Core.Entities;
 using UCABPagaloTodoMS.Core.Enums;
 
 namespace UCABPagaloTodoMS.Application.Validators;
-[ExcludeFromCodeCoverage]
+
 public class DeudaValidator : AbstractValidator<DeudaEntity>
 {
     public DeudaValidator()

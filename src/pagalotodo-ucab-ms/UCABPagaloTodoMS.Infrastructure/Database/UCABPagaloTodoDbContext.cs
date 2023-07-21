@@ -4,11 +4,12 @@ using System.Security.Cryptography;
 using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
+
+ 
 
 namespace UCABPagaloTodoMS.Infrastructure.Database;
 
-[ExcludeFromCodeCoverage]
+
 public class UCABPagaloTodoDbContext : DbContext, IUCABPagaloTodoDbContext
 {
     public UCABPagaloTodoDbContext(DbContextOptions<UCABPagaloTodoDbContext> options)

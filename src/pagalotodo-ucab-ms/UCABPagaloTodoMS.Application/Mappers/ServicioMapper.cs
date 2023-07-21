@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UCABPagaloTodoMS.Application.Commands;
+﻿using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Database;
@@ -7,7 +6,6 @@ using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Mappers
 {
-    [ExcludeFromCodeCoverage]
     public static class ServicioMapper
     {
         public static ServicioResponse MapEntityAResponse(ServicioEntity entity)
