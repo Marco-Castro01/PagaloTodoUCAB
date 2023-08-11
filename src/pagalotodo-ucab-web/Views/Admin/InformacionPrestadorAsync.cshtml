@@ -1,0 +1,118 @@
+﻿@model UCABPagaloTodoWeb.Models.PrestadorModel
+
+<h1>Información del Prestador</h1>
+
+<div class="prestador-info">
+    <h3>ID: @Model.Id</h3>
+    <h3>Email: @Model.email</h3>
+    <h3>Nombre: @Model.name</h3>
+    <h3>RIF: @Model.rif</h3>
+    <h3>Nickname: @Model.nickName</h3>
+    <h3>Estado: <span class="badge @(Model.status ? "badge-success" : "badge-danger")">@(Model.status ? "Activo" : "Inactivo")</span></h3>
+    <a href="@Url.Action("CierreContable", "Admin", new { id = Model.Id })" class="btn btn-success">Hacer Cierre</a>
+
+
+</div>
+
+<div>
+    <h2>Servicios <a href="#" class="btn btn-primary">Agregar Servicio</a></h2>
+    @if (Model.servicios.Count == 0)
+    {
+            <div class="alert alert-info" role="alert">
+                Sin servicios asociados.
+            </div>
+    }
+    else
+    {
+            <div class="row">
+            @foreach (var servicio in Model.servicios)
+            {
+                        <div class="col-md-4">
+                            <div class="card servicio-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">@servicio.name</h5>
+                                    <p class="card-text">Número de cuenta: @servicio.accountNumber</p>
+                                    <p class="card-text">Prestador de servicio: @servicio.prestadorServicioName</p>
+                                    <p class="card-text">Tipo de servicio: @servicio.tipoServicio</p>
+                                    <p class="card-text">Estado de servicio: <span class="badge @(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "badge-success" : "badge-danger")">@(servicio.statusServicio == UCABPagaloTodoWeb.enums.StatusServicio.activa ? "Activo" : "Inactivo")</span></p>
+                                    <a href="@Url.Action("InformacionServicioAsync", "Admin", new { id = servicio.Id })" class="btn btn-success">Ver detalles</a>
+                        </div>
+                            </div>
+                        </div>
+            }
+            </div>
+    }
+</div>
+
+@section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('.servicio-card').hover(function () {
+                    $(this).toggleClass('card-hover');
+                });
+
+                $('#servicioDropdown').change(function () {
+                    var servicioId = $(this).val();
+
+                    // Obtener información del servicio seleccionado mediante una llamada AJAX
+                    $.ajax({
+                        url: '/Prestador/ObtenerServicioInfo',
+                        type: 'GET',
+                        data: { servicioId: servicioId },
+                        success: function (result) {
+                            $('#serviceName').text('Nombre: ' + result.name);
+                            $('#accountNumber').text('Número de cuenta: ' + result.accountNumber);
+                            $('#prestadorServicioName').text('Prestador de servicio: ' + result.prestadorServicioName);
+                            $('#tipoServicio').text('Tipo de servicio: ' + result.tipoServicio);
+                            $('#statusServicio').text('Estado de servicio: ' + result.statusServicio);
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('Error al obtener información del servicio:', error);
+                        }
+                    });
+                });
+            });
+        </script>
+
+        <style>
+            .prestador-info {
+                margin-bottom: 20px;
+            }
+
+            .servicio-card {
+                margin-bottom: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .card-body {
+                padding: 1.25rem;
+            }
+
+            .badge {
+                padding: 0.4em 0.75em;
+                font-size: 85%;
+                font-weight: 700;
+                line-height: 1;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: baseline;
+                border-radius: 0.25rem;
+            }
+
+            .badge-success {
+                color: #ffffff;
+                background-color: #28a745;
+            }
+
+            .badge-danger {
+                color: #ffffff;
+                background-color: #dc3545;
+            }
+
+            .card-hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+}

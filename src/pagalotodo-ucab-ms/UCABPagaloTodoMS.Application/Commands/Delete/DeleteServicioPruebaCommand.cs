@@ -6,11 +6,11 @@ namespace UCABPagaloTodoMS.Application.Commands
 {
     public class DeleteServicioPruebaCommand : IRequest<Guid>
     {
-        public DeleteServicioRequest _request { get; set; }
+        public Guid _idServicio { get; set; }
 
-        public DeleteServicioPruebaCommand(DeleteServicioRequest request)
+        public DeleteServicioPruebaCommand(Guid idServicio)
         {
-            _request = request;
+            _idServicio = idServicio;
         }
     }
 }

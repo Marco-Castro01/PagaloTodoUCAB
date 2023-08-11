@@ -28,10 +28,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("ConsultarCamposConciliacionQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync();
-                }
+
+                return HandleAsync();
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request Nulo", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -47,7 +53,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarCamposConciliacionQueryHandler.HandleAsync");
 
                 // Consulta los registros de la tabla CamposConciliacion y los mapea a objetos CamposConciliacionResponse
-                var result = _dbContext.CamposConciliacion.Select(c => new CamposConciliacionResponse()
+                var result = _dbContext.CamposConciliacion
+                    .Where(x=>x.deleted==false)
+                    .Select(c => new CamposConciliacionResponse()
                 {
                     Id = c.Id,
                     Nombre = c.Nombre,
@@ -60,7 +68,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarCamposConciliacionQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error en consulta",ex);
             }
         }
     }

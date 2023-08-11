@@ -42,10 +42,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("LoginQuery.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync(request);
-                }
+
+                return HandleAsync(request);
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request Nulo :", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -69,30 +75,35 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 }
 
                 // Verificar la contraseña del usuario
-                if (!VerifyPasswordHash(usuario._request.Password!, usuariocreated.passwordHash, usuariocreated.passwordSalt))
+                if (!VerifyPasswordHash(usuario._request.Password!, usuariocreated.passwordHash,
+                        usuariocreated.passwordSalt))
                 {
                     _logger.LogWarning("Ha ocurrido un error: Contraseña incorrecta");
-                    throw new ArgumentNullException(nameof(usuariocreated));
+                    throw new CustomException(404,"Correo o contraseña incorrecta");
                 }
-            
+
                 // Obtener los datos del usuario para generar el token
-                var result = _dbContext.Usuarios.Where(u => u.email == usuario._request.email)
+                var result = _dbContext.Usuarios.Where(u => u.email == usuario._request.email && u.deleted==false)
                     .Select(a => new UsuariosAllResponse
                     {
                         Id = a.Id,
                         Discriminator = a.Discriminator,
                         email = a.email,
-                        name = a.name, 
+                        name = a.name,
                         nickName = a.nickName,
                         status = a.status
                     }).First();
 
                 return Generate(result);
             }
+            catch (CustomException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error Login.HandleAsync. {Mensaje}", ex.Message);
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error en el Login",ex);
             }
         }
 

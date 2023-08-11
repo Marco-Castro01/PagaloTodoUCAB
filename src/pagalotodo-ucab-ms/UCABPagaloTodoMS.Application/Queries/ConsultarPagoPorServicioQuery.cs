@@ -3,11 +3,13 @@ using UCABPagaloTodoMS.Application.Responses;
 
 public class ConsultarPagoPorServicioQuery : IRequest<List<PagoResponse>>
 {
-    public Guid IdPrestador { get; set; }
+    public Guid _idPrestador { get; set; }
+    public Guid _idServicio { get; set; }
 
-    public ConsultarPagoPorServicioQuery(Guid idPrestador)
+    public ConsultarPagoPorServicioQuery(Guid idPrestador,Guid idServicio)
     {
-        IdPrestador = idPrestador;
+        _idPrestador = idPrestador;
+        _idServicio = idServicio;
     }
 
 }

@@ -1,0 +1,280 @@
+﻿@model LoginModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iniciar Sesión / Registrarse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .frame {
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+            .nav .links {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+            }
+
+                .nav .links li {
+                    margin-right: 10px;
+                }
+
+                    .nav .links li:last-child {
+                        margin-right: 0;
+                    }
+
+                .nav .links .btn {
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    text-decoration: none;
+                    color: #fff;
+                    background-color: #5f9ea0;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                }
+
+                    .nav .links .btn.active {
+                        background-color: #4b8a8c;
+                    }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+        .form-styling {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+            .form-styling:focus {
+                border-color: #5f9ea0;
+            }
+
+        .text-danger {
+            color: #dc3545;
+        }
+
+        .btn-signup {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #5f9ea0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-signup:hover {
+                background-color: #4b8a8c;
+            }
+
+        .active-form {
+            display: block;
+        }
+
+        .deactivate {
+            display: none;
+        }
+
+        /* Estilos adicionales para mejorar la apariencia */
+        h1 {
+            text-align: center;
+            color: #5f9ea0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+            .form-group div {
+                width: calc(50% - 10px);
+            }
+
+        .btn-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #5f9ea0;
+            text-decoration: none;
+        }
+
+            .btn-link:hover {
+                text-decoration: underline;
+            }
+
+        /* Paleta de colores */
+        .btn {
+            background-color: #5f9ea0;
+        }
+
+            .btn.active {
+                background-color: #4b8a8c;
+            }
+
+        .btn-link {
+            color: #5f9ea0;
+        }
+
+            .btn-link:hover {
+                color: #4b8a8c;
+            }
+
+        .form-styling:focus {
+            border-color: #5f9ea0;
+            outline: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="frame">
+            <div class="nav">
+                <ul class="links">
+                    <li class="signin active"><a class="btn" onclick="switchForm('signin')">Ingresar</a></li>
+                    <li class="signup"><a class="btn" onclick="switchForm('signup')">Registrarse</a></li>
+                </ul>
+            </div>
+
+            <div class="form-signin active-form">
+                @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+                {
+                    @Html.ValidationSummary()
+
+                    <h1>Iniciar Sesión</h1>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.Login.email)
+                            @Html.TextBoxFor(model => model.Login.email, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Login.email)
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(model => model.Login.password)
+                            @Html.PasswordFor(model => model.Login.password, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Login.password)
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-signup" asp-area="" asp-controller="Login" asp-action="Index">Iniciar Sesión</button>
+
+                    <a class="btn-link" asp-area="" asp-controller="Login" asp-action="OlvidoContrasena">¿Olvidó su contraseña?</a>
+                }
+            </div>
+
+            <div class="form-signup deactivate">
+                @* Formulario de registro *@
+                @using (Html.BeginForm("RegistrarConsumidor", "Login", FormMethod.Post))
+                {
+                    @Html.ValidationSummary()
+
+                    <h1>Registrarse</h1>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.Consumidor.email)
+                            @Html.TextBoxFor(model => model.Consumidor.email, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Consumidor.email)
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(model => model.Consumidor.password)
+                            @Html.PasswordFor(model => model.Consumidor.password, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Consumidor.password)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.Consumidor.name)
+                            @Html.TextBoxFor(model => model.Consumidor.name, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Consumidor.name)
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(model => model.Consumidor.cedula)
+                            @Html.TextBoxFor(model => model.Consumidor.cedula, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Consumidor.cedula)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.Consumidor.nickName)
+                            @Html.TextBoxFor(model => model.Consumidor.nickName, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Consumidor.nickName)
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(model => model.Consumidor.lastName)
+                            @Html.TextBoxFor(model => model.Consumidor.lastName, new { @class = "form-styling" })
+                            @Html.ValidationMessageFor(model => model.Consumidor.lastName)
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-signup " asp-area="" asp-controller="Login" asp-action="RegistrarConsumidor">Registrarse</button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchForm(formType) {
+            var signinForm = document.querySelector('.form-signin');
+            var signupForm = document.querySelector('.form-signup');
+
+            if (formType === 'signin') {
+                signinForm.classList.add('active-form');
+                signupForm.classList.remove('active-form');
+            } else {
+                signinForm.classList.remove('active-form');
+                signupForm.classList.add('active-form');
+            }
+        }
+    </script>
+</body>
+</html>

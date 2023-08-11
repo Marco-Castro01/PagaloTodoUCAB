@@ -1,0 +1,35 @@
+﻿@model UCABPagaloTodoWeb.Models.ServicioModel
+
+<h1>Modificar Servicio</h1>
+<h2>Nombre Del Prestador de Servicio: @Model.prestadorServicioName</h2>
+<h2>Id Del Prestador de Servicio: @Model.prestadorServicioId</h2>
+
+<form asp-action="Modificar_Servicio" method="post" class="frame">
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-group">
+        <label asp-for="name">Nombre:</label>
+        <input asp-for="name" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label asp-for="accountNumber">Número de cuenta:</label>
+        <input asp-for="accountNumber" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label asp-for="tipoServicio">Tipo de servicio:</label>
+        <select asp-for="tipoServicio" class="form-control">
+            <option value="directo">De pago directo</option>
+            <option value="validacion">Pago por deuda</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="statusServicio">Estado del servicio:</label>
+        <select asp-for="statusServicio" class="form-control">
+            <option value="activa">Activo</option>
+            <option value="inactiva">Inactivo</option>
+            <option value="proximamente">Próximamente</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+</form>

@@ -28,10 +28,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("ConsultarConsumidorQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync();
-                }
+
+                return HandleAsync();
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request nulo", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -47,7 +53,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                 _logger.LogInformation("ConsultarConsumidorQueryHandler.HandleAsync");
 
                 // Consulta los registros de la tabla Consumidor y los mapea a objetos ConsumidorResponse
-                var result = _dbContext.Consumidor.Select(c => new ConsumidorResponse()
+                var result = _dbContext.Consumidor.Where(x=>x.deleted==false).Select(c => new ConsumidorResponse()
                 {
                     Id = c.Id,
                     cedula = c.cedula,
@@ -62,7 +68,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarPrestadorServicioQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error",ex);
             }
         }
     }

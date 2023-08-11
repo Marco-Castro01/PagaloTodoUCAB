@@ -1,0 +1,45 @@
+﻿@model UsuariosModel
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+
+
+<h1>Modificar Usuario</h1>
+
+<form asp-action="Modificar" method="post" class="frame">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="form-group">
+        <label for="name">Nombre:</label>
+        <input type="text" class="form-styling" id="name" name="name" value="@Model.name" required>
+    </div>
+    <div class="form-group">
+        <label for="name">Email:</label>
+        <input type="text" class="form-styling" id="email" name="email" value="@Model.email" required>
+    </div>
+    <div class="form-group">
+        <label for="cedula">Cédula:</label>
+        <input type="text" class="form-styling" id="cedula" name="cedula" value="@Model.cedula" >
+    </div>
+    <div class="form-group">
+        <label for="rif">RIF:</label>
+        <input type="text" class="form-styling" id="rif" name="rif" value="@Model.rif" >
+    </div>
+    <div class="form-group">
+        <label for="nickName">NickName:</label>
+        <input type="text" class="form-styling" id="nickName" name="nickName" value="@Model.nickName" required>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.status , new {@class = "labelcehck"})
+        @Html.CheckBoxFor(model => model.status)
+        @Html.ValidationMessageFor(model => model.status)
+       
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+</form>

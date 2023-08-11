@@ -4,14 +4,19 @@ using UCABPagaloTodoMS.Infrastructure.Database;
 using UCABPagaloTodoMS.Infrastructure.Settings;
 using UCABPagaloTodoMS.Providers.Implementation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using RestSharp;
 using MediatR;
 using UCABPagaloTodoMS.Application.Handlers.Queries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using UCABPagaloTodoMS.Application.Commands;
+using UCABPagaloTodoMS.Application.Handlers.Commands;
+using UCABPagaloTodoMS.Application.Handlers.Commands.Patch;
 using UCABPagaloTodoMS.Application.Mailing;
+using UCABPagaloTodoMS.Core.Services;
+using UCABPagaloTodoMS.Infrastructure.Services;
+using UCABPagaloTodoMS.Application.Services;
 
 namespace UCABPagaloTodoMS;
 
@@ -36,6 +41,18 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+
+        //RabbitMQ
+        services.AddTransient<IRabbitMQService, RabbitMQService>();
+        services.AddTransient<IRabbitMQProducer, RabbitMQProducer>();
+        services.AddHostedService<RabbitMqConsumerConciliacionHS>();
+        services.AddHostedService<RabbitMqConsumerVerificacionHS>();
+        //---------
+        //send Email
+        services.AddTransient<IMailService, MailService>();
+
+        services.AddMediatR(typeof(RecibirArchivoConciliacionCommandHandler));
+
         services.AddCors(options =>
         {
             options.AddPolicy(_allowAllOriginsPolicy,
@@ -62,20 +79,20 @@ public class Startup
 
             // Especificar que los métodos o controladores que requieren autenticación deben utilizar este esquema de seguridad
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
+                    {
+                    new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                        },
+                    new List<string>()
+                    }
 
-    });
+                });
 
         });
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -97,19 +114,23 @@ public class Startup
         _appSettings = appSettingsSection.Get<AppSettings>();
         services.Configure<AppSettings>(appSettingsSection);
         services.AddTransient<IUCABPagaloTodoDbContext, UCABPagaloTodoDbContext>();
-        var emailConfig = Configuration
-   .GetSection("EmailConfiguration")
-   .Get<EmailConfiguration>();
-        services.AddScoped<IEmailSender, EmailSender>();
-        services.AddSingleton(emailConfig);
+        //var emailConfig = Configuration
+        //    .GetSection("EmailConfiguration")
+        //    .Get<EmailConfiguration>();
+        //services.AddScoped<IEmailSender, EmailSender>();
+        //services.AddSingleton(emailConfig);
         services.AddEndpointsApiExplorer();
 
         services.AddProviders(Configuration, Folder, _appSettings, environment);
 
         services.AddMediatR(
        typeof(ConsultarValoresQueryHandler).GetTypeInfo().Assembly);
-    }
 
+        
+
+
+    }
+    
     public void Configure(IApplicationBuilder app)
     {
         var appSettingsSection = Configuration.GetSection("AppSettings");

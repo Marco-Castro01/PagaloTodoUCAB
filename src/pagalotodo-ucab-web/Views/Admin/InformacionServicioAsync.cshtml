@@ -1,0 +1,140 @@
+﻿@model UCABPagaloTodoWeb.Models.ServicioModel
+
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<h1>Información del Servicio</h1>
+
+<div class="servicio-info">
+    <h3>ID: @Model.Id</h3>
+    <h3>Nombre: @Model.name</h3>
+    <h3>ID del prestador de servicio: @Model.prestadorServicioId</h3>
+    <h3>Nombre del prestador de servicio: @Model.prestadorServicioName</h3>
+    <h3>Número de Cuenta: @Model.accountNumber</h3>
+    <h3>Tipo de Servicio: <span class="badge @(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "badge-success" : "badge-info")">@(Model.tipoServicio == UCABPagaloTodoWeb.enums.TipoServicio.directo ? "De pago directo" : "Pago por deuda")</span></h3>
+    <h3>Estado: <span class="badge @(Model.statusServicio switch { UCABPagaloTodoWeb.enums.StatusServicio.activa => "badge-success", UCABPagaloTodoWeb.enums.StatusServicio.inactiva => "badge-danger", _ => "badge-info" })">@(Model.statusServicio switch { UCABPagaloTodoWeb.enums.StatusServicio.activa => "Activo", UCABPagaloTodoWeb.enums.StatusServicio.inactiva => "Inactivo", _ => "Próximamente" })</span></h3>
+    <a href="@Url.Action("ConsultarCamposByAdmin", "Admin", new { id = Model.Id })" class="btn btn-success">Campos de Conciliacion Asignados</a>
+
+</div>
+<a href="@Url.Action("Modificar_Servicio", "Admin", new { id = Model.Id, name = Model.name, accountNumber = Model.accountNumber, prestadorServicioId = Model.prestadorServicioId, prestadorServicioName = Model.prestadorServicioName, tipoServicio = Model.tipoServicio, statusServicio = Model.statusServicio })" class="btn btn-primary">Modificar</a>
+
+<div>
+    <h2>Campos de los Pagos <a href="#" class="btn btn-primary">Agregar Campo</a></h2>
+    @if (Model.CamposDeLosPagos.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            Sin campos personalizados asignados.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var campo in Model.CamposDeLosPagos)
+            {
+                <div class="col-md-4">
+                    <div class="card campo-card">
+                        <div class="card-body">
+                            <h5 class="card-title">@campo.Nombre</h5>
+                            <h5 class="card-title">Tipo de dato: @campo.TipoDato</h5>
+                            <p class="card-text">Longitud del campo: @campo.Longitud</p>
+
+                            @if (campo.TipoDato == UCABPagaloTodoWeb.enums.TipoDato.fecha)
+                            {
+                                <p class="card-text">Formato de fecha: @campo.formatofecha</p>
+                            }
+                            else if (campo.TipoDato == UCABPagaloTodoWeb.enums.TipoDato.entero)
+                            {
+                                <p class="card-text">Separador de Miles: @campo.separadorDeMiles</p>
+                            }
+                            else if (campo.TipoDato == UCABPagaloTodoWeb.enums.TipoDato.conDecimal)
+                            {
+                                <p class="card-text">Separador de Decimales: @campo.separadorDeDecimales</p>
+                            }
+
+                            <p class="card-text">Archivo de Conciliación: <span class="badge @(campo.inCOnciliacion == true ? "badge-success" : "badge-danger")">@(campo.inCOnciliacion == true ? "En archivo" : "No en archivo")</span></p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.campo-card').hover(function () {
+                $(this).toggleClass('card-hover');
+            });
+
+            $('#campoDropdown').change(function () {
+                var campoId = $(this).val();
+
+                // Obtener información del campo seleccionado mediante una llamada AJAX
+                $.ajax({
+                    url: '/Servicio/ObtenerCampoInfo',
+                    type: 'GET',
+                    data: { campoId: campoId },
+                    success: function (result) {
+                        $('#campoName').text('Nombre: ' + result.Nombre);
+                        $('#campoTipoDato').text('Tipo de dato: ' + result.TipoDato);
+                        $('#campoLongitud').text('Longitud del campo: ' + result.Longitud);
+                        // Agregar más atributos del campo según necesidad
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error al obtener información del campo:', error);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .servicio-info {
+            margin-bottom: 20px;
+        }
+
+        .campo-card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .badge {
+            padding: 0.4em 0.75em;
+            font-size: 85%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .badge-success {
+            color: #ffffff;
+            background-color: #28a745;
+        }
+
+        .badge-danger {
+            color: #ffffff;
+            background-color: #dc3545;
+        }
+
+        .card-hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+}

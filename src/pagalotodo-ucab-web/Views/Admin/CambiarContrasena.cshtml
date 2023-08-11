@@ -1,0 +1,15 @@
+﻿@model ActualizarContrasenaModel
+
+<h1>Cambiar Contrasena</h1>
+
+<form asp-action="CambiarContrasena" method="post" class="frame">
+    <input type="hidden" name="id" value="@ViewBag.Id" />
+    <div class="form-group">
+        @Html.LabelFor(model => model.password , new {@class = "labelcehck"})
+        @Html.PasswordFor(model => model.password)
+        @Html.ValidationMessageFor(model => model.password)
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Change</button>
+</form>

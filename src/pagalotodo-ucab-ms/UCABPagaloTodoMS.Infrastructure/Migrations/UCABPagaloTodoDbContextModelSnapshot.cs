@@ -22,19 +22,42 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("CamposConciliacionEntityServicioEntity", b =>
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ArchivoFirebaseEntity", b =>
                 {
-                    b.Property<Guid>("CamposConciliacionId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ServicioId")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("prestadorServicioId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("CamposConciliacionId", "ServicioId");
+                    b.Property<int>("tipoArchivo")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ServicioId");
+                    b.Property<string>("urlFirebase")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("CamposConciliacionEntityServicioEntity");
+                    b.HasKey("Id");
+
+                    b.HasIndex("prestadorServicioId");
+
+                    b.ToTable("ArchivoFirebase");
                 });
 
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", b =>
@@ -53,7 +76,6 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -101,7 +123,7 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("servicioId")
+                    b.Property<Guid>("servicioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -135,6 +157,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Property<bool>("deleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("formatoPago")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("servicioId")
                         .HasColumnType("uniqueidentifier");
 
@@ -151,6 +176,27 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.HasIndex("servicioId");
 
                     b.ToTable("Pago");
+                });
+
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioCampoEntity", b =>
+                {
+                    b.Property<Guid>("ServicioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CampoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ServicioId", "CampoId");
+
+                    b.HasIndex("CampoId");
+
+                    b.ToTable("ServicioCampo");
                 });
 
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioEntity", b =>
@@ -179,6 +225,9 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
                     b.Property<bool>("deleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("formatoDePagos")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
@@ -332,26 +381,24 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("PrestadorServicioEntity");
                 });
 
-            modelBuilder.Entity("CamposConciliacionEntityServicioEntity", b =>
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ArchivoFirebaseEntity", b =>
                 {
-                    b.HasOne("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", null)
-                        .WithMany()
-                        .HasForeignKey("CamposConciliacionId")
+                    b.HasOne("UCABPagaloTodoMS.Core.Entities.PrestadorServicioEntity", "prestadorServicio")
+                        .WithMany("ArchivoFirebase")
+                        .HasForeignKey("prestadorServicioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UCABPagaloTodoMS.Core.Entities.ServicioEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ServicioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("prestadorServicio");
                 });
 
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.DeudaEntity", b =>
                 {
                     b.HasOne("UCABPagaloTodoMS.Core.Entities.ServicioEntity", "servicio")
                         .WithMany("deudas")
-                        .HasForeignKey("servicioId");
+                        .HasForeignKey("servicioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("servicio");
                 });
@@ -371,6 +418,25 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Navigation("servicio");
                 });
 
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioCampoEntity", b =>
+                {
+                    b.HasOne("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", "Campo")
+                        .WithMany("ServicioCampo")
+                        .HasForeignKey("CampoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UCABPagaloTodoMS.Core.Entities.ServicioEntity", "Servicio")
+                        .WithMany("ServicioCampo")
+                        .HasForeignKey("ServicioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Campo");
+
+                    b.Navigation("Servicio");
+                });
+
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioEntity", b =>
                 {
                     b.HasOne("UCABPagaloTodoMS.Core.Entities.PrestadorServicioEntity", "PrestadorServicio")
@@ -382,9 +448,16 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
                     b.Navigation("PrestadorServicio");
                 });
 
+            modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.CamposConciliacionEntity", b =>
+                {
+                    b.Navigation("ServicioCampo");
+                });
+
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.ServicioEntity", b =>
                 {
                     b.Navigation("Pago");
+
+                    b.Navigation("ServicioCampo");
 
                     b.Navigation("deudas");
                 });
@@ -396,6 +469,8 @@ namespace UCABPagaloTodoMS.Infrastructure.Migrations
 
             modelBuilder.Entity("UCABPagaloTodoMS.Core.Entities.PrestadorServicioEntity", b =>
                 {
+                    b.Navigation("ArchivoFirebase");
+
                     b.Navigation("Servicio");
                 });
 #pragma warning restore 612, 618

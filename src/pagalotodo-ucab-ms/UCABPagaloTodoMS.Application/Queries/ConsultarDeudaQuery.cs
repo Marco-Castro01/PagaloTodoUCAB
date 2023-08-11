@@ -1,14 +1,17 @@
 ﻿using MediatR;
+using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
 using UCABPagaloTodoMS.Core.Entities;
 
 public class ConsultarDeudaQuery : IRequest<List<DeudaResponse>>
 {
-    public string Identificador { get; set; }
+    public Guid _idServicio { get; set; }
+    public  GetDeudaRequest _request { get; set; }
 
-    public ConsultarDeudaQuery(string identificador)
+    public ConsultarDeudaQuery(GetDeudaRequest request,Guid idServicio)
     {
-        Identificador= identificador;
+        _request= request;
+        _idServicio = idServicio;
     }
 
 }

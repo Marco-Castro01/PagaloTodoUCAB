@@ -8,7 +8,6 @@ namespace UCABPagaloTodoMS.Application.Requests
 {
     public class UpdatePasswordRequest
     {
-        public string email { get; set; }
         public string Password { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UCABPagaloTodoMS.Application.Commands;
 using UCABPagaloTodoMS.Application.Requests;
 using UCABPagaloTodoMS.Application.Responses;
+using UCABPagaloTodoMS.Core.Database;
 using UCABPagaloTodoMS.Core.Entities;
 
 namespace UCABPagaloTodoMS.Application.Mappers
@@ -19,7 +20,7 @@ namespace UCABPagaloTodoMS.Application.Mappers
         public static AdminEntity MapRequestAdminEntity(AdminRequest request)
         {
                          
-                    var u = new AdminEntity();
+            var u = new AdminEntity();
             using (var hash = new HMACSHA512())
             {
                 u.email = request.email;
@@ -69,11 +70,18 @@ namespace UCABPagaloTodoMS.Application.Mappers
 
 
 
-        u.passwordSalt = hash.Key;
+                u.passwordSalt = hash.Key;
                 u.passwordHash = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(request.password));
                 return u;
             }
         }
+        
+        
+        public static UsuarioEntity MapRequestDeleteEntity(DeleteUsuarioCommand request, IUCABPagaloTodoDbContext DbContext)
+        {
+
+            var entity=DbContext.Usuarios.FirstOrDefault(u => u.Id == request._idUsuario && u.Discriminator=="AdminEntity" && u.deleted==false);
+            return entity;        }
 
     }
 }

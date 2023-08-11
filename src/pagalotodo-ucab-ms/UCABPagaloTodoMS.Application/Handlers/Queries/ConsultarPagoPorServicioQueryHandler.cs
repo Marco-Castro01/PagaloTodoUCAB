@@ -28,10 +28,16 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
                     _logger.LogWarning("ConsultarPagoQueryHandler.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return HandleAsync(request);
-                }
+
+                return HandleAsync(request);
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new CustomException("Request Nulo", ex);
+            }
+            catch (CustomException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -48,11 +54,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
 
                 // Consulta los registros de la tabla Pago que correspondan al servicio especificado en la consulta
                 var result = _dbContext.Pago
-                    .Where(c => c.servicio.Id == request.IdPrestador)
+                    .Where(c => c.servicio.Id == request._idServicio && c.servicio.PrestadorServicio.Id==request._idPrestador && c.deleted==false)
                     .Select(c => new PagoResponse()
                     {
                         Id = c.Id,
                         valor = c.valor,
+                        statusPago=c.status,
                         consumidorId = c.consumidor.Id,
                         servicioId = c.servicio.Id,
                         PrestadorServicioNombre = c.servicio.PrestadorServicio.name,
@@ -66,7 +73,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Queries
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ConsultarPagoQueryHandler.HandleAsync. {Mensaje}", ex.Message);
-                throw new CustomException(ex.Message);
+                throw new CustomException("Error en Consulta", ex);
             }
         }
     }

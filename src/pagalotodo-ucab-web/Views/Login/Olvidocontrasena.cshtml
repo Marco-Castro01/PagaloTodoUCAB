@@ -1,0 +1,101 @@
+﻿@model ResetPasswordModel
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restablecer Contraseña</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .frame {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .p-login {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-styling {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+            .form-styling:focus {
+                border-color: #5f9ea0;
+                outline: none;
+            }
+
+        .text-danger {
+            color: #dc3545;
+        }
+
+        .btn-signup {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #5f9ea0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-signup:hover {
+                background-color: #4b8a8c;
+            }
+    </style>
+</head>
+<body>
+    <div class="frame">
+        <div class="container">
+            <p class="p-login">Ingrese su correo electrónico para recibir un token para restablecer su contraseña:</p>
+
+            @using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.email)
+                    @Html.TextBoxFor(model => model.email, new { @class = "form-styling" })
+                    @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                </div>
+
+                <button type="submit" class="btn-signup">Enviar correo electrónico</button>
+            }
+        </div>
+    </div>
+</body>
+</html>

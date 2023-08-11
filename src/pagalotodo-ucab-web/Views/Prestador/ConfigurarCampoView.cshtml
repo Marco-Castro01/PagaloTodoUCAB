@@ -1,0 +1,140 @@
+﻿@model UCABPagaloTodoWeb.Models.CamposPagosModel
+
+<style>
+    /* Estilos para el formulario */
+    .formulario-pago {
+        width: 500px;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+    }
+
+        .formulario-pago .campo-pago {
+            margin-bottom: 20px;
+        }
+
+        .formulario-pago label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1e2a78;
+            font-weight: bold;
+        }
+
+        .formulario-pago input[type="text"],
+        .formulario-pago input[type="number"],
+        .formulario-pago select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+    /* Estilos para el encabezado */
+    h1 {
+        text-align: center;
+        margin: 20px 0;
+        color: #1e2a78;
+    }
+
+    /* Estilos para el botón Enviar */
+    .btn-pagar {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #1e2a78;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .btn-pagar:hover {
+            background-color: #192667;
+        }
+</style>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<h1>Formulario de Campos de Pagos</h1>
+
+<div class="formulario-pago">
+    <form asp-action="ConfigurarCampo" method="post">
+        <!-- Campo oculto para enviar el servicioId -->
+        <input type="hidden" name="servicioId" value="@Model.servicioId" />
+
+        <div class="campo-pago">
+            <label>Nombre</label>
+            <input type="text" name="Nombre" placeholder="Nombre" required />
+        </div>
+
+        <div class="campo-pago">
+            <label>Tipo de Dato</label>
+            <select name="TipoDato" onchange="mostrarCampos(this.value)" required>
+                <option value="">Selecciona el Tipo de Dato</option>
+                <option value="entero">Entero</option>
+                <option value="conDecimal">Decimal</option>
+                <option value="fecha">Fecha</option>
+                <option value="hiperTexto">HiperTexto</option>
+            </select>
+        </div>
+
+        <div class="campo-pago" id="campo-separador-miles" style="display: none;">
+            <label>Separador de Miles</label>
+            <select name="separadorDeMiles">
+                <option value=".">. como separador de miles</option>
+                <option value=",">, como separador de miles</option>
+            </select>
+        </div>
+
+
+        <div class="campo-pago" id="campo-formato-fecha" style="display: none;">
+            <label>Formato de Fecha</label>
+            <input type="text" name="FormatoFecha" placeholder="Formato de Fecha" />
+        </div>
+
+        <div class="campo-pago" id="campo-longitud" style="display: none;">
+            <label>Longitud</label>
+            <input type="number" name="Longitud" placeholder="Longitud" />
+        </div>
+
+        <div class="campo-pago">
+            <label>¿Incluir en Conciliación?</label>
+            <select name="inCOnciliacion">
+                <option value="true">Sí</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-pagar">Enviar</button>
+    </form>
+</div>
+
+<script>
+    function mostrarCampos(tipoDato) {
+        const campoSeparadorMiles = document.getElementById("campo-separador-miles");
+        const campoFormatoFecha = document.getElementById("campo-formato-fecha");
+        const campoLongitud = document.getElementById("campo-longitud");
+
+        campoSeparadorMiles.style.display = "none";
+        campoFormatoFecha.style.display = "none";
+        campoLongitud.style.display = "none";
+
+        if (tipoDato === "entero") {
+            campoSeparadorMiles.style.display = "block";
+        } else if (tipoDato === "conDecimal") {
+            campoSeparadorMiles.style.display = "block";
+            campoSeparadorDecimales.style.display = "block";
+        } else if (tipoDato === "fecha") {
+            campoFormatoFecha.style.display = "block";
+        } else if (tipoDato === "hiperTexto") {
+            campoLongitud.style.display = "block";
+        }
+    }
+</script>

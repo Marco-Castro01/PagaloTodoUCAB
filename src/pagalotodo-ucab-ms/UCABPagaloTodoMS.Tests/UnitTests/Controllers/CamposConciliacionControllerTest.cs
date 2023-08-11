@@ -49,7 +49,7 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
                 var camposConciliacion = new CamposConciliacionRequest { };
                 var expectedGuid = Guid.NewGuid();
                 _mediatorMock
-                    .Setup(m => m.Send(It.IsAny<AgregarCamposConciliacionPruebaCommand>(), default))
+                    .Setup(m => m.Send(It.IsAny<AgregarCamposConciliacionCommand>(), default))
                     .ReturnsAsync(expectedGuid);
 
                 // Act
@@ -67,7 +67,7 @@ namespace UCABPagaloTodoMS.Tests.UnitTests.Controllers
                 // Arrange
                 var camposConciliacion = new CamposConciliacionRequest { };
                 _mediatorMock
-                    .Setup(m => m.Send(It.IsAny<AgregarCamposConciliacionPruebaCommand>(), default))
+                    .Setup(m => m.Send(It.IsAny<AgregarCamposConciliacionCommand>(), default))
                     .ThrowsAsync(new Exception());
 
             // Act and Assert

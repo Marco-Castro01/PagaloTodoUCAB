@@ -42,10 +42,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("CambiarContrasenaCommand.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch (Exception)
             {
@@ -61,7 +64,7 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("CambiarContrasenaCommand.HandleAsync {Request}", request);
 
                 // Buscar el usuario que tiene el token de reinicio de contraseña
-                var user = _dbContext.Usuarios.Where(u => u.PasswordResetToken == request._request.token).FirstOrDefault();
+                var user = _dbContext.Usuarios.FirstOrDefault(u => u.PasswordResetToken == request._request.token && u.deleted==false);
 
                 // Verificar si el usuario no existe o el token ha expirado
                 if (user == null || user.ResetTokenExpires < DateTime.Now)
@@ -88,6 +91,12 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("CambiarContrasenaCommand.HandleAsync {Response}", id);
                 return id;
 
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, "Error CambiarContrasenaCommandHandler.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw new CustomException("Error al cambiar la contrasennia",ex);
             }
             catch (Exception ex)
             {

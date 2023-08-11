@@ -1,9 +1,11 @@
-﻿namespace UCABPagaloTodoWeb.Models
+﻿using UCABPagaloTodoMS.Application.Requests;
+using UCABPagaloTodoWeb.Requests;
+
+namespace UCABPagaloTodoWeb.Models
 {
 	public class LoginModel
 	{
-		public string email { get; set; }
-
-		public string Password { get; set; }
-	}
+            public LoginRequest? Login { get; set; }
+            public ConsumidorRequest? Consumidor { get; set; }
+    }
 }

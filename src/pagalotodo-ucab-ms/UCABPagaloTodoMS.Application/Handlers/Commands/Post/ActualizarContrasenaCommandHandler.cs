@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -46,10 +46,13 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                     _logger.LogWarning("CambiarContrasenaCommand.Handle: Request nulo.");
                     throw new ArgumentNullException(nameof(request));
                 }
-                else
-                {
-                    return await HandleAsync(request);
-                }
+
+                return await HandleAsync(request);
+            }
+            catch (CustomException)
+            {
+                throw;
+
             }
             catch (Exception)
             {
@@ -69,7 +72,9 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
             {
                 _logger.LogInformation("ActualizarContrasenaCommand.HandleAsync {Request}", request);
 
-                var user = _dbContext.Usuarios.Where(u => u.email == request._request.email).FirstOrDefault();
+
+                var user = _dbContext.Usuarios.FirstOrDefault(u => u.Id == request._id && u.deleted==false);
+
                 if (user == null)
                 {
                     throw new CustomException("No existe el usuario");
@@ -89,11 +94,17 @@ namespace UCABPagaloTodoMS.Application.Handlers.Commands
                 _logger.LogInformation("ActualizarContrasenaCommand.HandleAsync {Response}", id);
                 return id;
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError(ex, "Error ActualizarContrasenaCommand.HandleAsync. {Mensaje}", ex.Message);
+                transaccion.Rollback();
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error ActualizarContrasenaCommand.HandleAsync. {Mensaje}", ex.Message);
                 transaccion.Rollback();
-                throw new CustomException(ex.Message);
+                throw;
             }
         }
     }
